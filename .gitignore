@@ -480,13 +480,14 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-=== Lokale configuratie & Secrets ===
+
+# === Lokale configuratie & Secrets ===
 appsettings..local.json
 appsettings.Local.json
 
-Environment bestanden
+# Environment bestanden
 .env.
 !.env.example
 
-=== Frontend Build Output ===
+# === Frontend Build Output ===
 dist/
