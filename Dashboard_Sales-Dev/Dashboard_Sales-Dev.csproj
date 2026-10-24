@@ -7,4 +7,14 @@
         <RootNamespace>Dashboard_Sales_Dev</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="MySqlConnector" Version="2.6.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
+      <Folder Include="Pages\Dev\" />
+      <Folder Include="Pages\Sales\" />
+    </ItemGroup>
+
 </Project>
