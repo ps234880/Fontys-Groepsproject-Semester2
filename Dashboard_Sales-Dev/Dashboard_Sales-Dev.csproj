@@ -7,4 +7,9 @@
         <RootNamespace>Dashboard_Sales_Dev</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Aspire.MySqlConnector" Version="13.6.4" />
+      <PackageReference Include="MySqlConnector" Version="2.6.2" />
+    </ItemGroup>
+
 </Project>
