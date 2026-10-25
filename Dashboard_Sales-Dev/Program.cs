@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<QuotationRepository>();
+builder.Services.AddScoped<ClientRepository>();
 
 var app = builder.Build();
 
