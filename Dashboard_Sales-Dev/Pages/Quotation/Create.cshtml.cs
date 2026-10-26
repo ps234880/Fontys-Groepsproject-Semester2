@@ -32,9 +32,15 @@ namespace Dashboard_Sales_Dev.Pages.Quotation
             {
                 return Page();
             }
-            
-            await _clientRepository.AddClientAsync(Client);
-            
+
+            // Create client and retrieve its generated ID
+            int clientId = await _clientRepository.AddClientAsync(Client);
+
+            // Assign the ID using the property your repository expects
+            Quotation.ClientId = clientId;
+            Quotation.EmployeeId = 1;
+
+            // Save quotation
             await _quotationRepository.AddQuotationAsync(Quotation);
 
             return RedirectToPage("./Index");
