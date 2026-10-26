@@ -38,12 +38,13 @@
                     <input asp-for="Client.Email" class="form-control bg-light text-dark border-secondary" required />
                     <span asp-validation-for="Client.Email" class="text-danger"></span>
                 </div>
-                
             </div>
-            
-            
-            
         </div>
+    </div>
+    
+    <div class="d-flex justify-content-end gap-2">
+        <a asp-page="./Index" class="btn btn-outline-secondary">Annuleren</a>
+        <button type="submit" class="btn btn-primary px-4">Opslaan</button>
     </div>
 
 </form>

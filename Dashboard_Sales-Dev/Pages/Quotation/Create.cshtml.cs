@@ -8,8 +8,7 @@ namespace Dashboard_Sales_Dev.Pages.Quotation
     public class CreateModel : PageModel
     {
         private readonly ClientRepository _clientRepository;
-
-        // Injecteer ClientRepository
+        
         public CreateModel(ClientRepository clientRepository)
         {
             _clientRepository = clientRepository;
