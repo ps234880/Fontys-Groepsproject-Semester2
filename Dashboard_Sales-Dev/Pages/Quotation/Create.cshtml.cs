@@ -8,14 +8,19 @@ namespace Dashboard_Sales_Dev.Pages.Quotation
     public class CreateModel : PageModel
     {
         private readonly ClientRepository _clientRepository;
+        private readonly QuotationRepository _quotationRepository;
         
-        public CreateModel(ClientRepository clientRepository)
+        public CreateModel(ClientRepository clientRepository, QuotationRepository quotationRepository)
         {
             _clientRepository = clientRepository;
+            _quotationRepository = quotationRepository;
         }
 
         [BindProperty]
         public Client Client { get; set; } = default!;
+
+        [BindProperty]
+        public Models.Quotation Quotation { get; set; } = default!;
 
         public void OnGet()
         {
@@ -27,9 +32,10 @@ namespace Dashboard_Sales_Dev.Pages.Quotation
             {
                 return Page();
             }
-
-            // Gebruik de nieuwe repository om op te slaan
+            
             await _clientRepository.AddClientAsync(Client);
+            
+            await _quotationRepository.AddQuotationAsync(Quotation);
 
             return RedirectToPage("./Index");
         }
