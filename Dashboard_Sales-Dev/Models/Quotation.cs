@@ -5,6 +5,9 @@ public class Quotation
     public int Id { get; set; }
     public int ClientId { get; set; }
     public int EmployeeId { get; set; }
+
+    public string ClientName { get; set; } = string.Empty;
+    public string EmployeeName { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public DateTime EstimatedDate { get; set; }

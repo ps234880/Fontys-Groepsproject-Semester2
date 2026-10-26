@@ -20,9 +20,20 @@ public class QuotationRepository
         using MySqlConnection connection = new MySqlConnection(_connectionString);
         connection.Open();
 
-        string query = @"SELECT id, client_id, employee_id, title, description, 
-                                estimatedDate, createdAt, updatedAt 
-                         FROM quotation";
+        string query = @"SELECT
+    q.id,
+    q.title,
+    q.description,
+    q.estimatedDate,
+    q.createdAt,
+    c.companyName,
+    c.firstName AS clientFirstName,
+    c.lastName AS clientLastName,
+    e.firstName AS employeeFirstName,
+    e.lastName AS employeeLastName
+FROM quotation q
+INNER JOIN client c ON q.client_id = c.id
+INNER JOIN employee e ON q.employee_id = e.id;";
 
         using MySqlCommand command = new MySqlCommand(query, connection);
         using MySqlDataReader reader = command.ExecuteReader();
@@ -32,18 +43,14 @@ public class QuotationRepository
             Quotation quotation = new Quotation
             {
                 Id = reader.GetInt32("id"),
-                ClientId = reader.GetInt32("client_id"),
-                EmployeeId = reader.GetInt32("employee_id"),
                 Title = reader.GetString("title"),
-                // Controleer op NULL voor optionele velden
-                Description = reader.IsDBNull(reader.GetOrdinal("description"))
-                    ? string.Empty
-                    : reader.GetString("description"),
+                Description = reader.GetString("description"),
                 EstimatedDate = reader.GetDateTime("estimatedDate"),
-                CreatedAt = reader.GetDateTime("createdAt"),
-                UpdatedAt = reader.IsDBNull(reader.GetOrdinal("updatedAt"))
-                    ? null
-                    : reader.GetDateTime("updatedAt")
+                ClientName = reader.GetString("clientFirstName") + " " +
+                   reader.GetString("clientLastName"),
+                EmployeeName = reader.GetString("employeeFirstName") + " " +
+                     reader.GetString("employeeLastName"),
+                CreatedAt = reader.GetDateTime("createdAt")
             };
 
             quotations.Add(quotation);
