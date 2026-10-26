@@ -17,7 +17,7 @@ namespace Dashboard_Sales_Dev.Repository
             using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            var sql = @"INSERT INTO clients (FirstName, LastName, CompanyName, Email, PhoneNumber, CreatedAt) 
+            var sql = @"INSERT INTO client (FirstName, LastName, CompanyName, Email, PhoneNumber, CreatedAt) 
                         VALUES (@FirstName, @LastName, @CompanyName, @Email, @PhoneNumber, @CreatedAt)";
 
             using var cmd = new MySqlCommand(sql, connection);
