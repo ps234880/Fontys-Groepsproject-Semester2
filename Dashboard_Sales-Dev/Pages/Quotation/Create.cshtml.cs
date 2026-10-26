@@ -17,7 +17,7 @@ namespace Dashboard_Sales_Dev.Pages.Quotation
         }
 
         [BindProperty]
-        public Client Client { get; set; } = default!;
+        public Models.Client Client { get; set; } = default!;
 
         [BindProperty]
         public Models.Quotation Quotation { get; set; } = default!;

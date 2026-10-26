@@ -57,7 +57,7 @@ public class QuotationRepository
             using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            var sql = @"INSERT INTO client (client_id, employee_id, title, description, 
+            var sql = @"INSERT INTO quotation (client_id, employee_id, title, description, 
                                 estimatedDate, createdAt) 
                         VALUES (@client_id, @employee_id, @title, @description, @estimatedDate, @CreatedAt)";
 
