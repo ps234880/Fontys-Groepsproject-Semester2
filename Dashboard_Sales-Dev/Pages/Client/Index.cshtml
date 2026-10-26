@@ -1,0 +1,43 @@
+@page
+@model Dashboard_Sales_Dev.Pages.Client.Index
+@{
+    ViewData["Title"] = "Offertes";
+}
+
+<div class="container mt-4">
+    <h2>Offerte Overzicht</h2>
+
+    @if (!Model.Clients.Any())
+    {
+        <p>Er zijn nog geen klanten gevonden.</p>
+    }
+    else
+    {
+        <table class="table table-striped table-bordered mt-3">
+            <thead class="table-dark">
+            <tr>
+                <th>Bedrijfsnaam</th>
+                <th>Voornaam</th>
+                <th>Achternaam</th>
+                <th>E-mail</th>
+                <th>Telefoonnummer</th>
+                <th>Aangemaakt Op</th>
+                
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var client in Model.Clients)
+            {
+                <tr>
+                    <td>@client.CompanyName</td>
+                    <td>@client.FirstName</td>
+                    <td>@client.LastName</td>
+                    <td>@client.Email</td>
+                    <td>@client.PhoneNumber</td>
+                    <td>@client.CreatedAt.ToString("dd-MM-yyyy")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
