@@ -1,0 +1,44 @@
+﻿@page
+@model Dashboard_Sales_Dev.Pages.Quotation.Index
+@{
+    ViewData["Title"] = "Offertes";
+}
+
+<div class="container mt-4">
+    <h2>Offerte Overzicht</h2>
+
+    @if (!Model.Quotations.Any())
+    {
+        <p>Er zijn nog geen offertes gevonden.</p>
+    }
+    else
+    {
+        <table class="table table-striped table-bordered mt-3">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Titel</th>
+                <th>Beschrijving</th>
+                <th>Klant ID</th>
+                <th>Medewerker ID</th>
+                <th>Verwachte Datum</th>
+                <th>Aangemaakt Op</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var quotation in Model.Quotations)
+            {
+                <tr>
+                    <td>@quotation.Id</td>
+                    <td>@quotation.Title</td>
+                    <td>@quotation.Description</td>
+                    <td>@quotation.ClientId</td>
+                    <td>@quotation.EmployeeId</td>
+                    <td>@quotation.EstimatedDate.ToString("dd-MM-yyyy")</td>
+                    <td>@quotation.CreatedAt.ToString("dd-MM-yyyy HH:mm")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>

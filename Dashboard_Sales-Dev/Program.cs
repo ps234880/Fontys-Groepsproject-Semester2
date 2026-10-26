@@ -1,7 +1,12 @@
+using Dashboard_Sales_Dev.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<QuotationRepository>();
+builder.Services.AddScoped<ClientRepository>();
 
 var app = builder.Build();
 
