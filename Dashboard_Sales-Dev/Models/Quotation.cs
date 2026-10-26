@@ -9,5 +9,5 @@ public class Quotation
     public string Description { get; set; } = string.Empty;
     public DateTime EstimatedDate { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; } // Deze mag nullable zijn
+    public DateTime? UpdatedAt { get; set; }
 }

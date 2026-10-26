@@ -49,11 +49,10 @@
                     <span asp-validation-for="Quotation.Title" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="Quotation.Title">Description</label>
-                    <input asp-for="Quotation.Title" class="form-control bg-light text-dark border-secondary" required />
-                    <span asp-validation-for="Quotation.Title" class="text-danger"></span>
+                    <label asp-for="Quotation.Description"></label>
+                    <textarea asp-for="Quotation.Description" class="form-control"></textarea>
+                    <span asp-validation-for="Quotation.Description" class="text-danger"></span>
                 </div>
-                
                 <div class="col-md-6">
                     <label asp-for="Quotation.EstimatedDate">Estimated Date</label>
                     <input asp-for="Quotation.EstimatedDate" type="date" class="form-control bg-light text-dark border-secondary" required />
