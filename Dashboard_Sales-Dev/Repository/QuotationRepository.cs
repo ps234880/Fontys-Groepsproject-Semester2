@@ -47,7 +47,7 @@ INNER JOIN employee e ON q.employee_id = e.id;";
                 Description = reader.GetString("description"),
                 EstimatedDate = reader.GetDateTime("estimatedDate"),
                 ClientName = reader.GetString("clientFirstName") + " " +
-                   reader.GetString("clientLastName")
+                   reader.GetString("clientLastName"),
                 EmployeeName = reader.GetString("employeeFirstName") + " " +
                      reader.GetString("employeeLastName")
             };
