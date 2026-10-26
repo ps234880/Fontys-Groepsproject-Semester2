@@ -53,22 +53,22 @@ public class QuotationRepository
     }
 
     public async Task AddQuotationAsync(Quotation quotation)
-        {
-            using var connection = new MySqlConnection(_connectionString);
-            await connection.OpenAsync();
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        await connection.OpenAsync();
 
-            var sql = @"INSERT INTO quotation (client_id, employee_id, title, description, 
-                                estimatedDate, createdAt) 
-                        VALUES (@client_id, @employee_id, @title, @description, @estimatedDate, @CreatedAt)";
+        var sql = @"INSERT INTO quotation (client_id, employee_id, title, description, 
+                               estimatedDate, createdAt) 
+                       VALUES (@client_id, @employee_id, @title, @description, @estimatedDate, @CreatedAt)";
 
-            using var cmd = new MySqlCommand(sql, connection);
-            cmd.Parameters.AddWithValue("@client_id", quotation.ClientId) ;
-            cmd.Parameters.AddWithValue("@employee_id", quotation.EmployeeId);
-            cmd.Parameters.AddWithValue("@title", quotation.Title ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@description", quotation.Description ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@estimatedDate", quotation.EstimatedDate);
-            cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+        using var cmd = new MySqlCommand(sql, connection);
+        cmd.Parameters.AddWithValue("@client_id", quotation.ClientId) ;
+        cmd.Parameters.AddWithValue("@employee_id", quotation.EmployeeId);
+        cmd.Parameters.AddWithValue("@title", quotation.Title ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@description", quotation.Description ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@estimatedDate", quotation.EstimatedDate);
+        cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
 
-            await cmd.ExecuteNonQueryAsync();
-        }
+        await cmd.ExecuteNonQueryAsync();
     }
+}
