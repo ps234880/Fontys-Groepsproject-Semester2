@@ -6,7 +6,6 @@
     ViewData["Title"] = "Create";
 }
 
-
 <form method="post">
     <div>
         <div>Klant</div>
@@ -37,6 +36,28 @@
                     <label asp-for="Client.Email">E-mailadres</label>
                     <input asp-for="Client.Email" class="form-control bg-light text-dark border-secondary" required />
                     <span asp-validation-for="Client.Email" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        
+        <div>Quotation </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Quotation.Title" class="form-label">Title <span class="text-danger">*</span></label>
+                    <input asp-for="Quotation.Title" class="form-control bg-light text-dark border-secondary" required />
+                    <span asp-validation-for="Quotation.Title" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Quotation.Title">Description</label>
+                    <input asp-for="Quotation.Title" class="form-control bg-light text-dark border-secondary" required />
+                    <span asp-validation-for="Quotation.Title" class="text-danger"></span>
+                </div>
+                
+                <div class="col-md-6">
+                    <label asp-for="Quotation.EstimatedDate">Estimated Date</label>
+                    <input asp-for="Quotation.EstimatedDate" type="date" class="form-control bg-light text-dark border-secondary" required />
+                    <span asp-validation-for="Quotation.EstimatedDate" class="text-danger"></span>
                 </div>
             </div>
         </div>

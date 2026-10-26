@@ -36,13 +36,13 @@ public class QuotationRepository
                 EmployeeId = reader.GetInt32("employee_id"),
                 Title = reader.GetString("title"),
                 // Controleer op NULL voor optionele velden
-                Description = reader.IsDBNull(reader.GetOrdinal("description")) 
-                    ? string.Empty 
+                Description = reader.IsDBNull(reader.GetOrdinal("description"))
+                    ? string.Empty
                     : reader.GetString("description"),
                 EstimatedDate = reader.GetDateTime("estimatedDate"),
                 CreatedAt = reader.GetDateTime("createdAt"),
-                UpdatedAt = reader.IsDBNull(reader.GetOrdinal("updatedAt")) 
-                    ? null 
+                UpdatedAt = reader.IsDBNull(reader.GetOrdinal("updatedAt"))
+                    ? null
                     : reader.GetDateTime("updatedAt")
             };
 
@@ -51,4 +51,24 @@ public class QuotationRepository
 
         return quotations;
     }
-}
+
+    public async Task AddQuotationAsync(Quotation quotation)
+        {
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+
+            var sql = @"INSERT INTO client (client_id, employee_id, title, description, 
+                                estimatedDate, createdAt) 
+                        VALUES (@client_id, @employee_id, @title, @description, @estimatedDate, @CreatedAt)";
+
+            using var cmd = new MySqlCommand(sql, connection);
+            cmd.Parameters.AddWithValue("@client_id", quotation.ClientId) ;
+            cmd.Parameters.AddWithValue("@employee_id", quotation.EmployeeId);
+            cmd.Parameters.AddWithValue("@title", quotation.Title ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@description", quotation.Description ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@estimatedDate", quotation.EstimatedDate);
+            cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+
+            await cmd.ExecuteNonQueryAsync();
+        }
+    }
