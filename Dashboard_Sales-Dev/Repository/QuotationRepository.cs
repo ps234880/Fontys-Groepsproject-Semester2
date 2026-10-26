@@ -65,11 +65,11 @@ INNER JOIN employee e ON q.employee_id = e.id;";
         await connection.OpenAsync();
 
         var sql = @"INSERT INTO quotation (client_id, employee_id, title, description, 
-                                estimatedDate, createdAt) 
-                        VALUES (@client_id, @employee_id, @title, @description, @estimatedDate, @CreatedAt)";
+                               estimatedDate, createdAt) 
+                       VALUES (@client_id, @employee_id, @title, @description, @estimatedDate, @CreatedAt)";
 
         using var cmd = new MySqlCommand(sql, connection);
-        cmd.Parameters.AddWithValue("@client_id", quotation.ClientId);
+        cmd.Parameters.AddWithValue("@client_id", quotation.ClientId) ;
         cmd.Parameters.AddWithValue("@employee_id", quotation.EmployeeId);
         cmd.Parameters.AddWithValue("@title", quotation.Title ?? (object)DBNull.Value);
         cmd.Parameters.AddWithValue("@description", quotation.Description ?? (object)DBNull.Value);
