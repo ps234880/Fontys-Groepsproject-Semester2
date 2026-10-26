@@ -484,6 +484,7 @@ $RECYCLE.BIN/
 # === Lokale configuratie & Secrets ===
 appsettings..local.json
 appsettings.Local.json
+appsettings.Development.json
 
 # Environment bestanden
 .env.
