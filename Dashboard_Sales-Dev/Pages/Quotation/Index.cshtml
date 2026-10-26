@@ -15,29 +15,29 @@
     {
         <table class="table table-striped table-bordered mt-3">
             <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Titel</th>
-                <th>Beschrijving</th>
-                <th>Klant ID</th>
-                <th>Medewerker ID</th>
-                <th>Verwachte Datum</th>
-                <th>Aangemaakt Op</th>
-            </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Titel</th>
+                    <th>Beschrijving</th>
+                    <th>Klant</th>
+                    <th>Medewerker</th>
+                    <th>Verwachte Datum</th>
+                    <th>Aangemaakt Op</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var quotation in Model.Quotations)
-            {
-                <tr>
-                    <td>@quotation.Id</td>
-                    <td>@quotation.Title</td>
-                    <td>@quotation.Description</td>
-                    <td>@quotation.ClientId</td>
-                    <td>@quotation.EmployeeId</td>
-                    <td>@quotation.EstimatedDate.ToString("dd-MM-yyyy")</td>
-                    <td>@quotation.CreatedAt.ToString("dd-MM-yyyy HH:mm")</td>
-                </tr>
-            }
+                @foreach (var quotation in Model.Quotations)
+                {
+                    <tr>
+                        <td>@quotation.Id</td>
+                        <td>@quotation.Title</td>
+                        <td>@quotation.Description</td>
+                        <td>@quotation.ClientName</td>
+                        <td>@quotation.EmployeeName</td>
+                        <td>@quotation.EstimatedDate.ToString("dd-MM-yyyy")</td>
+                        <td>@quotation.CreatedAt.ToString("dd-MM-yyyy HH:mm")</td>
+                    </tr>
+                }
             </tbody>
         </table>
     }
