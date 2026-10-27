@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@ViewData["Title"] · Sales-to-Dev</title>
+<link rel="stylesheet" href="~/css/app.css" asp-append-version="true">
+</head>
+<body>
+<div class="app"><partial name="@(ViewData["Role"] as string == "Development" ? "_SidebarDev" : "_SidebarSales")" /><div class="main"><header class="top"><nav class="crumb">@RenderSection("Crumb", required: true)</nav><span class="sp"></span><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg><span>Search</span><span class="kbd">&#8984;K</span></div></header>@RenderBody()</div></div>
+</body>
+</html>

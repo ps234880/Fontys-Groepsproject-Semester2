@@ -1,0 +1,107 @@
+@page
+@{
+    ViewData["Title"] = "Gemeente Tilburg";
+    ViewData["Role"] = "Sales";
+    ViewData["Nav"] = "Deals";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Sales</span><span class="sep">/</span><a asp-page="/Deals/Index">Deals</a><span class="sep">/</span><span class="cur">Gemeente Tilburg</span>}
+
+<div class="ph"><div class="r1"><div><h1>Gemeente Tilburg</h1><div class="sub">Citizen Portal 2027</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Discussion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 8.5 8.5 0 01-3.8-.9L3 21l1.9-5a8.4 8.4 0 01-.9-3.8 8.4 8.4 0 018.4-9 8.5 8.5 0 018.6 8.3z"/></svg> Discussion (3)</a><a class="btn n" asp-page="/Deals/Proposal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Epic</a><button class="btn w">Prepare quote<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button></div></div></div><nav class="tabs"><a class="on" asp-page="/Deals/Detail">Requirements</a><a class="" asp-page="/Discussion">Discussion</a><a class="" asp-page="/ModuleLibrary">Modules</a><a class="" asp-page="/Deals/Detail">Timeline</a><a class="" asp-page="/Deals/Detail">Documents</a></nav><div class="panes"><div class="pane"><div class="bar2"><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Open only</button><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Must have only</button><span class="sp"></span><span class="sm dim">4 of 6 assessed</span></div><div class="tw"><table class="tbl"><thead><tr><th class="" style="width:84px"></th><th class="" style="">Requirement</th><th class="" style="width:98px">Priority</th><th class="" style="width:168px">Feasibility</th><th class="" style="width:220px">Existing modules</th><th class="r" style="width:96px">Effort</th></tr></thead><tbody><tr>
+      <td><span class="pill">REQ-01</span></td>
+      <td><a class="lnk" asp-page="/Discussion">Log in with DigiD</a></td>
+      <td class="dim nowrap">Must</td>
+      <td><span class="tag ok">Available now</span></td>
+      <td class="sm dim">auth-gateway, digid-adapter</td>
+      <td class="r nowrap num">4 d</td>
+    </tr><tr>
+      <td><span class="pill">REQ-02</span></td>
+      <td><a class="lnk" asp-page="/Discussion">Status overview of open applications</a></td>
+      <td class="dim nowrap">Must</td>
+      <td><span class="tag warn">Minor change</span></td>
+      <td class="sm dim">case-tracker</td>
+      <td class="r nowrap num">4 d</td>
+    </tr><tr>
+      <td><span class="pill">REQ-03</span></td>
+      <td><a class="lnk" asp-page="/Discussion">Upload documents up to 100 MB</a></td>
+      <td class="dim nowrap">Should</td>
+      <td><span class="tag warn">Minor change</span></td>
+      <td class="sm dim">file-vault</td>
+      <td class="r nowrap num">3 d</td>
+    </tr><tr>
+      <td><span class="pill">REQ-04</span></td>
+      <td><a class="lnk" asp-page="/Discussion">Real-time integration with the Decos case system</a></td>
+      <td class="dim nowrap">Must</td>
+      <td><span class="tag stop">Custom build</span></td>
+      <td class="sm dim"><span class="dimmer">—</span></td>
+      <td class="r nowrap num">6–8 wk</td>
+    </tr><tr>
+      <td><span class="pill">REQ-05</span></td>
+      <td><a class="lnk" asp-page="/Discussion">Export to Excel</a></td>
+      <td class="dim nowrap">Should</td>
+      <td><span class="tag idle">Not yet assessed</span></td>
+      <td class="sm dim"><span class="dimmer">—</span></td>
+      <td class="r nowrap num">—</td>
+    </tr><tr>
+      <td><span class="pill">REQ-06</span></td>
+      <td><a class="lnk" asp-page="/Discussion">Multilingual: Dutch, English, Ukrainian</a></td>
+      <td class="dim nowrap">Could</td>
+      <td><span class="tag idle">Not yet assessed</span></td>
+      <td class="sm dim"><span class="dimmer">—</span></td>
+      <td class="r nowrap num">—</td>
+    </tr></tbody></table><div class="tfoot"><span>6 requirements · 3 with existing modules</span><span>Effort for the assessed part: 11 days</span></div></div><div class="card" style="margin-top:16px"><div class="h"><h2>Notes from development</h2>
+     <span class="sm dim">2 recommendations</span></div>
+   <div class="msg"><span class="av">SD</span><div class="bd">
+     <div class="hd"><span class="w">Sanne de Groot</span><span class="t">23 Sep</span>
+       <span class="pill">REQ-01</span></div>
+     <p>Works as is, provided the customer accepts a redirect to DigiD instead of a login
+       inside the site. Logius requires this. The rest of the flow stays in their own branding.</p>
+     <div class="quo">From the requirement: “Login must use our own branding, inside the site.”</div></div></div>
+   <div class="msg"><span class="av">TK</span><div class="bd">
+     <div class="hd"><span class="w">Tom van Kaathoven</span><span class="t">Today 08:55</span>
+       <span class="pill">REQ-04</span></div>
+     <p>Real-time sync with Decos does not exist yet. Proposal for phase 1: a sync every fifteen minutes,
+       about two weeks of work instead of six to eight. Almost no user will notice the difference.</p></div></div>
+   </div></div><aside class="rail">
+   <div class="blk"><h3>Deal</h3><dl class="dl">
+     <div class="d"><dt>Value</dt><dd class="num">€84,000</dd></div>
+     <div class="d"><dt>Win probability</dt><dd><div class="meter"><span class="tr"><i style="width:70%"></i></span>
+       <span class="v">70%</span></div></dd></div>
+     <div class="d"><dt>Stage</dt><dd><span class="tag warn">Negotiation</span></dd></div>
+     <div class="d"><dt>Signing date</dt><dd>15 November 2026</dd></div>
+     <div class="d"><dt>Sector</dt><dd>Government</dd></div>
+     <div class="d"><dt>Created</dt><dd class="dim">18 August 2026</dd></div>
+   </dl></div>
+
+   <div class="blk"><h3>Team</h3><dl class="dl">
+     <div class="d"><dt>Owner</dt><dd>Milan Vermeer</dd></div>
+     <div class="d"><dt>Tech lead</dt><dd>Sanne de Groot</dd></div>
+     <div class="d"><dt>Developer</dt><dd>Tom van Kaathoven</dd></div>
+     <div class="d"><dt>Sales</dt><dd>Lotte Bakker</dd></div>
+   </dl></div>
+
+   <div class="blk"><h3>Contact persons</h3>
+     <div style="font-size:13px;display:flex;flex-direction:column;gap:10px">
+       <div><div style="display:flex;justify-content:space-between;gap:8px">
+         <span class="strong">J. Aarts</span><span class="tag info">Primary</span></div>
+         <div class="xs dimmer">Project lead · j.aarts@@tilburg.nl</div></div>
+       <div><div class="strong">M. de Wit</div>
+         <div class="xs dimmer">Information manager · m.dewit@@tilburg.nl</div></div>
+     </div></div>
+
+   <div class="blk"><h3>Open questions</h3>
+     <div style="font-size:13px">
+       <p style="margin-bottom:10px"><a class="strong" asp-page="/Discussion">Can the DigiD login be a redirect?</a>
+         <br><span class="xs dimmer">REQ-01 · Sanne · 2 hours</span></p>
+       <p><a class="strong" asp-page="/Discussion">Is a 15-minute delay acceptable for Decos?</a>
+         <br><span class="xs dimmer">REQ-04 · Tom · 1 day</span></p>
+     </div></div>
+
+   <div class="blk"><h3>Linked modules</h3>
+     <div class="sm" style="display:flex;flex-direction:column;gap:6px">
+       <a asp-page="/ModuleLibrary"><span class="pill">auth-gateway v3.4</span></a>
+       <a asp-page="/ModuleLibrary"><span class="pill">digid-adapter v2.1</span></a>
+       <a asp-page="/ModuleLibrary"><span class="pill">case-tracker v5.0</span></a>
+       <a asp-page="/ModuleLibrary"><span class="pill">file-vault v2.0</span></a>
+     </div></div>
+ </aside></div>

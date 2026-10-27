@@ -1,0 +1,9 @@
+@{
+    var nav = ViewData["Nav"] as string;
+}
+<aside class="side">
+      <div class="side-top"><partial name="_CfgLogo" /><span class="nm">Code for Good</span></div>
+      <nav class="side-scroll"><div class="nav-g"><a class="nav-i@(nav == "Overview" ? " on" : "")" asp-page="/Development/Index"><span>Overview</span></a><a class="nav-i@(nav == "Sales pipeline" ? " on" : "")" asp-page="/Deals/Index"><span>Sales pipeline</span></a><a class="nav-i@(nav == "Assessments" ? " on" : "")" asp-page="/Development/Assessment"><span>Assessments</span><span class=ct>7</span></a><a class="nav-i@(nav == "Discussion" ? " on" : "")" asp-page="/Discussion"><span>Discussion</span><span class=ct>2</span></a></div><div class="nav-g"><a class="nav-i@(nav == "Module library" ? " on" : "")" asp-page="/ModuleLibrary"><span>Module library</span></a><a class="nav-i@(nav == "Module mapping" ? " on" : "")" asp-page="/Development/ModuleMapping"><span>Module mapping</span></a></div><div class="nav-g"><a class="nav-i@(nav == "Notifications" ? " on" : "")" asp-page="/Notifications"><span>Notifications</span><span class=ct>3</span></a><a class="nav-i@(nav == "Settings" ? " on" : "")" asp-page="/Settings"><span>Settings</span></a></div></nav>
+      <div class="side-foot"><a class="u" asp-page="/Settings"><span class="av b">SD</span>
+        <span><span class="n">Sanne de Groot</span><br><span class="r">Tech lead</span></span></a></div>
+    </aside>

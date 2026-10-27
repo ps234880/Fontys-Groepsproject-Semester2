@@ -1,0 +1,111 @@
+@page
+@{
+    ViewData["Title"] = "Screen overview";
+    Layout = "_BareLayout";
+}
+
+<div class="idx-top"><partial name="_CfgLogo" /><span style="font-weight:700;font-size:13.5px">Code for Good</span>
+  <span class="sp"></span>
+  <a class="btn n" asp-page="/Index">Start at the sign-in screen</a></div>
+
+<div class="idx" style="padding-top:44px">
+  <p class="xs dimmer mono">Design · September 2026</p>
+  <h1 style="font-size:28px;margin-top:10px">Proactive Sales-to-Dev Requirement Alignment Platform</h1>
+  <p class="sm dim" style="margin-top:8px;max-width:76ch">Thirteen screens in which sales records deals and customer requirements, while development follows
+  along, points out reuse and adjusts the scope before the contract is signed. Static HTML, meant to be
+  imported into Figma one screen at a time.</p>
+
+  <div style="margin-top:32px">
+    <h2 style="margin-bottom:10px">Screens</h2>
+    <div class="tw"><table class="tbl"><thead><tr><th class="c" style="width:48px">#</th><th class="" style="">Screen</th><th class="" style="width:210px">From the brief</th></tr></thead><tbody><tr><td class="c mono dim">01</td>
+  <td><a class="lnk" asp-page="/Index">Sign in</a><div class="s">Choose the sales or development role</div></td>
+  <td class="dim nowrap">—</td></tr><tr><td class="c mono dim">02</td>
+  <td><a class="lnk" asp-page="/Sales/Index">Sales overview</a><div class="s">What is waiting for action, with the latest assessments</div></td>
+  <td class="dim nowrap">—</td></tr><tr><td class="c mono dim">03</td>
+  <td><a class="lnk" asp-page="/Deals/Index">Deals</a><div class="s">All deals in one table, grouped by stage</div></td>
+  <td class="dim nowrap">3.1 deal logging</td></tr><tr><td class="c mono dim">04</td>
+  <td><a class="lnk" asp-page="/Deals/New">New deal</a><div class="s">Record the deal when negotiation starts, with the epic format explained</div></td>
+  <td class="dim nowrap">3.1 deal logging</td></tr><tr><td class="c mono dim">05</td>
+  <td><a class="lnk" asp-page="/Deals/Detail">Deal (sales view)</a><div class="s">Requirements with feasibility, modules and effort</div></td>
+  <td class="dim nowrap">3.1</td></tr><tr><td class="c mono dim">06</td>
+  <td><a class="lnk" asp-page="/Deals/Proposal">Deal proposal</a><div class="s">Customer requirements written as epics, with module suggestions</div></td>
+  <td class="dim nowrap">3.1 requirement intake</td></tr><tr><td class="c mono dim">07</td>
+  <td><a class="lnk" asp-page="/Development/Index">Development overview</a><div class="s">Assessment queue sorted by impact, plus signals</div></td>
+  <td class="dim nowrap">3.2 pipeline visibility</td></tr><tr><td class="c mono dim">08</td>
+  <td><a class="lnk" asp-page="/Development/Assessment">Assessment</a><div class="s">Feasibility, effort, risk and advice</div></td>
+  <td class="dim nowrap">3.2 feasibility &amp; effort</td></tr><tr><td class="c mono dim">09</td>
+  <td><a class="lnk" asp-page="/Development/ModuleMapping">Map modules</a><div class="s">Link a requirement to existing modules</div></td>
+  <td class="dim nowrap">3.2 component mapping</td></tr><tr><td class="c mono dim">10</td>
+  <td><a class="lnk" asp-page="/ModuleLibrary">Module library</a><div class="s">All reusable modules with status and usage</div></td>
+  <td class="dim nowrap">3.2</td></tr><tr><td class="c mono dim">11</td>
+  <td><a class="lnk" asp-page="/Discussion">Discussion</a><div class="s">Conversation between sales and development, with decisions</div></td>
+  <td class="dim nowrap">3.2 feedback &amp; steering</td></tr><tr><td class="c mono dim">12</td>
+  <td><a class="lnk" asp-page="/Notifications">Notifications</a><div class="s">Advice, questions and actions by day</div></td>
+  <td class="dim nowrap">—</td></tr><tr><td class="c mono dim">13</td>
+  <td><a class="lnk" asp-page="/Settings">Settings</a><div class="s">Profile, notifications, collaboration and integrations</div></td>
+  <td class="dim nowrap">—</td></tr></tbody></table></div>
+  </div>
+
+  <div style="margin-top:32px">
+    <h2 style="margin-bottom:10px">The core flow</h2>
+    <div class="tw"><table class="tbl"><thead><tr><th class="c" style="width:60px">Step</th><th class="" style="">What happens</th><th class="" style="width:230px">Screen</th></tr></thead><tbody><tr><td class="c mono dim">1</td><td>Sales records the deal as soon as negotiation starts</td>
+         <td><a class="lnk" asp-page="/Deals/New">New deal</a></td></tr>
+       <tr><td class="c mono dim">2</td><td>Sales writes the customer requirements as epics in a deal proposal</td>
+         <td><a class="lnk" asp-page="/Deals/Proposal">Deal proposal</a></td></tr>
+       <tr><td class="c mono dim">3</td><td>Development sees the pipeline before signing</td>
+         <td><a class="lnk" asp-page="/Development/Index">Development overview</a></td></tr>
+       <tr><td class="c mono dim">4</td><td>Development finds existing modules that match the request</td>
+         <td><a class="lnk" asp-page="/Development/ModuleMapping">Map modules</a></td></tr>
+       <tr><td class="c mono dim">5</td><td>Development records feasibility and effort</td>
+         <td><a class="lnk" asp-page="/Development/Assessment">Assessment</a></td></tr>
+       <tr><td class="c mono dim">6</td><td>The advice goes back to sales while the scope is still open</td>
+         <td><a class="lnk" asp-page="/Discussion">Discussion</a></td></tr></tbody></table></div>
+  </div>
+
+  <div style="margin-top:32px">
+    <h2 style="margin-bottom:10px">Style</h2>
+    <div class="card"><div class="b">
+      <div class="cols" style="gap:0 32px">
+        <div>
+          <h3 style="margin-bottom:8px">Typography</h3>
+          <p style="font-size:22px;font-weight:700;letter-spacing:-.02em">Rethink Sans</p>
+          <p class="xs dimmer">Interface and headings, the same font as wecodeforgood.com</p>
+          <p class="mono" style="font-size:14px;margin-top:12px">JetBrains Mono</p>
+          <p class="xs dimmer">Codes, amounts and percentages in tables</p>
+
+          <h3 style="margin:22px 0 8px">Brand</h3>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:28px;height:28px;color:var(--fg)"><partial name="_CfgLogo" /></span>
+            <span class="sm dim">The original CFG mark, as <span class="mono">assets/logo-cfg.svg</span></span>
+          </div>
+          <div style="height:40px;border-radius:6px;background:var(--gradient);margin-top:12px"></div>
+          <p class="xs dimmer" style="margin-top:6px">The brand gradient only appears on the sign-in screen.</p>
+        </div>
+        <div>
+          <h3 style="margin-bottom:8px">Feasibility</h3>
+          <p class="xs dimmer" style="margin-bottom:10px">The four labels from section 3.2 of the brief.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+            <span class="tag ok">Available now</span><span class="tag warn">Minor change</span>
+            <span class="tag stop">Custom build</span><span class="tag idle">Not yet assessed</span>
+          </div>
+          <h3 style="margin:22px 0 8px">Color</h3>
+          <div class="swz"><div><div class="c" style="background:#148AFF"></div><div class="xs dimmer" style="margin-top:5px">Blue: action<br><span class="mono">#148AFF</span></div></div><div><div class="c" style="background:#C452DA"></div><div class="xs dimmer" style="margin-top:5px">Purple<br><span class="mono">#C452DA</span></div></div><div><div class="c" style="background:#FF3860"></div><div class="xs dimmer" style="margin-top:5px">Pink<br><span class="mono">#FF3860</span></div></div><div><div class="c" style="background:#FA8500"></div><div class="xs dimmer" style="margin-top:5px">Orange<br><span class="mono">#FA8500</span></div></div></div>
+          <p class="xs dimmer" style="margin-top:10px">Blue is the action color: buttons, links and the active
+            navigation item. The other brand colors only appear in the gradient.</p>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <div style="margin-top:32px;margin-bottom:60px">
+    <h2 style="margin-bottom:10px">How to use these files</h2>
+    <div class="tw"><table class="tbl"><thead><tr><th class="" style="width:230px"></th><th class="" style=""></th></tr></thead><tbody><tr><td class="t">One file per screen</td>
+         <td class="dim">Import them into Figma one by one, for example with the html.to.design plugin.</td></tr>
+       <tr><td class="t">Shared styles</td>
+         <td class="dim">Everything is in <span class="mono">assets/app.css</span>, with the CSS variables at the top.</td></tr>
+       <tr><td class="t">Clickable</td>
+         <td class="dim">The screens link to each other, so you can walk through the flow without Figma.</td></tr>
+       <tr><td class="t">Designed at 1440 px</td>
+         <td class="dim">Navigation 232 px, meta rail 316 px, tables fill the rest.</td></tr></tbody></table></div>
+  </div>
+</div>

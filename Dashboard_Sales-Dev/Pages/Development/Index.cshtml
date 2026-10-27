@@ -1,0 +1,75 @@
+@page
+@{
+    ViewData["Title"] = "Overview";
+    ViewData["Role"] = "Development";
+    ViewData["Nav"] = "Overview";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Development</span><span class="sep">/</span><span class="cur">Overview</span>}
+
+<div class="ph"><div class="r1"><div><h1>Overview</h1><div class="sub">Seven requirements are waiting for assessment.</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/ModuleLibrary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg> Module library</a><a class="btn" asp-page="/Development/Assessment">Start assessing<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div></div><nav class="tabs"><a class="on" asp-page="/Development/Index">Assessment queue</a><a class="" asp-page="/Development/Index">My assessments</a><a class="" asp-page="/Deals/Index">Full pipeline</a></nav><div class="bar2"><button class="chip set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Assigned to me</button><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Sector</button><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Urgency</button><span class="sp"></span><span class="sm dim">Sorted by deal value × win probability</span></div><div class="content pad"><div class="tw"><table class="tbl"><thead><tr><th class="" style="width:170px">Customer</th><th class="" style="">Requirement</th><th class="r" style="width:104px">Deal value</th><th class="c" style="width:60px">Probability</th><th class="" style="width:104px">Signing date</th><th class="" style="width:120px">Urgency</th><th class="r" style="width:110px"></th></tr></thead><tbody><tr>
+      <td><a class="lnk" asp-page="/Development/Assessment">Gemeente Tilburg</a></td>
+      <td><span class="pill">REQ-05</span> Export to Excel</td>
+      <td class="r num nowrap">84,000</td>
+      <td class="c num">70%</td>
+      <td class="nowrap dim">15 Nov</td>
+      <td><span class="tag stop">Urgent</span></td>
+      <td class="r"><a class="btn n" asp-page="/Development/Assessment">Assess</a></td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Development/Assessment">Stichting Groenlicht</a></td>
+      <td><span class="pill">REQ-02</span> iDEAL donations</td>
+      <td class="r num nowrap">27,000</td>
+      <td class="c num">50%</td>
+      <td class="nowrap dim">10 Nov</td>
+      <td><span class="tag stop">Urgent</span></td>
+      <td class="r"><a class="btn n" asp-page="/Development/Assessment">Assess</a></td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Development/Assessment">Zorggroep Noord</a></td>
+      <td><span class="pill">REQ-11</span> Real-time EHR sync</td>
+      <td class="r num nowrap">132,000</td>
+      <td class="c num">45%</td>
+      <td class="nowrap dim">1 Dec</td>
+      <td><span class="tag idle">Normal</span></td>
+      <td class="r"><a class="btn n" asp-page="/Development/Assessment">Assess</a></td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Development/Assessment">Sportbond NL</a></td>
+      <td><span class="pill">REQ-03</span> Member records import</td>
+      <td class="r num nowrap">58,000</td>
+      <td class="c num">35%</td>
+      <td class="nowrap dim">20 Dec</td>
+      <td><span class="tag idle">Normal</span></td>
+      <td class="r"><a class="btn n" asp-page="/Development/Assessment">Assess</a></td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Development/Assessment">Techniek Opleidingen</a></td>
+      <td><span class="pill">REQ-01</span> Grade registration</td>
+      <td class="r num nowrap">74,000</td>
+      <td class="c num">40%</td>
+      <td class="nowrap dim">15 Jan</td>
+      <td><span class="tag idle">Low</span></td>
+      <td class="r"><a class="btn n" asp-page="/Development/Assessment">Assess</a></td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Development/Assessment">Gemeente Tilburg</a></td>
+      <td><span class="pill">REQ-06</span> Multilingual interface</td>
+      <td class="r num nowrap">84,000</td>
+      <td class="c num">70%</td>
+      <td class="nowrap dim">15 Nov</td>
+      <td><span class="tag idle">Normal</span></td>
+      <td class="r"><a class="btn n" asp-page="/Development/Assessment">Assess</a></td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Development/Assessment">Waterschap De Aa</a></td>
+      <td><span class="pill">REQ-04</span> Map view of reports</td>
+      <td class="r num nowrap">42,000</td>
+      <td class="c num">55%</td>
+      <td class="nowrap dim">30 Nov</td>
+      <td><span class="tag idle">Low</span></td>
+      <td class="r"><a class="btn n" asp-page="/Development/Assessment">Assess</a></td>
+    </tr></tbody></table><div class="tfoot"><span>7 requirements in the queue</span><span class="num">Linked deal value €375,000</span></div></div><div class="card" style="margin-top:16px"><div class="h"><h2>Signals from the pipeline</h2></div>
+   <div style="padding:0"><div class="tw"><table class="tbl"><thead><tr><th class="" style="">Signal</th><th class="c" style="width:70px">Deals</th><th class="" style="width:220px">Action</th></tr></thead><tbody><tr><td><span class="strong">“Export to Excel” was requested four times this month</span>
+      <div class="s">Four custom builds, or build a generic export-service once</div></td>
+      <td class="c num">4</td><td><a class="lnk" asp-page="/ModuleLibrary">Propose a module</a></td></tr>
+    <tr><td><span class="strong">Zorggroep Noord wants to go live in 8 weeks and needs 6 weeks of custom work</span>
+      <div class="s">Send advice to sales before the quote goes out</div></td>
+      <td class="c num">1</td><td><a class="lnk" asp-page="/Discussion">Write advice</a></td></tr>
+    <tr><td><span class="strong">The DigiD adapter from Tilburg also fits three other government deals</span>
+      <div class="s">Candidate to add as a standard module</div></td>
+      <td class="c num">3</td><td><a class="lnk" asp-page="/ModuleLibrary">Go to library</a></td></tr></tbody></table></div></div></div></div>

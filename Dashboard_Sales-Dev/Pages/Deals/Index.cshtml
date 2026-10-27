@@ -1,0 +1,94 @@
+@page
+@{
+    ViewData["Title"] = "Deals";
+    ViewData["Role"] = "Sales";
+    ViewData["Nav"] = "Deals";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Sales</span><span class="sep">/</span><span class="cur">Deals</span>}
+
+<div class="ph"><div class="r1"><div><h1>Deals</h1><div class="sub">12 open deals</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Index"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5h10M11 9h7M11 15h10M11 19h7M3 5l3 3 3-3M6 8V3"/></svg> Sort</a><a class="btn" asp-page="/Deals/New"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> New deal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div></div><nav class="tabs"><a class="on" asp-page="/Deals/Index">All deals</a><a class="" asp-page="/Deals/Index">My deals</a><a class="" asp-page="/Deals/Index">Waiting for development</a><a class="" asp-page="/Deals/Index">Closed</a></nav><div class="bar2"><button class="chip set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Owner: Milan Vermeer</button><button class="chip set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Quarter: Q4 2026</button><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Sector</button><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Stage</button><span class="sp"></span><span class="sm dim">Group by: stage</span></div><div class="content pad"><div class="tw"><table class="tbl"><thead><tr><th class="" style="">Customer / project</th><th class="r" style="width:96px">Value</th><th class="c" style="width:60px">Reqs</th><th class="" style="width:160px">Development</th><th class="" style="width:104px">Signing date</th><th class="" style="width:130px">Owner</th></tr></thead><tbody><tr class="grp-row"><td colspan="6">Qualification · 2</td></tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Woonstichting Ven</a><div class="s">Tenant app</div></td>
+      <td class="r num nowrap">96,000</td>
+      <td class="c num">0</td>
+      <td><span class="tag stop">No requirements</span></td>
+      <td class="nowrap dim">—</td>
+      <td class="dim nowrap">Milan Vermeer</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Bibliotheek Zuid</a><div class="s">Booking system</div></td>
+      <td class="r num nowrap">31,000</td>
+      <td class="c num">2</td>
+      <td><span class="tag idle">Not submitted yet</span></td>
+      <td class="nowrap dim">—</td>
+      <td class="dim nowrap">Lotte Bakker</td>
+    </tr><tr class="grp-row"><td colspan="6">Gathering requirements · 3</td></tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Sportbond NL</a><div class="s">Member portal</div></td>
+      <td class="r num nowrap">58,000</td>
+      <td class="c num">7</td>
+      <td><span class="tag warn">Waiting for dev</span></td>
+      <td class="nowrap dim">20 Dec</td>
+      <td class="dim nowrap">Milan Vermeer</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Zorggroep Noord</a><div class="s">EHR integration</div></td>
+      <td class="r num nowrap">132,000</td>
+      <td class="c num">9</td>
+      <td><span class="tag stop">Waiting for dev</span></td>
+      <td class="nowrap dim">1 Dec</td>
+      <td class="dim nowrap">Milan Vermeer</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Techniek Opleidingen</a><div class="s">Student tracking system</div></td>
+      <td class="r num nowrap">74,000</td>
+      <td class="c num">5</td>
+      <td><span class="tag warn">Waiting for dev</span></td>
+      <td class="nowrap dim">15 Jan</td>
+      <td class="dim nowrap">Lotte Bakker</td>
+    </tr><tr class="grp-row"><td colspan="6">Dev review · 3</td></tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Gemeente Tilburg</a><div class="s">Citizen Portal 2027</div></td>
+      <td class="r num nowrap">84,000</td>
+      <td class="c num">6</td>
+      <td><span class="tag warn">4 of 6 assessed</span></td>
+      <td class="nowrap dim">15 Nov</td>
+      <td class="dim nowrap">Milan Vermeer</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Waterschap De Aa</a><div class="s">Issue reporting app</div></td>
+      <td class="r num nowrap">42,000</td>
+      <td class="c num">3</td>
+      <td><span class="tag ok">Assessed</span></td>
+      <td class="nowrap dim">30 Nov</td>
+      <td class="dim nowrap">Lotte Bakker</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Stichting Groenlicht</a><div class="s">Donation platform</div></td>
+      <td class="r num nowrap">27,000</td>
+      <td class="c num">4</td>
+      <td><span class="tag warn">2 of 4 assessed</span></td>
+      <td class="nowrap dim">10 Nov</td>
+      <td class="dim nowrap">Milan Vermeer</td>
+    </tr><tr class="grp-row"><td colspan="6">Negotiation · 2</td></tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">StadsEnergie B.V.</a><div class="s">Energy usage dashboard</div></td>
+      <td class="r num nowrap">48,500</td>
+      <td class="c num">6</td>
+      <td><span class="tag ok">Assessed</span></td>
+      <td class="nowrap dim">3 Nov</td>
+      <td class="dim nowrap">Milan Vermeer</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Logistiek Van Dijk</a><div class="s">Planning tool</div></td>
+      <td class="r num nowrap">118,000</td>
+      <td class="c num">8</td>
+      <td><span class="tag ok">Assessed</span></td>
+      <td class="nowrap dim">12 Dec</td>
+      <td class="dim nowrap">Lotte Bakker</td>
+    </tr><tr class="grp-row"><td colspan="6">Won · 2</td></tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Provincie Brabant</a><div class="s">Grant portal</div></td>
+      <td class="r num nowrap">156,000</td>
+      <td class="c num">11</td>
+      <td><span class="tag ok">Handed over</span></td>
+      <td class="nowrap dim">4 Sep</td>
+      <td class="dim nowrap">Milan Vermeer</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/Deals/Detail">Schoolbestuur Eén</a><div class="s">Parent app</div></td>
+      <td class="r num nowrap">64,000</td>
+      <td class="c num">7</td>
+      <td><span class="tag ok">Handed over</span></td>
+      <td class="nowrap dim">28 Aug</td>
+      <td class="dim nowrap">Lotte Bakker</td>
+    </tr></tbody></table><div class="tfoot"><span>12 of 12 deals</span><span class="num">Total €930,500</span></div></div></div>

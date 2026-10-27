@@ -1,0 +1,65 @@
+@page
+@{
+    ViewData["Title"] = "Discussion";
+    ViewData["Role"] = "Sales";
+    ViewData["Nav"] = "Discussion";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Sales</span><span class="sep">/</span><a asp-page="/Deals/Detail">Gemeente Tilburg</a><span class="sep">/</span><span class="cur">Discussion</span>}
+
+<div class="ph"><div class="r1"><div><h1>Discussion</h1><div class="sub">Gemeente Tilburg · Citizen Portal 2027</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Detail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Go to deal</a><button class="btn w">Close discussion<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button></div></div></div><nav class="tabs"><a class="on" asp-page="/Discussion">All messages</a><a class="" asp-page="/Discussion">Assessments only</a><a class="" asp-page="/Discussion">Open questions (2)</a><a class="" asp-page="/Discussion">Decisions (2)</a></nav><div class="panes"><div class="pane"><div class="card"><div class="h"><h2>Conversation</h2><span class="sm dim">7 messages · 3 participants</span></div><div class="msg sys"><p>Milan Vermeer requested an assessment of REQ-01 · 23 September 09:12</p></div><div class="msg"><span class="av">SD</span><div class="bd">
+      <div class="hd"><span class="w">Sanne de Groot</span><span class="t">23 Sep 11:40</span><span class="pill">REQ-01</span><span class="tag ok">Available now</span></div>
+      <p>We can mostly take this off the shelf. auth-gateway and digid-adapter cover most of the request, which leaves about four days of custom work.</p></div></div><div class="msg"><span class="av">SD</span><div class="bd">
+      <div class="hd"><span class="w">Sanne de Groot</span><span class="t">23 Sep 11:44</span><span class="pill">REQ-01</span></div>
+      <p>One thing needs to be agreed with the customer. They asked for a login inside the site, but Logius requires a redirect to DigiD itself. The rest of the flow stays in their branding.</p><div class="quo">From the requirement: “Login must use our own branding, inside the site.”</div></div></div><div class="msg"><span class="av">MV</span><div class="bd">
+      <div class="hd"><span class="w">Milan Vermeer</span><span class="t">23 Sep 14:02</span></div>
+      <p>Clear, I'll explain it as a legal requirement. Do you have a screenshot of how this works for Helmond?</p></div></div><div class="msg"><span class="av">SD</span><div class="bd">
+      <div class="hd"><span class="w">Sanne de Groot</span><span class="t">23 Sep 14:20</span></div>
+      <p>It's in the library under digid-adapter. I've linked it to this deal: <span class='pill'>helmond-digid-flow.png</span></p></div></div><div class="msg sys"><p>Milan Vermeer recorded a decision: DigiD via redirect · 23 September 14:25</p></div><div class="msg"><span class="av">TK</span><div class="bd">
+      <div class="hd"><span class="w">Tom van Kaathoven</span><span class="t">Today 08:55</span><span class="pill">REQ-04</span><span class="tag stop">Custom build</span></div>
+      <p>About REQ-04: real-time sync with Decos does not exist yet. I would do phase 1 with a sync every fifteen minutes. That is about two weeks instead of six to eight, and almost no user will notice.</p></div></div><div class="msg"><span class="av">MV</span><div class="bd">
+      <div class="hd"><span class="w">Milan Vermeer</span><span class="t">Today 09:30</span></div>
+      <p>That makes a big difference in price. I'll include it as option A, with real-time as option B in phase 2. Can you give an indication of the price difference?</p></div></div></div><div class="card" style="margin-top:16px"><div class="b">
+     <div class="fld" style="margin-bottom:10px"><label>Reply</label>
+       <textarea class="ta" placeholder="Use @@ to mention someone or # for a requirement."></textarea></div>
+     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+       <label class="chk"><span class="b"></span>Record as decision</label>
+       <div style="display:flex;gap:8px"><button class="btn n">Attachment</button>
+       <button class="btn">Send<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button></div></div>
+   </div></div></div><aside class="rail">
+   <div class="blk"><h3>Decisions</h3>
+     <div class="sm" style="display:flex;flex-direction:column;gap:14px">
+       <div><div style="display:flex;justify-content:space-between;gap:8px">
+         <span class="strong">DigiD via redirect</span><span class="tag ok">Final</span></div>
+         <div class="xs dimmer">Milan Vermeer · 23 September</div></div>
+       <div><div style="display:flex;justify-content:space-between;gap:8px">
+         <span class="strong">Decos sync every 15 minutes</span><span class="tag warn">Open</span></div>
+         <div class="xs dimmer">Proposed by Tom · waiting for price indication</div></div>
+     </div></div>
+
+   <div class="blk"><h3>Waiting for</h3>
+     <div class="sm" style="display:flex;flex-direction:column;gap:12px">
+       <div><div class="strong">Price indication for options A and B</div>
+         <div class="xs dimmer">Sanne de Groot · requested today 09:30</div></div>
+       <div><div class="strong">Customer response to the redirect</div>
+         <div class="xs dimmer">Milan Vermeer · meeting 25 September</div></div>
+     </div></div>
+
+   <div class="blk"><h3>Requirements in this discussion</h3>
+     <div class="sm" style="display:flex;flex-direction:column;gap:9px">
+       <div style="display:flex;justify-content:space-between;gap:10px">
+         <span><span class="pill">REQ-01</span> DigiD login</span><span class="tag ok">Available</span></div>
+       <div style="display:flex;justify-content:space-between;gap:10px">
+         <span><span class="pill">REQ-04</span> Decos real-time</span><span class="tag stop">Custom</span></div>
+     </div></div>
+
+   <div class="blk"><h3>Participants</h3>
+     <div class="sm" style="display:flex;flex-direction:column;gap:8px">
+       <div style="display:flex;align-items:center;gap:8px"><span class="av">MV</span>
+         <span>Milan Vermeer <span class="xs dimmer">Sales</span></span></div>
+       <div style="display:flex;align-items:center;gap:8px"><span class="av">SD</span>
+         <span>Sanne de Groot <span class="xs dimmer">Tech lead</span></span></div>
+       <div style="display:flex;align-items:center;gap:8px"><span class="av">TK</span>
+         <span>Tom van Kaathoven <span class="xs dimmer">Development</span></span></div>
+     </div></div>
+ </aside></div>

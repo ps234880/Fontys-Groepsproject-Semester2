@@ -1,0 +1,106 @@
+@page
+@{
+    ViewData["Title"] = "Assessment";
+    ViewData["Role"] = "Development";
+    ViewData["Nav"] = "Assessments";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Development</span><span class="sep">/</span><a asp-page="/Development/Index">Assessments</a><span class="sep">/</span><span class="cur">Gemeente Tilburg</span>}
+
+<div class="ph"><div class="r1"><div><h1>Gemeente Tilburg</h1><div class="sub">Citizen Portal 2027 · contract not signed yet</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Discussion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 8.5 8.5 0 01-3.8-.9L3 21l1.9-5a8.4 8.4 0 01-.9-3.8 8.4 8.4 0 018.4-9 8.5 8.5 0 018.6 8.3z"/></svg> Discussion</a><a class="btn n" asp-page="/Development/ModuleMapping"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7L11.8 5"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7L12.2 19"/></svg> Map modules</a><button class="btn w">Complete assessment<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button></div></div></div><nav class="tabs"><a class="on" asp-page="/Development/Assessment">To assess (2)</a><a class="" asp-page="/Deals/Detail">Assessed (4)</a><a class="" asp-page="/Discussion">My questions (2)</a></nav><div class="panes"><div class="pane"><div class="card">
+      <div class="h"><h2><span class="pill">REQ-05</span> &nbsp;Export to Excel</h2>
+        <span class="sm dim">Must have · wanted in phase 1</span></div>
+      <div class="b">
+        <p class="sm" style="color:var(--fg-2);max-width:78ch">Staff export a filtered list of applications to .xlsx, including column selection.</p><div class="quo">The customer mentioned “at most 50,000 rows per export”.</div>
+        <p class="sm dim" style="margin-top:10px">Existing modules: <a class="lnk" asp-page="/Development/ModuleMapping">export-service v0.4 (in development)</a></p>
+
+        <div class="cols" style="margin-top:18px">
+          <div class="fld"><label>Feasibility <span class="req">*</span></label>
+            <div class="radio"><label class=""><span class="m"></span>
+        <span><span class="t">Available now</span><span class="d">Already exists, configuration only</span></span></label><label class="on"><span class="m"></span>
+        <span><span class="t">Minor change</span><span class="d">Extend an existing module</span></span></label><label class=""><span class="m"></span>
+        <span><span class="t">Custom build</span><span class="d">Build from scratch</span></span></label></div></div>
+          <div>
+            <div class="cols" style="gap:0 12px">
+              <div class="fld"><label>Effort</label><input class="in" placeholder="0"></div>
+              <div class="fld"><label>Unit</label><select class="sel"><option>hours</option>
+                <option selected>days</option><option>weeks</option></select></div>
+            </div>
+            <div class="fld"><label>Technical risk</label><select class="sel"><option>Low</option>
+              <option selected>Medium</option><option>High</option></select></div>
+            <div class="fld"><label>Phase</label><select class="sel"><option selected>Phase 1</option>
+              <option>Phase 2</option></select></div>
+          </div>
+        </div>
+
+        <div class="fld" style="margin-bottom:0"><label>Advice to sales</label>
+          <textarea class="ta" placeholder="What could be faster or cheaper? Which alternative can sales propose?"></textarea>
+          <div class="help">Sales sees this text word for word in the discussion.</div></div>
+      </div>
+      <div class="f"><a class="btn q" asp-page="/Discussion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 8.5 8.5 0 01-3.8-.9L3 21l1.9-5a8.4 8.4 0 01-.9-3.8 8.4 8.4 0 018.4-9 8.5 8.5 0 018.6 8.3z"/></svg> Ask sales a question</a>
+        <div style="display:flex;gap:8px"><button class="btn n">Skip</button>
+        <button class="btn">Save assessment<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button></div></div>
+    </div><div style="height:16px"></div><div class="card">
+      <div class="h"><h2><span class="pill">REQ-06</span> &nbsp;Multilingual: Dutch, English, Ukrainian</h2>
+        <span class="sm dim">Must have · wanted in phase 1</span></div>
+      <div class="b">
+        <p class="sm" style="color:var(--fg-2);max-width:78ch">Full interface, emails and PDF letters in three languages. Administrators must be able to edit the texts themselves.</p>
+        <p class="sm dim" style="margin-top:10px">Existing modules: <a class="lnk" asp-page="/Development/ModuleMapping">Find modules</a></p>
+
+        <div class="cols" style="margin-top:18px">
+          <div class="fld"><label>Feasibility <span class="req">*</span></label>
+            <div class="radio"><label class=""><span class="m"></span>
+        <span><span class="t">Available now</span><span class="d">Already exists, configuration only</span></span></label><label class=""><span class="m"></span>
+        <span><span class="t">Minor change</span><span class="d">Extend an existing module</span></span></label><label class=""><span class="m"></span>
+        <span><span class="t">Custom build</span><span class="d">Build from scratch</span></span></label></div></div>
+          <div>
+            <div class="cols" style="gap:0 12px">
+              <div class="fld"><label>Effort</label><input class="in" placeholder="0"></div>
+              <div class="fld"><label>Unit</label><select class="sel"><option>hours</option>
+                <option selected>days</option><option>weeks</option></select></div>
+            </div>
+            <div class="fld"><label>Technical risk</label><select class="sel"><option>Low</option>
+              <option selected>Medium</option><option>High</option></select></div>
+            <div class="fld"><label>Phase</label><select class="sel"><option selected>Phase 1</option>
+              <option>Phase 2</option></select></div>
+          </div>
+        </div>
+
+        <div class="fld" style="margin-bottom:0"><label>Advice to sales</label>
+          <textarea class="ta" placeholder="What could be faster or cheaper? Which alternative can sales propose?"></textarea>
+          <div class="help">Sales sees this text word for word in the discussion.</div></div>
+      </div>
+      <div class="f"><a class="btn q" asp-page="/Discussion"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 8.5 8.5 0 01-3.8-.9L3 21l1.9-5a8.4 8.4 0 01-.9-3.8 8.4 8.4 0 018.4-9 8.5 8.5 0 018.6 8.3z"/></svg> Ask sales a question</a>
+        <div style="display:flex;gap:8px"><button class="btn n">Skip</button>
+        <button class="btn">Save assessment<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button></div></div>
+    </div></div><aside class="rail">
+   <div class="blk"><h3>Progress</h3><dl class="dl">
+     <div class="d"><dt>Assessed</dt><dd><div class="meter"><span class="tr"><i style="width:66%"></i></span>
+       <span class="v">4 / 6</span></div></dd></div>
+     <div class="d"><dt>With existing module</dt><dd>3 requirements</dd></div>
+     <div class="d"><dt>Custom build</dt><dd>1 requirement</dd></div>
+     <div class="d"><dt>Recorded effort</dt><dd class="num">11 days</dd></div>
+   </dl>
+   <p class="xs dimmer" style="margin-top:8px">Effort only counts the assessed requirements.
+     REQ-04 is still an estimate of 6 to 8 weeks.</p></div>
+
+   <div class="blk"><h3>Deal</h3><dl class="dl">
+     <div class="d"><dt>Value</dt><dd class="num">€84,000</dd></div>
+     <div class="d"><dt>Win probability</dt><dd>70%</dd></div>
+     <div class="d"><dt>Signing date</dt><dd>15 November 2026</dd></div>
+     <div class="d"><dt>Sales</dt><dd>Milan Vermeer</dd></div>
+     <div class="d"><dt>Sector</dt><dd>Government</dd></div>
+   </dl></div>
+
+   <div class="blk"><h3>Already assessed</h3>
+     <div style="font-size:13px;display:flex;flex-direction:column;gap:9px">
+       <div style="display:flex;justify-content:space-between;gap:10px">
+         <span><span class="pill">REQ-01</span> DigiD</span><span class="tag ok">Available</span></div>
+       <div style="display:flex;justify-content:space-between;gap:10px">
+         <span><span class="pill">REQ-02</span> Status overview</span><span class="tag warn">Minor</span></div>
+       <div style="display:flex;justify-content:space-between;gap:10px">
+         <span><span class="pill">REQ-03</span> Upload</span><span class="tag warn">Minor</span></div>
+       <div style="display:flex;justify-content:space-between;gap:10px">
+         <span><span class="pill">REQ-04</span> Decos</span><span class="tag stop">Custom</span></div>
+     </div></div>
+ </aside></div>

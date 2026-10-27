@@ -1,0 +1,85 @@
+@page
+@{
+    ViewData["Title"] = "Map modules";
+    ViewData["Role"] = "Development";
+    ViewData["Nav"] = "Module mapping";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Development</span><span class="sep">/</span><a asp-page="/Development/Assessment">Gemeente Tilburg</a><span class="sep">/</span><span class="cur">Map modules</span>}
+
+<div class="ph"><div class="r1"><div><h1>Map modules</h1><div class="sub">Gemeente Tilburg · REQ-01 Log in with DigiD</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Development/Assessment">Cancel</a><a class="btn" asp-page="/Development/Assessment">Save links<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div></div><div class="panes"><div class="pane"><div class="card"><div class="h"><h2>The customer's request</h2>
+     <span class="pill">REQ-01</span></div><div class="b">
+     <p class="sm" style="color:var(--fg-2);max-width:78ch">Citizens log in with their DigiD account and immediately
+       see their open applications. Staff use their internal AD account.</p>
+     <div class="quo">“Login must use our own branding, inside the site.”</div>
+     <p class="sm dim" style="margin-top:12px">Keywords: authentication, DigiD, single sign-on, branding</p>
+   </div></div>
+
+   <div class="card" style="margin-top:16px"><div class="h"><h2>Existing modules</h2>
+     <div style="display:flex;gap:8px"><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>Search</button>
+     <button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Category</button></div></div>
+   <div style="padding:0"><div class="tw"><table class="tbl"><thead><tr><th class="c" style="width:44px"></th><th class="" style="">Module</th><th class="c" style="width:90px">In use</th><th class="" style="width:180px">Fit for this request</th><th class="r" style="width:80px"></th></tr></thead><tbody><tr class="sel">
+      <td class="c"><span class="chk on"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span></span></td>
+      <td><span class="t">auth-gateway</span> <span class="pill">v3.4</span><div class="s">OAuth2/OIDC gateway with session management, MFA and audit logging</div></td>
+      <td class="c num">9</td>
+      <td><span class="tag ok">Usable as is</span></td>
+      <td class="r"><a class="lnk sm" asp-page="/ModuleLibrary">Details</a></td>
+    </tr><tr class="sel">
+      <td class="c"><span class="chk on"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span></span></td>
+      <td><span class="t">digid-adapter</span> <span class="pill">v2.1</span><div class="s">Certified DigiD integration with Logius logging and BSN masking</div></td>
+      <td class="c num">4</td>
+      <td><span class="tag ok">Usable as is</span></td>
+      <td class="r"><a class="lnk sm" asp-page="/ModuleLibrary">Details</a></td>
+    </tr><tr class="sel">
+      <td class="c"><span class="chk on"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span></span></td>
+      <td><span class="t">sso-connector</span> <span class="pill">v1.8</span><div class="s">Staff login via Entra ID or Active Directory</div></td>
+      <td class="c num">12</td>
+      <td><span class="tag warn">Minor change</span></td>
+      <td class="r"><a class="lnk sm" asp-page="/ModuleLibrary">Details</a></td>
+    </tr><tr class="">
+      <td class="c"><span class="chk "><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span></span></td>
+      <td><span class="t">theme-kit</span> <span class="pill">v4.0</span><div class="s">Branding layer over all standard screens, WCAG 2.2 AA</div></td>
+      <td class="c num">14</td>
+      <td><span class="tag warn">Minor change</span></td>
+      <td class="r"><a class="lnk sm" asp-page="/ModuleLibrary">Details</a></td>
+    </tr><tr class="">
+      <td class="c"><span class="chk "><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span></span></td>
+      <td><span class="t">session-guard</span> <span class="pill">v1.2</span><div class="s">Automatic logout and device recognition</div></td>
+      <td class="c num">6</td>
+      <td><span class="tag idle">Optional</span></td>
+      <td class="r"><a class="lnk sm" asp-page="/ModuleLibrary">Details</a></td>
+    </tr></tbody></table><div class="tfoot"><span>3 of 5 selected</span><span><a class="lnk" asp-page="/Development/Assessment">No matching module? Mark as custom build</a></span></div></div></div></div>
+
+   <div class="card" style="margin-top:16px"><div class="h"><h2>Notes for sales</h2></div><div class="b">
+     <div class="fld" style="margin-bottom:0">
+       <textarea class="ta">Works as is, provided the customer accepts a redirect to DigiD instead of an embedded login. Logius requires this as well. With theme-kit the rest of the flow stays fully in their own branding.</textarea>
+       <div class="help">Sales sees this text in the discussion and on the deal page.</div></div>
+   </div></div>
+ </div><aside class="rail">
+   <div class="blk"><h3>Impact on the deal</h3>
+     <dl class="dl">
+       <div class="d"><dt>Remaining custom work</dt><dd class="num">4 days</dd></div>
+       <div class="d"><dt>New certification</dt><dd>Not needed</dd></div>
+       <div class="d"><dt>Customer lead time</dt><dd>6–8 weeks</dd></div>
+     </dl>
+     <p class="xs dimmer" style="margin-top:8px">The lead time is the customer's own application for a DigiD
+       connection, separate from our work.</p></div>
+
+   <div class="blk"><h3>Watch out</h3>
+     <div class="sm" style="display:flex;flex-direction:column;gap:12px">
+       <div><div style="display:flex;align-items:center;gap:7px;color:var(--warn);font-weight:600">
+         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg> The customer's wish cannot be met in full</div>
+         <p class="xs dimmer" style="margin-top:3px">An embedded login is not allowed. Sales has to discuss
+           this before signing.</p></div>
+     </div></div>
+
+   <div class="blk"><h3>Solved this way before</h3>
+     <div class="sm" style="display:flex;flex-direction:column;gap:9px">
+       <div style="display:flex;justify-content:space-between;gap:10px">
+         <span>Gemeente Helmond <span class="xs dimmer">2025</span></span><span class="num dim">5 d</span></div>
+       <div style="display:flex;justify-content:space-between;gap:10px">
+         <span>Provincie Brabant <span class="xs dimmer">2026</span></span><span class="num dim">8 d</span></div>
+       <div style="display:flex;justify-content:space-between;gap:10px">
+         <span>Waterschap De Aa <span class="xs dimmer">2024, custom build</span></span><span class="num dim">6 wk</span></div>
+     </div></div>
+ </aside></div>

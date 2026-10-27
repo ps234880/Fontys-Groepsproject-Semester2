@@ -1,0 +1,63 @@
+@page
+@{
+    ViewData["Title"] = "Settings";
+    ViewData["Role"] = "Sales";
+    ViewData["Nav"] = "Settings";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Account</span><span class="sep">/</span><span class="cur">Settings</span>}
+
+<div class="ph"><div class="r1"><div><h1>Settings</h1><div class="sub">Milan Vermeer · Account Executive</div></div><div style="display:flex;gap:8px"><button class="btn n">Cancel</button><button class="btn">Save changes<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button></div></div></div><nav class="tabs"><a class="on" asp-page="/Settings">Profile</a><a class="" asp-page="/Settings">Notifications</a><a class="" asp-page="/Settings">Collaboration</a><a class="" asp-page="/Settings">Integrations</a><a class="" asp-page="/Settings">Security</a></nav><div class="content pad"><div style="max-width:860px"><div class="card"><div class="h"><h2>Profile</h2></div><div class="b">
+     <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+       <span class="av lg b">MV</span><button class="btn n">Change photo</button>
+       <span class="xs dimmer">JPG or PNG, up to 2 MB</span></div>
+     <div class="fields" style="max-width:none"><div class="cols">
+       <div class="fld"><label>First name</label><input class="in" value="Milan"></div>
+       <div class="fld"><label>Last name</label><input class="in" value="Vermeer"></div>
+       <div class="fld"><label>Email address</label><input class="in" value="milan@@wecfg.com"></div>
+       <div class="fld"><label>Phone</label><input class="in" value="+31 6 12 34 56 78"></div>
+       <div class="fld"><label>Role</label><select class="sel">
+         <option selected>Sales · Account Executive</option><option>Sales · Manager</option>
+         <option>Development · Tech lead</option><option>Development · Engineer</option>
+         <option>Administrator</option></select></div>
+       <div class="fld"><label>Office</label><select class="sel">
+         <option selected>Eindhoven</option><option>Groningen</option></select></div>
+     </div></div></div></div><div class="card"><div class="h"><h2>Notifications</h2><span class="sm dim">Turn on or off per channel</span></div><div style="padding:0"><div class="tw"><table class="tbl"><thead><tr><th class="" style="">Event</th><th class="c" style="width:90px">In-app</th><th class="c" style="width:90px">Email</th><th class="c" style="width:90px">Teams</th></tr></thead><tbody><tr class="grp-row"><td colspan="4">Development</td></tr><tr><td><span class="t">Technical advice on my requirement</span><div class="s">As soon as development records an assessment</div></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw"></span></td></tr><tr><td><span class="t">Requirement marked as custom build</span><div class="s">Important before you send a quote</div></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw"></span></td></tr><tr><td><span class="t">Cheaper alternative proposed</span><div class="s">Development sees a faster or cheaper route</div></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw"></span></td></tr><tr><td><span class="t">Question from development</span><div class="s">Development needs information from you</div></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw"></span></td></tr><tr class="grp-row"><td colspan="4">Pipeline</td></tr><tr><td><span class="t">New deal from a colleague</span><div class="s">Only deals above €50,000</div></td>
+      <td class="c"><span class="sw "></span></td>
+      <td class="c"><span class="sw "></span></td>
+      <td class="c"><span class="sw"></span></td></tr><tr><td><span class="t">Weekly summary</span><div class="s">Every Monday morning, with open actions</div></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw on"></span></td>
+      <td class="c"><span class="sw"></span></td></tr><tr><td><span class="t">New module in the library</span><div class="s">So you know what you can promise</div></td>
+      <td class="c"><span class="sw "></span></td>
+      <td class="c"><span class="sw "></span></td>
+      <td class="c"><span class="sw"></span></td></tr></tbody></table></div></div></div><div class="card"><div class="h"><h2>Collaboration</h2></div><div class="b">
+     <div class="fields">
+       <div class="fld"><label>Default tech lead for my deals</label>
+         <select class="sel"><option selected>Sanne de Groot</option><option>Tom van Kaathoven</option>
+           <option>Assign automatically</option></select>
+         <div class="help">This person is notified as soon as you submit a deal proposal.</div></div>
+       <div class="fld"><label class="chk on"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+         Share deals with development automatically once the stage is “Gathering requirements”</label></div>
+       <div class="fld" style="margin-bottom:0"><label class="chk on"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+         Show deal amounts to development, so they can prioritize by impact</label></div>
+     </div></div></div>
+
+   <div class="card"><div class="h"><h2>Integrations</h2></div><div style="padding:0"><div class="tw"><table class="tbl"><thead><tr><th class="" style="">System</th><th class="" style="">Used for</th><th class="" style="width:130px">Status</th><th class="r" style="width:110px"></th></tr></thead><tbody><tr><td class="t">Microsoft 365</td><td class="dim">Calendar and email</td>
+      <td><span class="tag ok">Active</span></td><td class="r"><a class="lnk sm">Manage</a></td></tr>
+      <tr><td class="t">Microsoft Teams</td><td class="dim">Notifications in a channel</td>
+      <td><span class="tag ok">Active</span></td><td class="r"><a class="lnk sm">Manage</a></td></tr>
+      <tr><td class="t">HubSpot CRM</td><td class="dim">Sync deals</td>
+      <td><span class="tag idle">Not connected</span></td><td class="r"><a class="lnk sm">Connect</a></td></tr></tbody></table></div></div></div></div></div>

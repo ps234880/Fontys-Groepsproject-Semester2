@@ -1,0 +1,134 @@
+@page
+@{
+    ViewData["Title"] = "Deal proposal";
+    ViewData["Role"] = "Sales";
+    ViewData["Nav"] = "Proposals";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Sales</span><span class="sep">/</span><a asp-page="/Deals/Detail">Gemeente Tilburg</a><span class="sep">/</span><span class="cur">Deal proposal</span>}
+
+<div class="ph"><div class="r1"><div><h1>Deal proposal</h1><div class="sub">Gemeente Tilburg · Citizen Portal 2027 · requirements written as epics</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Detail">Cancel</a><a class="btn" asp-page="/Deals/Detail">Submit proposal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div></div><div class="panes"><div class="pane"><div style="max-width:760px">
+   <div class="card"><div class="h"><h2>Epics in this proposal</h2><span class="sm dim">6 submitted · 1 draft</span></div>
+   <div style="padding:0"><div class="tw"><table class="tbl"><thead><tr><th class="" style="width:84px"></th><th class="" style="">Epic</th><th class="" style="width:90px">Priority</th><th class="" style="width:150px">Status</th></tr></thead><tbody><tr>
+      <td><span class="pill">REQ-01</span></td>
+      <td style="padding-top:8px;padding-bottom:8px"><a class="lnk" asp-page="/Deals/Detail">Log in with DigiD</a><div class="s">As a resident, I want to log in with DigiD, so that I can follow my applications online</div></td>
+      <td class="dim nowrap">Must</td>
+      <td><span class="tag ok">Assessed</span></td>
+    </tr><tr>
+      <td><span class="pill">REQ-02</span></td>
+      <td style="padding-top:8px;padding-bottom:8px"><a class="lnk" asp-page="/Deals/Detail">Status overview of open applications</a><div class="s">As a resident, I want to see the status of my applications, so that I don't have to call to ask</div></td>
+      <td class="dim nowrap">Must</td>
+      <td><span class="tag ok">Assessed</span></td>
+    </tr><tr>
+      <td><span class="pill">REQ-03</span></td>
+      <td style="padding-top:8px;padding-bottom:8px"><a class="lnk" asp-page="/Deals/Detail">Upload documents up to 100 MB</a><div class="s">As a resident, I want to attach documents to an application, so that I can submit it in one go</div></td>
+      <td class="dim nowrap">Should</td>
+      <td><span class="tag ok">Assessed</span></td>
+    </tr><tr>
+      <td><span class="pill">REQ-04</span></td>
+      <td style="padding-top:8px;padding-bottom:8px"><a class="lnk" asp-page="/Deals/Detail">Real-time integration with the Decos case system</a><div class="s">As a case worker, I want portal applications to appear in Decos, so that I work in one system</div></td>
+      <td class="dim nowrap">Must</td>
+      <td><span class="tag ok">Assessed</span></td>
+    </tr><tr>
+      <td><span class="pill">REQ-05</span></td>
+      <td style="padding-top:8px;padding-bottom:8px"><a class="lnk" asp-page="/Deals/Detail">Export to Excel</a><div class="s">As a staff member, I want to export a filtered list to Excel, so that I can report to the council</div></td>
+      <td class="dim nowrap">Should</td>
+      <td><span class="tag idle">Not yet assessed</span></td>
+    </tr><tr>
+      <td><span class="pill">REQ-06</span></td>
+      <td style="padding-top:8px;padding-bottom:8px"><a class="lnk" asp-page="/Deals/Detail">Multilingual: Dutch, English, Ukrainian</a><div class="s">As a resident who does not read Dutch, I want the portal in my language, so that I can apply on my own</div></td>
+      <td class="dim nowrap">Could</td>
+      <td><span class="tag idle">Not yet assessed</span></td>
+    </tr><tr>
+      <td><span class="pill">REQ-07</span></td>
+      <td style="padding-top:8px;padding-bottom:8px"><span class="t">Book an appointment at the city office</span><div class="s">Being written below</div></td>
+      <td class="dim nowrap">Must</td>
+      <td><span class="tag info">Draft</span></td>
+    </tr></tbody></table></div></div></div>
+
+   <div class="card"><div class="h"><h2><span class="pill">REQ-07</span> &nbsp;Epic</h2><span class="tag info">Draft</span></div><div class="b">
+     <div class="fields" style="max-width:none">
+       <div class="fld"><label>Title <span class="req">*</span></label>
+         <input class="in" value="Book an appointment at the city office"></div>
+       <div class="fld"><label>Epic statement <span class="req">*</span></label>
+         <div style="display:grid;grid-template-columns:64px 1fr;gap:8px 10px;align-items:center">
+           <span class="sm dim">As a</span><input class="in" value="resident of Tilburg">
+           <span class="sm dim">I want</span><input class="in" value="to book an appointment at the city office online">
+           <span class="sm dim">so that</span><input class="in" value="I don't have to call during office hours or wait at the desk">
+         </div>
+         <div class="help">One sentence per epic. Describe behavior, not a solution: development decides how to build it.</div></div>
+       <div class="fld"><label>Context</label>
+         <textarea class="ta" style="min-height:64px">Residents now call the contact center to make an appointment for a passport, driver's license or relocation. The municipality wants to move most of these calls online.</textarea>
+         <div class="help">Why the customer needs this and how it works today.</div></div>
+       <div class="fld"><label>Acceptance criteria <span class="req">*</span></label>
+         <textarea class="ta" style="min-height:112px">Residents choose a product, a location and a free time slot.
+Residents receive a confirmation by email with a link to move or cancel the appointment.
+Residents receive a reminder one day before the appointment.
+Staff see all appointments per location per day.</textarea>
+         <div class="help">One testable condition per line. The customer checks these before accepting the epic.</div></div>
+       <div class="fld"><label>Out of scope</label>
+         <textarea class="ta" style="min-height:64px">Appointments for companies. Paying fees in advance.</textarea>
+         <div class="help">What this epic does not cover, so the quote stays clear.</div></div>
+       <div class="fld" style="margin-bottom:0"><label>Customer quote</label>
+         <textarea class="ta" style="min-height:64px" placeholder="What did the customer say about it, word for word?"></textarea>
+         <div class="help">Helps development propose a suitable alternative.</div></div>
+     </div></div></div>
+
+   <div class="card"><div class="h"><h2>Priority and timing</h2></div><div class="b">
+     <div class="fields" style="max-width:none">
+       <div class="fld"><label>Priority <span class="req">*</span></label>
+         <div class="radio">
+           <label class="on"><span class="m"></span><span><span class="t">Must have</span>
+             <span class="d">The deal depends on it</span></span></label>
+           <label><span class="m"></span><span><span class="t">Should have</span>
+             <span class="d">Important, but the customer can go live without it</span></span></label>
+           <label><span class="m"></span><span><span class="t">Could have</span>
+             <span class="d">Nice to have, can wait for a later phase</span></span></label>
+         </div></div>
+       <div class="cols">
+         <div class="fld"><label>Wanted live by</label><input class="in" type="date" value="2027-01-31"></div>
+         <div class="fld"><label>Phase</label><select class="sel"><option selected>Phase 1 (MVP)</option>
+           <option>Phase 2</option><option>To be decided</option></select></div>
+       </div>
+       <div class="fld"><label>Keywords</label>
+         <input class="in" value="appointments, calendar, reminders">
+         <div class="help">The platform uses these to find modules that already cover the request.</div></div>
+       <div class="fld" style="margin-bottom:0"><label class="chk on"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+         Ask Sanne de Groot for an assessment right away</label></div>
+     </div></div>
+     <div class="f"><button class="btn q">Add another epic</button>
+       <div style="display:flex;gap:8px"><button class="btn n">Save epic</button>
+       <a class="btn" asp-page="/Deals/Detail">Submit proposal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div>
+   </div>
+ </div></div><aside class="rail">
+   <div class="blk"><h3>Epic format</h3>
+     <dl class="dl">
+       <div class="d"><dt>Statement</dt><dd>As a [role], I want [capability], so that [value]</dd></div>
+       <div class="d"><dt>Acceptance</dt><dd>Testable, one per line</dd></div>
+       <div class="d"><dt>Out of scope</dt><dd>What is not included</dd></div>
+       <div class="d"><dt>Priority</dt><dd>Must, Should or Could</dd></div>
+     </dl>
+     <p class="xs dimmer" style="margin-top:8px">The full description is on the
+       <a asp-page="/Deals/New" style="color:var(--accent-text);font-weight:600">New deal</a> screen.</p></div>
+
+   <div class="blk"><h3>Possibly available already</h3>
+     <p class="xs dimmer" style="margin-bottom:12px">Found from your keywords. Development confirms this
+       during the assessment.</p>
+     <div style="font-size:13px;display:flex;flex-direction:column;gap:14px">
+       <div><div class="strong">notification-hub v3.2</div>
+         <div class="xs dimmer">Confirmations and reminders by email and SMS · used in 13 projects</div></div>
+       <div><div class="strong">theme-kit v4.0</div>
+         <div class="xs dimmer">Booking screens in the customer's branding · 14 projects</div></div>
+       <div><div class="strong">auth-gateway v3.4</div>
+         <div class="xs dimmer">DigiD login before booking, with digid-adapter · 9 projects</div></div>
+     </div>
+     <a class="btn n" style="margin-top:14px;width:100%" asp-page="/ModuleLibrary">Open library</a>
+   </div>
+
+   <div class="blk"><h3>Deal</h3><dl class="dl">
+     <div class="d"><dt>Customer</dt><dd>Gemeente Tilburg</dd></div>
+     <div class="d"><dt>Value</dt><dd class="num">€84,000</dd></div>
+     <div class="d"><dt>Signing date</dt><dd>15 Nov 2026</dd></div>
+     <div class="d"><dt>Epics</dt><dd>6 submitted, 1 draft</dd></div>
+   </dl></div>
+ </aside></div>

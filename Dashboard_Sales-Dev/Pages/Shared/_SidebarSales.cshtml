@@ -1,0 +1,9 @@
+@{
+    var nav = ViewData["Nav"] as string;
+}
+<aside class="side">
+      <div class="side-top"><partial name="_CfgLogo" /><span class="nm">Code for Good</span></div>
+      <nav class="side-scroll"><div class="nav-g"><a class="nav-i@(nav == "Overview" ? " on" : "")" asp-page="/Sales/Index"><span>Overview</span></a><a class="nav-i@(nav == "Deals" ? " on" : "")" asp-page="/Deals/Index"><span>Deals</span></a><a class="nav-i@(nav == "Proposals" ? " on" : "")" asp-page="/Deals/Proposal"><span>Proposals</span></a><a class="nav-i@(nav == "Discussion" ? " on" : "")" asp-page="/Discussion"><span>Discussion</span><span class=ct>3</span></a></div><div class="nav-g"><a class="nav-i@(nav == "Module library" ? " on" : "")" asp-page="/ModuleLibrary"><span>Module library</span></a></div><div class="nav-g"><a class="nav-i@(nav == "Notifications" ? " on" : "")" asp-page="/Notifications"><span>Notifications</span><span class=ct>5</span></a><a class="nav-i@(nav == "Settings" ? " on" : "")" asp-page="/Settings"><span>Settings</span></a></div></nav>
+      <div class="side-foot"><a class="u" asp-page="/Settings"><span class="av b">MV</span>
+        <span><span class="n">Milan Vermeer</span><br><span class="r">Account Executive</span></span></a></div>
+    </aside>

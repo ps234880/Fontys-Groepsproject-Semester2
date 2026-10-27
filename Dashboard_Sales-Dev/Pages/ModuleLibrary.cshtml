@@ -1,0 +1,87 @@
+@page
+@{
+    ViewData["Title"] = "Module library";
+    ViewData["Role"] = "Development";
+    ViewData["Nav"] = "Module library";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Reference</span><span class="sep">/</span><span class="cur">Module library</span>}
+
+<div class="ph"><div class="r1"><div><h1>Module library</h1><div class="sub">What sales can promise without building anything new.</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/ModuleLibrary">Export</a><a class="btn" asp-page="/ModuleLibrary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add module<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div></div><nav class="tabs"><a class="on" asp-page="/ModuleLibrary">All modules</a><a class="" asp-page="/ModuleLibrary">Stable</a><a class="" asp-page="/ModuleLibrary">In development</a><a class="" asp-page="/ModuleLibrary">Proposed</a></nav><div class="bar2"><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Category</button><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Status</button><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Maintainer</button><span class="sp"></span><span class="sm dim">Sorted by name</span></div><div class="content pad"><div class="tw"><table class="tbl"><thead><tr><th class="" style="">Module</th><th class="" style="width:130px">Category</th><th class="c" style="width:88px">Projects</th><th class="" style="width:140px">Status</th><th class="" style="width:150px">Maintainer</th></tr></thead><tbody><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">auth-gateway</a> <span class="pill">v3.4</span>
+        <div class="s">OAuth2/OIDC gateway with session management, MFA and audit logging</div></td>
+      <td class="dim nowrap">Security</td>
+      <td class="c num">9</td>
+      <td><span class="tag ok">Stable</span></td>
+      <td class="dim nowrap">Sanne de Groot</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">case-tracker</a> <span class="pill">v5.0</span>
+        <div class="s">Case and status management with configurable stages and lead times</div></td>
+      <td class="dim nowrap">Process</td>
+      <td class="c num">11</td>
+      <td><span class="tag ok">Stable</span></td>
+      <td class="dim nowrap">Sanne de Groot</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">digid-adapter</a> <span class="pill">v2.1</span>
+        <div class="s">Certified DigiD integration with Logius logging</div></td>
+      <td class="dim nowrap">Government</td>
+      <td class="c num">4</td>
+      <td><span class="tag ok">Stable</span></td>
+      <td class="dim nowrap">Tom van Kaathoven</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">export-service</a> <span class="pill">v0.4</span>
+        <div class="s">Filtered export to Excel, CSV and PDF with column selection</div></td>
+      <td class="dim nowrap">Data</td>
+      <td class="c num">2</td>
+      <td><span class="tag warn">In development</span></td>
+      <td class="dim nowrap">Lotte Bakker</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">file-vault</a> <span class="pill">v2.0</span>
+        <div class="s">Secure file storage up to 250 MB with virus scanning and retention periods</div></td>
+      <td class="dim nowrap">Data</td>
+      <td class="c num">7</td>
+      <td><span class="tag info">New</span></td>
+      <td class="dim nowrap">Lotte Bakker</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">notification-hub</a> <span class="pill">v3.2</span>
+        <div class="s">Email, SMS and push from one multilingual template manager</div></td>
+      <td class="dim nowrap">Communication</td>
+      <td class="c num">13</td>
+      <td><span class="tag ok">Stable</span></td>
+      <td class="dim nowrap">Tom van Kaathoven</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">payment-connect</a> <span class="pill">v1.9</span>
+        <div class="s">iDEAL, direct debit and invoice integration via Mollie or Buckaroo</div></td>
+      <td class="dim nowrap">Payments</td>
+      <td class="c num">6</td>
+      <td><span class="tag ok">Stable</span></td>
+      <td class="dim nowrap">Sanne de Groot</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">session-guard</a> <span class="pill">v1.2</span>
+        <div class="s">Automatic logout and device recognition</div></td>
+      <td class="dim nowrap">Security</td>
+      <td class="c num">6</td>
+      <td><span class="tag ok">Stable</span></td>
+      <td class="dim nowrap">Sanne de Groot</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">sso-connector</a> <span class="pill">v1.8</span>
+        <div class="s">Staff login via Entra ID or Active Directory</div></td>
+      <td class="dim nowrap">Security</td>
+      <td class="c num">12</td>
+      <td><span class="tag ok">Stable</span></td>
+      <td class="dim nowrap">Sanne de Groot</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">theme-kit</a> <span class="pill">v4.0</span>
+        <div class="s">Branding layer over all standard screens, WCAG 2.2 AA</div></td>
+      <td class="dim nowrap">Front-end</td>
+      <td class="c num">14</td>
+      <td><span class="tag ok">Stable</span></td>
+      <td class="dim nowrap">Tom van Kaathoven</td>
+    </tr><tr>
+      <td><a class="lnk" asp-page="/ModuleLibrary">report-builder</a> <span class="pill">v2.3</span>
+        <div class="s">Build reports and send them on a schedule</div></td>
+      <td class="dim nowrap">Data</td>
+      <td class="c num">5</td>
+      <td><span class="tag ok">Stable</span></td>
+      <td class="dim nowrap">Lotte Bakker</td>
+    </tr></tbody></table><div class="tfoot"><span>11 of 11 modules</span><span>Last updated 19 September 2026</span></div></div></div>

@@ -1,0 +1,117 @@
+@page
+@{
+    ViewData["Title"] = "New deal";
+    ViewData["Role"] = "Sales";
+    ViewData["Nav"] = "Deals";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Sales</span><span class="sep">/</span><a asp-page="/Deals/Index">Deals</a><span class="sep">/</span><span class="cur">New deal</span>}
+
+<div class="ph"><div class="r1"><div><h1>New deal</h1><div class="sub">Record the deal as soon as negotiation starts, so development can follow along.</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Index">Cancel</a><a class="btn" asp-page="/Deals/Proposal">Save and continue<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div></div><div class="content pad"><div style="max-width:760px">
+   <div class="card"><div class="h"><h2>Customer</h2></div><div class="b">
+     <div class="fields" style="max-width:none"><div class="cols">
+       <div class="fld"><label>Company name <span class="req">*</span></label>
+         <input class="in" placeholder="e.g. Gemeente Tilburg"></div>
+       <div class="fld"><label>Sector</label><select class="sel"><option>Government</option><option>Healthcare</option>
+         <option>Education</option><option>Energy and utilities</option><option>Non-profit</option>
+         <option>Logistics</option></select></div>
+     </div>
+       <div class="fld" style="margin-bottom:0"><label>Contact persons</label>
+         <div class="tw"><table class="tbl"><thead><tr><th class="" style="">Name</th><th class="" style="width:26%">Role</th><th class="" style="width:32%">Email address</th><th class="r" style="width:120px"></th></tr></thead><tbody><tr>
+      <td><input class="in" placeholder="First and last name"></td>
+      <td><input class="in" placeholder="e.g. Project lead"></td>
+      <td><input class="in" placeholder="name@@customer.nl"></td>
+      <td class="r nowrap"><span class="tag info">Primary</span></td>
+    </tr><tr>
+      <td><input class="in" placeholder="First and last name"></td>
+      <td><input class="in" placeholder="e.g. IT manager"></td>
+      <td><input class="in" placeholder="name@@customer.nl"></td>
+      <td class="r nowrap"><a class="lnk sm">Make primary</a></td>
+    </tr></tbody></table></div>
+         <button class="btn q" style="margin-top:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add contact person</button>
+         <div class="help">All contact persons belong to this company. The primary contact receives the quotes.</div></div>
+     </div></div></div>
+
+   <div class="card"><div class="h"><h2>Team</h2></div><div class="b">
+     <div class="fields" style="max-width:none">
+       <div class="fld"><label>Owner <span class="req">*</span></label>
+         <select class="sel"><option selected>Milan Vermeer · Sales</option><option>Lotte Bakker · Sales</option></select>
+         <div class="help">Sales owns the deal and is responsible for its quotes and upsells.</div></div>
+       <div class="fld" style="margin-bottom:0"><label>Team members</label>
+         <div class="tw"><table class="tbl"><thead><tr><th class="" style="">Name</th><th class="" style="width:26%">Role on this deal</th><th class="" style="width:130px">Team</th><th class="r" style="width:110px"></th></tr></thead><tbody><tr>
+      <td><span style="display:inline-flex;align-items:center;gap:8px"><span class="av">SD</span><span class="t">Sanne de Groot</span></span></td>
+      <td><select class="sel"><option selected>Tech lead</option><option>Developer</option><option>Sales</option></select></td>
+      <td class="dim nowrap">Development</td>
+      <td class="r"><a class="lnk sm">Remove</a></td>
+    </tr><tr>
+      <td><span style="display:inline-flex;align-items:center;gap:8px"><span class="av">TK</span><span class="t">Tom van Kaathoven</span></span></td>
+      <td><select class="sel"><option>Tech lead</option><option selected>Developer</option><option>Sales</option></select></td>
+      <td class="dim nowrap">Development</td>
+      <td class="r"><a class="lnk sm">Remove</a></td>
+    </tr><tr>
+      <td><span style="display:inline-flex;align-items:center;gap:8px"><span class="av">LB</span><span class="t">Lotte Bakker</span></span></td>
+      <td><select class="sel"><option>Tech lead</option><option>Developer</option><option selected>Sales</option></select></td>
+      <td class="dim nowrap">Sales</td>
+      <td class="r"><a class="lnk sm">Remove</a></td>
+    </tr></tbody></table></div>
+         <button class="btn q" style="margin-top:6px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add team member</button>
+         <div class="help">Team members follow the deal and get notifications. The tech lead assesses the epics.</div></div>
+     </div></div></div>
+
+   <div class="card"><div class="h"><h2>Deal</h2></div><div class="b">
+     <div class="fields" style="max-width:none">
+       <div class="fld"><label>Project name <span class="req">*</span></label>
+         <input class="in" placeholder="e.g. Citizen Portal 2027"></div>
+       <div class="cols">
+         <div class="fld"><label>Estimated value</label><input class="in" placeholder="€0"></div>
+         <div class="fld"><label>Stage <span class="req">*</span></label><select class="sel">
+           <option>Qualification</option><option selected>Gathering requirements</option>
+           <option>Dev review</option><option>Negotiation</option></select></div>
+         <div class="fld"><label>Win probability</label>
+           <select class="sel"><option>10%</option><option>25%</option><option selected>45%</option>
+           <option>70%</option><option>90%</option></select></div>
+         <div class="fld"><label>Expected signing date</label><input class="in" type="date" value="2026-11-15"></div>
+         <div class="fld" style="margin-bottom:0"><label>Customer deadline</label><input class="in" type="date" value="2027-01-31">
+           <div class="help">The date the customer wants to be live. Leave empty if there is no hard deadline.</div></div>
+       </div>
+     </div></div></div>
+
+   <div class="card"><div class="h"><h2>Requirements as epics</h2><span class="sm dim">Format for the deal proposal</span></div><div class="b">
+     <p class="sm" style="color:var(--fg-2);max-width:78ch">In the next step you write the customer's requirements
+       in the deal proposal. Each requirement is an epic: one larger customer need, described in business terms.
+       Development assesses feasibility and effort per epic and later splits it into user stories.</p>
+     <div class="tw" style="margin-top:14px"><table class="tbl"><thead><tr><th class="" style="width:170px">Part</th><th class="" style="">What to write</th></tr></thead><tbody><tr>
+      <td class="t">Title</td>
+      <td style="padding-top:8px;padding-bottom:8px">A short name for one customer need<div class="s">Book an appointment at the city office</div></td>
+    </tr><tr>
+      <td class="t">Epic statement</td>
+      <td style="padding-top:8px;padding-bottom:8px">As a [role], I want [capability], so that [business value]<div class="s">As a resident, I want to book an appointment online, so that I don't have to call during office hours</div></td>
+    </tr><tr>
+      <td class="t">Context</td>
+      <td style="padding-top:8px;padding-bottom:8px">Why the customer needs it and how it works today<div class="s">Residents now call the contact center to make an appointment</div></td>
+    </tr><tr>
+      <td class="t">Acceptance criteria</td>
+      <td style="padding-top:8px;padding-bottom:8px">Testable conditions the customer checks before accepting the epic, one per line<div class="s">Residents receive a confirmation by email with a link to move or cancel</div></td>
+    </tr><tr>
+      <td class="t">Out of scope</td>
+      <td style="padding-top:8px;padding-bottom:8px">What the epic does not cover, so the quote stays clear<div class="s">Appointments for companies</div></td>
+    </tr><tr>
+      <td class="t">Priority</td>
+      <td style="padding-top:8px;padding-bottom:8px">Must, Should or Could have, as agreed with the customer<div class="s">Must have</div></td>
+    </tr></tbody></table></div>
+     <div class="help" style="font-size:12px;color:var(--fg-4);margin-top:10px">Describe behavior, not a solution. Development decides how to build it.</div>
+   </div></div>
+
+   <div class="card"><div class="h"><h2>Involve development</h2></div><div class="b">
+     <div class="fields" style="max-width:none">
+       <div class="fld"><label>Context for the team</label>
+         <textarea class="ta" placeholder="Why does the customer want this? Which competitor is involved, and what is sensitive?"></textarea>
+         <div class="help">Development reads this first when assessing the deal.</div></div>
+       <div class="fld"><label class="chk on"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+         Show in the sales pipeline for development right away</label></div>
+     </div></div>
+     <div class="f"><button class="btn q">Save as draft</button>
+       <div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Index">Cancel</a>
+       <a class="btn" asp-page="/Deals/Proposal">Save and write deal proposal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div>
+   </div>
+ </div></div>

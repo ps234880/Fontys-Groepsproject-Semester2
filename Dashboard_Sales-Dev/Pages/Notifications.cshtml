@@ -1,0 +1,64 @@
+@page
+@{
+    ViewData["Title"] = "Notifications";
+    ViewData["Role"] = "Sales";
+    ViewData["Nav"] = "Notifications";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Account</span><span class="sep">/</span><span class="cur">Notifications</span>}
+
+<div class="ph"><div class="r1"><div><h1>Notifications</h1><div class="sub">5 unread</div></div><div style="display:flex;gap:8px"><button class="btn n">Mark all as read</button><a class="btn n" asp-page="/Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.9 14.5a1.7 1.7 0 00.3 1.9 2 2 0 11-2.8 2.8 1.7 1.7 0 00-2.9 1.2 2 2 0 11-4 0 1.7 1.7 0 00-2.9-1.2 2 2 0 11-2.8-2.8 1.7 1.7 0 00-1.2-2.9 2 2 0 110-4 1.7 1.7 0 001.2-2.9 2 2 0 112.8-2.8 1.7 1.7 0 002.9-1.2 2 2 0 114 0 1.7 1.7 0 002.9 1.2 2 2 0 112.8 2.8 1.7 1.7 0 001.2 2.9 2 2 0 110 4 1.7 1.7 0 00-1.5 1z"/></svg> Preferences</a></div></div></div><nav class="tabs"><a class="on" asp-page="/Notifications">All</a><a class="" asp-page="/Notifications">Needs action (3)</a><a class="" asp-page="/Notifications">Assessments</a><a class="" asp-page="/Notifications">Deals</a></nav><div class="bar2"><button class="chip set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Unread</button><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Deal</button><button class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Sender</button></div><div class="content pad"><div class="tw"><table class="tbl"><thead><tr><th class="c" style="width:36px"></th><th class="" style="">Notification</th><th class="" style="width:160px">From</th><th class="" style="width:180px">Deal</th><th class="r" style="width:110px">When</th></tr></thead><tbody><tr class="grp-row"><td colspan="5">Today</td></tr><tr>
+      <td class="c"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent)"></span></td>
+      <td><a class="lnk" asp-page="/Discussion">Technical advice on REQ-01: DigiD works with existing modules</a></td>
+      <td class="dim nowrap">Sanne de Groot</td>
+      <td class="dim nowrap">Gemeente Tilburg</td>
+      <td class="r dim nowrap">2 hours</td>
+    </tr><tr>
+      <td class="c"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent)"></span></td>
+      <td><a class="lnk" asp-page="/Discussion">REQ-04 marked as custom build, with an alternative</a></td>
+      <td class="dim nowrap">Tom van Kaathoven</td>
+      <td class="dim nowrap">Zorggroep Noord</td>
+      <td class="r dim nowrap">4 hours</td>
+    </tr><tr>
+      <td class="c"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent)"></span></td>
+      <td><a class="lnk" asp-page="/Discussion">Development is waiting for your answer about the redirect flow</a></td>
+      <td class="dim nowrap">Sanne de Groot</td>
+      <td class="dim nowrap">Gemeente Tilburg</td>
+      <td class="r dim nowrap">6 hours</td>
+    </tr><tr class="grp-row"><td colspan="5">Yesterday</td></tr><tr>
+      <td class="c"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent)"></span></td>
+      <td><a class="lnk" asp-page="/Discussion">Three requirements linked to existing modules</a></td>
+      <td class="dim nowrap">Tom van Kaathoven</td>
+      <td class="dim nowrap">StadsEnergie B.V.</td>
+      <td class="r dim nowrap">16:10</td>
+    </tr><tr>
+      <td class="c"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent)"></span></td>
+      <td><a class="lnk" asp-page="/Discussion">Epic REQ-07 added to the deal proposal</a></td>
+      <td class="dim nowrap">Lotte Bakker</td>
+      <td class="dim nowrap">Sportbond NL</td>
+      <td class="r dim nowrap">14:22</td>
+    </tr><tr>
+      <td class="c"></td>
+      <td><a class="lnk" asp-page="/Discussion">Assessment completed: all three requirements</a></td>
+      <td class="dim nowrap">Sanne de Groot</td>
+      <td class="dim nowrap">Waterschap De Aa</td>
+      <td class="r dim nowrap">11:05</td>
+    </tr><tr class="grp-row"><td colspan="5">Earlier this week</td></tr><tr>
+      <td class="c"></td>
+      <td><a class="lnk" asp-page="/Discussion">New module in the library: file-vault v2.0</a></td>
+      <td class="dim nowrap">Lotte Bakker</td>
+      <td class="dim nowrap">—</td>
+      <td class="r dim nowrap">19 Sep</td>
+    </tr><tr>
+      <td class="c"></td>
+      <td><a class="lnk" asp-page="/Discussion">Deal moved to Negotiation</a></td>
+      <td class="dim nowrap">Milan Vermeer</td>
+      <td class="dim nowrap">Gemeente Tilburg</td>
+      <td class="r dim nowrap">18 Sep</td>
+    </tr><tr>
+      <td class="c"></td>
+      <td><a class="lnk" asp-page="/Discussion">Quote sent to the customer</a></td>
+      <td class="dim nowrap">Milan Vermeer</td>
+      <td class="dim nowrap">Logistiek Van Dijk</td>
+      <td class="r dim nowrap">17 Sep</td>
+    </tr></tbody></table><div class="tfoot"><span>9 notifications</span><span>Notifications are kept for 90 days</span></div></div></div>
