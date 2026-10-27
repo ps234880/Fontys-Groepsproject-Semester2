@@ -7,6 +7,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<QuotationRepository>();
 builder.Services.AddScoped<ClientRepository>();
+builder.Services.AddScoped<ModuleRepository>();
 
 var app = builder.Build();
 

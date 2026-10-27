@@ -1,0 +1,43 @@
+@page
+@model Dashboard_Sales_Dev.Pages.Module.CreateModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<form method="post">
+    <div>
+        <div>Module</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Module.Name" class="form-label">Title <span class="text-danger">*</span></label>
+                    <input asp-for="Module.Name" class="form-control bg-light text-dark border-secondary" required />
+                    <span asp-validation-for="Module.Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Module.Description"></label>
+                    <textarea asp-for="Module.Description" class="form-control"></textarea>
+                    <span asp-validation-for="Module.Description" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Module.PriceInCents"></label>
+                    <textarea asp-for="Module.PriceInCents" class="form-control"></textarea>
+                    <span asp-validation-for="Module.PriceInCents" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Module.ProductionTimeInWeeks"></label>
+                    <textarea asp-for="Module.ProductionTimeInWeeks" class="form-control"></textarea>
+                    <span asp-validation-for="Module.ProductionTimeInWeeks" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-end gap-2">
+        <a asp-page="./Index" class="btn btn-outline-secondary">Annuleren</a>
+        <button type="submit" class="btn btn-primary px-4">Opslaan</button>
+    </div>
+
+</form>
