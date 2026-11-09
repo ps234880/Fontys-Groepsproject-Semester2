@@ -1,13 +1,22 @@
-using Dashboard_Sales_Dev.Repository;
+using Dashboard_Sales_Dev.DAL.Repositories;
+using Dashboard_Sales_Dev.Logic.Interfaces;
+using Dashboard_Sales_Dev.Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<QuotationRepository>();
-builder.Services.AddScoped<ClientRepository>();
-builder.Services.AddScoped<ModuleRepository>();
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is missing from the configuration.");
+
+builder.Services.AddScoped<IClientRepository>(_ => new ClientRepository(connectionString));
+builder.Services.AddScoped<IModuleRepository>(_ => new ModuleRepository(connectionString));
+builder.Services.AddScoped<IQuotationRepository>(_ => new QuotationRepository(connectionString));
+
+builder.Services.AddScoped<ClientService>();
+builder.Services.AddScoped<ModuleService>();
+builder.Services.AddScoped<QuotationService>();
 
 var app = builder.Build();
 

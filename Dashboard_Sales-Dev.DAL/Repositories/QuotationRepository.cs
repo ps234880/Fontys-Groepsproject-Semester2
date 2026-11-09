@@ -1,23 +1,20 @@
-﻿using Dashboard_Sales_Dev.Models;
+using Dashboard_Sales_Dev.Logic.Interfaces;
+using Dashboard_Sales_Dev.Logic.Models;
 using MySqlConnector;
-using Microsoft.Extensions.Configuration;
 
-namespace Dashboard_Sales_Dev.Repository;
+namespace Dashboard_Sales_Dev.DAL.Repositories;
 
-public class QuotationRepository
+public class QuotationRepository : RepositoryBase, IQuotationRepository
 {
-    private readonly string _connectionString;
-
-    public QuotationRepository(IConfiguration configuration)
+    public QuotationRepository(string connectionString) : base(connectionString)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")!;
     }
 
     public List<Quotation> GetAll()
     {
         List<Quotation> quotations = new List<Quotation>();
 
-        using MySqlConnection connection = new MySqlConnection(_connectionString);
+        using MySqlConnection connection = CreateConnection();
         connection.Open();
 
         string query = @"SELECT
@@ -61,7 +58,7 @@ INNER JOIN employee e ON q.employee_id = e.id;";
 
     public async Task AddQuotationAsync(Quotation quotation)
     {
-        using var connection = new MySqlConnection(_connectionString);
+        using var connection = CreateConnection();
         await connection.OpenAsync();
 
         var sql = @"INSERT INTO quotation (client_id, employee_id, title, description, 

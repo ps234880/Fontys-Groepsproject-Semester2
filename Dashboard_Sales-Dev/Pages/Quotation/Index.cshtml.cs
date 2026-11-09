@@ -1,25 +1,21 @@
-﻿using Dashboard_Sales_Dev.Repository;
+using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Dashboard_Sales_Dev.Models;
 
 namespace Dashboard_Sales_Dev.Pages.Quotation;
 
 public class Index : PageModel
 {
-    private readonly QuotationRepository _repository;
+    private readonly QuotationService _quotationService;
 
-    // 1. Vraag de repository op via de constructor
-    public Index(QuotationRepository repository)
+    public Index(QuotationService quotationService)
     {
-        _repository = repository;
+        _quotationService = quotationService;
     }
 
-    // 2. De lijst die je HTML-pagina straks uitleest
-    public List<Models.Quotation> Quotations { get; private set; } = [];
+    public List<Logic.Models.Quotation> Quotations { get; private set; } = [];
 
-    // 3. Haal de data op zodra de pagina geladen wordt
     public void OnGet()
     {
-        Quotations = _repository.GetAll();
+        Quotations = _quotationService.GetAll();
     }
 }

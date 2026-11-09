@@ -1,4 +1,4 @@
-﻿namespace Dashboard_Sales_Dev.Models;
+namespace Dashboard_Sales_Dev.Logic.Models;
 
 public class Quotation
 {

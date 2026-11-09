@@ -1,49 +1,37 @@
+using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Dashboard_Sales_Dev.Models;
-using Dashboard_Sales_Dev.Repository;
 
-namespace Dashboard_Sales_Dev.Pages.Quotation
+namespace Dashboard_Sales_Dev.Pages.Quotation;
+
+public class CreateModel : PageModel
 {
-    public class CreateModel : PageModel
+    private readonly QuotationService _quotationService;
+
+    public CreateModel(QuotationService quotationService)
     {
-        private readonly ClientRepository _clientRepository;
-        private readonly QuotationRepository _quotationRepository;
-        
-        public CreateModel(ClientRepository clientRepository, QuotationRepository quotationRepository)
+        _quotationService = quotationService;
+    }
+
+    [BindProperty]
+    public Logic.Models.Client Client { get; set; } = default!;
+
+    [BindProperty]
+    public Logic.Models.Quotation Quotation { get; set; } = default!;
+
+    public void OnGet()
+    {
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
         {
-            _clientRepository = clientRepository;
-            _quotationRepository = quotationRepository;
+            return Page();
         }
 
-        [BindProperty]
-        public Models.Client Client { get; set; } = default!;
+        await _quotationService.CreateWithNewClientAsync(Client, Quotation);
 
-        [BindProperty]
-        public Models.Quotation Quotation { get; set; } = default!;
-
-        public void OnGet()
-        {
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            // Create client and retrieve its generated ID
-            int clientId = await _clientRepository.AddClientAsync(Client);
-
-            // Assign the ID using the property your repository expects
-            Quotation.ClientId = clientId;
-            Quotation.EmployeeId = 1;
-
-            // Save quotation
-            await _quotationRepository.AddQuotationAsync(Quotation);
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

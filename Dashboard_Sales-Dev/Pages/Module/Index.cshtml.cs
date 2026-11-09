@@ -1,21 +1,21 @@
-﻿using Dashboard_Sales_Dev.Repository;
+using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Dashboard_Sales_Dev.Pages.Module;
 
 public class Index : PageModel
 {
-    private readonly ModuleRepository _module;
+    private readonly ModuleService _moduleService;
 
-    public Index(ModuleRepository repository)
+    public Index(ModuleService moduleService)
     {
-        _module = repository;
+        _moduleService = moduleService;
     }
 
-    public List<Models.Module> Modules { get; private set; } = [];
+    public List<Logic.Models.Module> Modules { get; private set; } = [];
 
     public void OnGet()
     {
-        Modules = _module.GetAll();
+        Modules = _moduleService.GetAll();
     }
 }

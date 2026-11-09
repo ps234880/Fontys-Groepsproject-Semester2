@@ -10,11 +10,15 @@
     <ItemGroup>
       <PackageReference Include="Aspire.MySqlConnector" Version="13.6.4" />
       <PackageReference Include="Dapper" Version="2.1.89" />
-      <PackageReference Include="MySqlConnector" Version="2.6.2" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Database\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Dashboard_Sales-Dev.Logic\Dashboard_Sales-Dev.Logic.csproj" />
+      <ProjectReference Include="..\Dashboard_Sales-Dev.DAL\Dashboard_Sales-Dev.DAL.csproj" />
     </ItemGroup>
 
 </Project>

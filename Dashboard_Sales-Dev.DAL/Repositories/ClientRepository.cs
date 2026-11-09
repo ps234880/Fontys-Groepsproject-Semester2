@@ -1,22 +1,20 @@
+using Dashboard_Sales_Dev.Logic.Interfaces;
+using Dashboard_Sales_Dev.Logic.Models;
 using MySqlConnector;
-using Dashboard_Sales_Dev.Models;
 
-namespace Dashboard_Sales_Dev.Repository;
+namespace Dashboard_Sales_Dev.DAL.Repositories;
 
-public class ClientRepository
+public class ClientRepository : RepositoryBase, IClientRepository
 {
-    private readonly string _connectionString;
-
-    public ClientRepository(IConfiguration configuration)
+    public ClientRepository(string connectionString) : base(connectionString)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")!;
     }
 
     public List<Client> GetAll()
     {
         List<Client> clients = new List<Client>();
 
-        using MySqlConnection connection = new MySqlConnection(_connectionString);
+        using MySqlConnection connection = CreateConnection();
         connection.Open();
 
         string query =
@@ -50,7 +48,7 @@ public class ClientRepository
 
     public async Task<int> AddClientAsync(Client client)
     {
-        using var connection = new MySqlConnection(_connectionString);
+        using var connection = CreateConnection();
         await connection.OpenAsync();
 
         var sql = @"

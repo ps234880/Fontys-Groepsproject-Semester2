@@ -1,37 +1,34 @@
+using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Dashboard_Sales_Dev.Models;
-using Dashboard_Sales_Dev.Repository;
 
-namespace Dashboard_Sales_Dev.Pages.Module
+namespace Dashboard_Sales_Dev.Pages.Module;
+
+public class CreateModel : PageModel
 {
-    public class CreateModel : PageModel
+    private readonly ModuleService _moduleService;
+
+    public CreateModel(ModuleService moduleService)
     {
-        private readonly ModuleRepository _moduleRepository;
-        
-        public CreateModel(ModuleRepository moduleRepository)
+        _moduleService = moduleService;
+    }
+
+    [BindProperty]
+    public Logic.Models.Module Module { get; set; } = default!;
+
+    public void OnGet()
+    {
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
         {
-            _moduleRepository = moduleRepository;
+            return Page();
         }
 
-        [BindProperty]
-        public Models.Module Module { get; set; } = default!;
+        await _moduleService.AddModuleAsync(Module);
 
-      
-        public void OnGet()
-        {
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            await _moduleRepository.AddModuleAsync(Module);
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }
