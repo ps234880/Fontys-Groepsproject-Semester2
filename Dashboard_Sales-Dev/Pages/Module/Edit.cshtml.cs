@@ -46,6 +46,6 @@ public class EditModel : PageModel
             return NotFound();
         }
 
-        return RedirectToPage("./Index");
+        return RedirectToPage("/ModuleLibrary");
     }
 }

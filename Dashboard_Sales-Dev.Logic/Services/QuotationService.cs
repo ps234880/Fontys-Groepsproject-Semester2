@@ -21,6 +21,11 @@ public class QuotationService
         return _quotationRepository.GetAll();
     }
 
+    public Quotation? GetById(int id)
+    {
+        return _quotationRepository.GetById(id);
+    }
+
     public async Task CreateWithNewClientAsync(Client client, Quotation quotation)
     {
         int clientId = await _clientRepository.AddClientAsync(client);

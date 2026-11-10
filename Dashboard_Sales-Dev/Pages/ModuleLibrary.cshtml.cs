@@ -3,13 +3,13 @@ using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Dashboard_Sales_Dev.Pages.Module;
+namespace Dashboard_Sales_Dev.Pages;
 
-public class Index : PageModel
+public class ModuleLibraryModel : PageModel
 {
     private readonly ModuleService _moduleService;
 
-    public Index(ModuleService moduleService)
+    public ModuleLibraryModel(ModuleService moduleService)
     {
         _moduleService = moduleService;
     }
@@ -31,7 +31,7 @@ public class Index : PageModel
         }
         catch (ModuleInUseException)
         {
-            ErrorMessage = "Deze module kan niet worden verwijderd, omdat hij nog aan een offerte of order gekoppeld is.";
+            ErrorMessage = "This module cannot be deleted, because it is still linked to a deal or an order.";
             Modules = _moduleService.GetAll();
 
             return Page();
