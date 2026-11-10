@@ -29,6 +29,6 @@ public class CreateModel : PageModel
 
         await _moduleService.AddModuleAsync(Module);
 
-        return RedirectToPage("./Index");
+        return RedirectToPage("/ModuleLibrary");
     }
 }
