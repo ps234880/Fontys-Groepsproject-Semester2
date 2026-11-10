@@ -2,6 +2,7 @@ create table client
 (
     id          int auto_increment
         primary key,
+    companyName varchar(255) not null,
     firstName   varchar(255) not null,
     lastName    varchar(255) not null,
     email       varchar(255) not null,
@@ -52,7 +53,7 @@ create table quotation
     client_id     int          not null,
     employee_id   int          not null,
     title         varchar(255) not null,
-    requirement   varchar(255) not null,
+    description   varchar(255) not null,
     estimatedDate datetime     not null,
     createdAt     datetime     not null,
     updatedAt     datetime     null,
