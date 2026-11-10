@@ -10,14 +10,7 @@ public class QuotationRepository : RepositoryBase, IQuotationRepository
     {
     }
 
-    public List<Quotation> GetAll()
-    {
-        List<Quotation> quotations = new List<Quotation>();
-
-        using MySqlConnection connection = CreateConnection();
-        connection.Open();
-
-        string query = @"SELECT
+    private const string SelectQuotation = @"SELECT
     q.id,
     q.title,
     q.description,
@@ -26,34 +19,59 @@ public class QuotationRepository : RepositoryBase, IQuotationRepository
     c.companyName,
     c.firstName AS clientFirstName,
     c.lastName AS clientLastName,
+    c.email AS clientEmail,
+    c.phoneNumber AS clientPhoneNumber,
     e.firstName AS employeeFirstName,
     e.lastName AS employeeLastName
 FROM quotation q
 INNER JOIN client c ON q.client_id = c.id
-INNER JOIN employee e ON q.employee_id = e.id;";
+INNER JOIN employee e ON q.employee_id = e.id";
 
-        using MySqlCommand command = new MySqlCommand(query, connection);
+    public List<Quotation> GetAll()
+    {
+        List<Quotation> quotations = new List<Quotation>();
+
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        using MySqlCommand command = new MySqlCommand(SelectQuotation + " ORDER BY q.createdAt DESC;", connection);
         using MySqlDataReader reader = command.ExecuteReader();
 
         while (reader.Read())
         {
-            Quotation quotation = new Quotation
-            {
-                Id = reader.GetInt32("id"),
-                Title = reader.GetString("title"),
-                Description = reader.GetString("description"),
-                EstimatedDate = reader.GetDateTime("estimatedDate"),
-                ClientName = reader.GetString("clientFirstName") + " " +
-                   reader.GetString("clientLastName"),
-                EmployeeName = reader.GetString("employeeFirstName") + " " +
-                     reader.GetString("employeeLastName"),
-                CreatedAt = reader.GetDateTime("createdAt")
-            };
-
-            quotations.Add(quotation);
+            quotations.Add(MapQuotation(reader));
         }
 
         return quotations;
+    }
+
+    public Quotation? GetById(int id)
+    {
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        using MySqlCommand command = new MySqlCommand(SelectQuotation + " WHERE q.id = @id;", connection);
+        command.Parameters.AddWithValue("@id", id);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        return reader.Read() ? MapQuotation(reader) : null;
+    }
+
+    private static Quotation MapQuotation(MySqlDataReader reader)
+    {
+        return new Quotation
+        {
+            Id = reader.GetInt32("id"),
+            Title = reader.GetString("title"),
+            Description = reader.GetString("description"),
+            EstimatedDate = reader.GetDateTime("estimatedDate"),
+            CreatedAt = reader.GetDateTime("createdAt"),
+            ClientCompanyName = reader.GetString("companyName"),
+            ClientName = reader.GetString("clientFirstName") + " " + reader.GetString("clientLastName"),
+            ClientEmail = reader.GetString("clientEmail"),
+            ClientPhoneNumber = reader.GetString("clientPhoneNumber"),
+            EmployeeName = reader.GetString("employeeFirstName") + " " + reader.GetString("employeeLastName")
+        };
     }
 
     public async Task AddQuotationAsync(Quotation quotation)

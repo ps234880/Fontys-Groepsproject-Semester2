@@ -7,6 +7,9 @@ public class Quotation
     public int EmployeeId { get; set; }
 
     public string ClientName { get; set; } = string.Empty;
+    public string ClientCompanyName { get; set; } = string.Empty;
+    public string ClientEmail { get; set; } = string.Empty;
+    public string ClientPhoneNumber { get; set; } = string.Empty;
     public string EmployeeName { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
