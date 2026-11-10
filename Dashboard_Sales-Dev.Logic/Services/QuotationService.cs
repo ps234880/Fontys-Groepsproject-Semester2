@@ -5,7 +5,6 @@ namespace Dashboard_Sales_Dev.Logic.Services;
 
 public class QuotationService
 {
-    // There is no login yet, so every quotation is assigned to employee 1.
     private const int DefaultEmployeeId = 1;
 
     private readonly IQuotationRepository _quotationRepository;
