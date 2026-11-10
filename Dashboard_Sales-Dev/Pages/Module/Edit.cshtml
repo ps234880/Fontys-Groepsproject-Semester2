@@ -1,0 +1,45 @@
+@page "{id:int}"
+@model Dashboard_Sales_Dev.Pages.Module.EditModel
+
+@{
+    ViewData["Title"] = "Module bewerken";
+}
+
+<form method="post">
+    <div>
+        <div>Module bewerken</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Module.Name" class="form-label">Naam <span class="text-danger">*</span></label>
+                    <input asp-for="Module.Name" class="form-control bg-light text-dark border-secondary" required />
+                    <span asp-validation-for="Module.Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Module.Description" class="form-label">Beschrijving <span class="text-danger">*</span></label>
+                    <textarea asp-for="Module.Description" class="form-control" required></textarea>
+                    <span asp-validation-for="Module.Description" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Module.PriceInCents" class="form-label">Prijs in centen <span class="text-danger">*</span></label>
+                    <input asp-for="Module.PriceInCents" type="number" min="0" class="form-control bg-light text-dark border-secondary" required />
+                    <span asp-validation-for="Module.PriceInCents" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Module.ProductionTimeInWeeks" class="form-label">Productietijd in weken <span class="text-danger">*</span></label>
+                    <input asp-for="Module.ProductionTimeInWeeks" type="number" min="1" class="form-control bg-light text-dark border-secondary" required />
+                    <span asp-validation-for="Module.ProductionTimeInWeeks" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+        <a asp-page="./Index" class="btn btn-outline-secondary">Annuleren</a>
+        <button type="submit" class="btn btn-primary px-4">Opslaan</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

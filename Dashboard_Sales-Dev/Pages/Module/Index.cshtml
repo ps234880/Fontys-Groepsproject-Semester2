@@ -7,6 +7,11 @@
 <div class="container mt-4">
     <h2>Module Overzicht</h2>
 
+    @if (Model.ErrorMessage != null)
+    {
+        <div class="alert alert-danger mt-3" role="alert">@Model.ErrorMessage</div>
+    }
+
     @if (!Model.Modules.Any())
     {
         <p>Er zijn nog geen modules gevonden.</p>
@@ -22,6 +27,7 @@
                     <th>Prijs</th>
                     <th>Tijd in weken</th>
                     <th>Aangemaakt Op</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -34,6 +40,13 @@
                         <td>@quotation.PriceInCents</td>
                         <td>@quotation.ProductionTimeInWeeks</td>
                         <td>@quotation.CreatedAt.ToString("dd-MM-yyyy")</td>
+                        <td class="text-nowrap">
+                            <a asp-page="./Edit" asp-route-id="@quotation.Id" class="btn btn-sm btn-outline-secondary">Bewerken</a>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@quotation.Id" class="d-inline"
+                                  onsubmit="return confirm('Weet je zeker dat je deze module wilt verwijderen?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Verwijderen</button>
+                            </form>
+                        </td>
                     </tr>
                 }
             </tbody>

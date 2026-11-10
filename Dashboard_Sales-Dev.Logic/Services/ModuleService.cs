@@ -17,8 +17,23 @@ public class ModuleService
         return _moduleRepository.GetAll();
     }
 
+    public Module? GetById(int id)
+    {
+        return _moduleRepository.GetById(id);
+    }
+
     public Task AddModuleAsync(Module module)
     {
         return _moduleRepository.AddModuleAsync(module);
+    }
+
+    public Task<bool> UpdateModuleAsync(Module module)
+    {
+        return _moduleRepository.UpdateModuleAsync(module);
+    }
+
+    public Task<bool> DeleteModuleAsync(int id)
+    {
+        return _moduleRepository.DeleteModuleAsync(id);
     }
 }
