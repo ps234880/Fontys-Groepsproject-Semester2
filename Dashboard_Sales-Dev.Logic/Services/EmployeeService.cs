@@ -14,6 +14,11 @@ public class EmployeeService
         _employeeRepository = employeeRepository;
     }
 
+    public List<Employee> GetAll()
+    {
+        return _employeeRepository.GetAll();
+    }
+
     public List<Employee> GetSalesEmployees()
     {
         return _employeeRepository.GetByRole(SalesRole);

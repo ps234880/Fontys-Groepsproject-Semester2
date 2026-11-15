@@ -14,11 +14,13 @@ builder.Services.AddScoped<IClientRepository>(_ => new ClientRepository(connecti
 builder.Services.AddScoped<IModuleRepository>(_ => new ModuleRepository(connectionString));
 builder.Services.AddScoped<IQuotationRepository>(_ => new QuotationRepository(connectionString));
 builder.Services.AddScoped<IEmployeeRepository>(_ => new EmployeeRepository(connectionString));
+builder.Services.AddScoped<ICommentRepository>(_ => new CommentRepository(connectionString));
 
 builder.Services.AddScoped<ClientService>();
 builder.Services.AddScoped<ModuleService>();
 builder.Services.AddScoped<QuotationService>();
 builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<CommentService>();
 
 var app = builder.Build();
 

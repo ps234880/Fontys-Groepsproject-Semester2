@@ -18,6 +18,24 @@ public class EmployeeRepository : RepositoryBase, IEmployeeRepository
 FROM employee e
 INNER JOIN role r ON e.role_id = r.id";
 
+    public List<Employee> GetAll()
+    {
+        List<Employee> employees = new List<Employee>();
+
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        using MySqlCommand command = new MySqlCommand(SelectEmployee + " ORDER BY r.name DESC, e.firstName, e.lastName;", connection);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            employees.Add(MapEmployee(reader));
+        }
+
+        return employees;
+    }
+
     public List<Employee> GetByRole(string roleName)
     {
         List<Employee> employees = new List<Employee>();

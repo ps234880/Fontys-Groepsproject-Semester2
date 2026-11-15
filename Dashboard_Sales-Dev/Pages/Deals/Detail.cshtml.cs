@@ -1,3 +1,4 @@
+using Dashboard_Sales_Dev.Logic.Models;
 using LibraryModule = Dashboard_Sales_Dev.Logic.Models.Module;
 using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,15 @@ public class DetailModel : PageModel
 {
     private readonly QuotationService _quotationService;
     private readonly ModuleService _moduleService;
+    private readonly CommentService _commentService;
+    private readonly EmployeeService _employeeService;
 
-    public DetailModel(QuotationService quotationService, ModuleService moduleService)
+    public DetailModel(QuotationService quotationService, ModuleService moduleService, CommentService commentService, EmployeeService employeeService)
     {
         _quotationService = quotationService;
         _moduleService = moduleService;
+        _commentService = commentService;
+        _employeeService = employeeService;
     }
 
     public Deal Deal { get; private set; } = default!;
@@ -25,8 +30,18 @@ public class DetailModel : PageModel
     public DateTime EarliestDeliveryDate { get; private set; }
     public bool EstimatedDateTooEarly { get; private set; }
 
+    public List<Comment> Comments { get; private set; } = new();
+    public List<SelectListItem> Authors { get; private set; } = new();
+    public string? CommentError { get; private set; }
+
     [BindProperty]
     public int ModuleId { get; set; }
+
+    [BindProperty]
+    public int CommentEmployeeId { get; set; }
+
+    [BindProperty]
+    public string? CommentMessage { get; set; }
 
     public IActionResult OnGet(int id)
     {
@@ -39,8 +54,34 @@ public class DetailModel : PageModel
 
         Deal = deal;
         LoadModules(id);
+        LoadComments(id);
 
         return Page();
+    }
+
+    public async Task<IActionResult> OnPostCommentAsync(int id)
+    {
+        Deal? deal = _quotationService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            await _commentService.AddAsync(id, CommentEmployeeId, CommentMessage);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            CommentError = exception.Message;
+            LoadModules(id);
+            LoadComments(id);
+            return Page();
+        }
+
+        return RedirectToPage(new { id });
     }
 
     public async Task<IActionResult> OnPostLinkAsync(int id)
@@ -63,6 +104,14 @@ public class DetailModel : PageModel
         await _quotationService.UnlinkModuleAsync(id, moduleId);
 
         return RedirectToPage(new { id });
+    }
+
+    private void LoadComments(int id)
+    {
+        Comments = _commentService.GetForDeal(id);
+        Authors = _employeeService.GetAll()
+            .Select(employee => new SelectListItem($"{employee.FullName} ({employee.RoleName})", employee.Id.ToString()))
+            .ToList();
     }
 
     private void LoadModules(int id)

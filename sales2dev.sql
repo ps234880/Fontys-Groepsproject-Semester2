@@ -69,7 +69,7 @@ create table comment
         primary key,
     employee_id  int      not null,
     quotation_id int      not null,
-    saleOrder_id int      not null,
+    saleOrder_id int      null,
     message      text     not null,
     createdAt    datetime not null,
     updatedAt    datetime null,

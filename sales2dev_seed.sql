@@ -17,3 +17,9 @@ values (1, 'Gemeente Tilburg', 'Anouk', 'Jansen', 'anouk@tilburg.example', '0131
 insert into quotation (client_id, employee_id, title, description, estimatedDate, createdAt)
 values (1, 1, 'Citizen Portal 2027', 'Online portal where residents can book appointments and follow their applications.', '2026-11-15', now()),
        (2, 2, 'Member portal', 'Portal for members with login and event registration.', '2026-12-20', now());
+
+insert into quotation_module (quotation_id, module_id) values (1, 1), (1, 3);
+
+insert into comment (employee_id, quotation_id, message, createdAt)
+values (3, 1, 'Login can reuse auth-gateway. Booking appointments needs a custom calendar module, about three weeks of work.', now()),
+       (1, 1, 'Thanks. The customer is fine with a redirect for the login. I will ask about the calendar.', now());
