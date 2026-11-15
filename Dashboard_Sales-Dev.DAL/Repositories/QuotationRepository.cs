@@ -93,4 +93,61 @@ INNER JOIN employee e ON q.employee_id = e.id";
 
         await cmd.ExecuteNonQueryAsync();
     }
+
+    public List<Module> GetModules(int quotationId)
+    {
+        List<Module> modules = new List<Module>();
+
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        string query = @"SELECT m.id, m.name, m.description, m.priceInCents, m.productionTimeInWeeks, m.createdAt
+FROM quotation_module qm
+INNER JOIN module m ON qm.module_id = m.id
+WHERE qm.quotation_id = @quotationId
+ORDER BY m.name;";
+
+        using MySqlCommand command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@quotationId", quotationId);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            modules.Add(new Module
+            {
+                Id = reader.GetInt32("id"),
+                Name = reader.GetString("name"),
+                Description = reader.IsDBNull(reader.GetOrdinal("description")) ? string.Empty : reader.GetString("description"),
+                PriceInCents = reader.GetInt32("priceInCents"),
+                ProductionTimeInWeeks = reader.GetInt32("productionTimeInWeeks"),
+                CreatedAt = reader.GetDateTime("createdAt")
+            });
+        }
+
+        return modules;
+    }
+
+    public async Task AddModuleAsync(int quotationId, int moduleId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("INSERT IGNORE INTO quotation_module (quotation_id, module_id) VALUES (@quotationId, @moduleId);", connection);
+        command.Parameters.AddWithValue("@quotationId", quotationId);
+        command.Parameters.AddWithValue("@moduleId", moduleId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task RemoveModuleAsync(int quotationId, int moduleId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("DELETE FROM quotation_module WHERE quotation_id = @quotationId AND module_id = @moduleId;", connection);
+        command.Parameters.AddWithValue("@quotationId", quotationId);
+        command.Parameters.AddWithValue("@moduleId", moduleId);
+
+        await command.ExecuteNonQueryAsync();
+    }
 }

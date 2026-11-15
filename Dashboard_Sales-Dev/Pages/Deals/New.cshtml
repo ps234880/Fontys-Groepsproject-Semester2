@@ -42,9 +42,16 @@
       <div class="fld"><label asp-for="Input.Description">Description <span class="req">*</span></label>
         <textarea asp-for="Input.Description" class="ta" placeholder="What does the customer want, and why?" required></textarea>
         <span asp-validation-for="Input.Description" class="field-error"></span></div>
-      <div class="fld" style="margin-bottom:0"><label asp-for="Input.EstimatedDate">Estimated date <span class="req">*</span></label>
-        <input asp-for="Input.EstimatedDate" type="date" class="in" required />
-        <span asp-validation-for="Input.EstimatedDate" class="field-error"></span></div>
+      <div class="cols">
+        <div class="fld" style="margin-bottom:0"><label asp-for="Input.EstimatedDate">Estimated date <span class="req">*</span></label>
+          <input asp-for="Input.EstimatedDate" type="date" class="in" required />
+          <span asp-validation-for="Input.EstimatedDate" class="field-error"></span></div>
+        <div class="fld" style="margin-bottom:0"><label asp-for="Input.OwnerId">Owner <span class="req">*</span></label>
+          <select asp-for="Input.OwnerId" asp-items="Model.Owners" class="sel in" required>
+            <option value="">Choose a Sales employee</option>
+          </select>
+          <span asp-validation-for="Input.OwnerId" class="field-error"></span></div>
+      </div>
     </div></div></div>
 
   <div class="f" style="display:flex;justify-content:flex-end;gap:8px">

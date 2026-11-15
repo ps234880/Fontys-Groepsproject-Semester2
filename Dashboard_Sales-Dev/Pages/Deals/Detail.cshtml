@@ -18,10 +18,58 @@
       <div class="fld"><label>Description</label><div style="white-space:pre-line">@Model.Deal.Description</div></div>
       <div class="cols">
         <div class="fld"><label>Estimated date</label><div>@Model.Deal.EstimatedDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</div></div>
+        <div class="fld"><label>Production time</label><div>@(Model.LinkedModules.Count == 0 ? "No modules linked yet" : Model.ProductionTimeInWeeks + (Model.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</div></div>
         <div class="fld"><label>Owner</label><div>@Model.Deal.EmployeeName</div></div>
         <div class="fld" style="margin-bottom:0"><label>Created</label><div>@Model.Deal.CreatedAt.ToString("d MMMM yyyy HH:mm", CultureInfo.InvariantCulture)</div></div>
       </div>
+      @if (Model.EstimatedDateTooEarly)
+      {
+        <div style="margin-top:12px"><span class="tag warn">The estimated date is earlier than the production time allows. Earliest delivery: @Model.EarliestDeliveryDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</span></div>
+      }
     </div></div></div>
+
+  <div class="card"><div class="h"><h2>Modules</h2></div><div class="b">
+    @if (Model.LinkedModules.Count == 0)
+    {
+      <p class="sm dim">No modules are linked to this deal yet. Link existing modules so development can see what can be reused.</p>
+    }
+    else
+    {
+      <div class="tw"><table class="tbl">
+        <thead><tr>
+          <th>Module</th>
+          <th class="c" style="width:130px">Production time</th>
+          <th class="r" style="width:130px">Price</th>
+          <th class="r" style="width:90px"></th>
+        </tr></thead>
+        <tbody>
+          @foreach (var module in Model.LinkedModules)
+          {
+            <tr>
+              <td><span class="t">@module.Name</span><div class="s">@module.Description</div></td>
+              <td class="c num nowrap">@module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks")</td>
+              <td class="r num nowrap">€ @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</td>
+              <td class="r nowrap">
+                <form method="post" asp-page-handler="Unlink" asp-route-id="@Model.Deal.Id" asp-route-moduleId="@module.Id" class="inline-form">
+                  <button type="submit" class="lnk-stop sm">Remove</button>
+                </form>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <div class="tfoot"><span>@Model.LinkedModules.Count @(Model.LinkedModules.Count == 1 ? "module" : "modules") · @Model.ProductionTimeInWeeks @(Model.ProductionTimeInWeeks == 1 ? "week" : "weeks") in total</span></div></div>
+    }
+    @if (Model.AvailableModules.Count > 0)
+    {
+      <form method="post" asp-page-handler="Link" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;margin-top:14px">
+        <select asp-for="ModuleId" asp-items="Model.AvailableModules" class="sel in" style="flex:1">
+          <option value="">Choose a module from the library</option>
+        </select>
+        <button type="submit" class="btn">Link module</button>
+      </form>
+    }
+  </div></div>
 
   <div class="card"><div class="h"><h2>Customer</h2></div><div class="b">
     <div class="fields" style="max-width:none">

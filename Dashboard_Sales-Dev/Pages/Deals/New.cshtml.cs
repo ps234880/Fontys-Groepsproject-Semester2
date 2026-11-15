@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Customer = Dashboard_Sales_Dev.Logic.Models.Client;
 using Deal = Dashboard_Sales_Dev.Logic.Models.Quotation;
 
@@ -10,24 +11,30 @@ namespace Dashboard_Sales_Dev.Pages.Deals;
 public class NewModel : PageModel
 {
     private readonly QuotationService _quotationService;
+    private readonly EmployeeService _employeeService;
 
-    public NewModel(QuotationService quotationService)
+    public NewModel(QuotationService quotationService, EmployeeService employeeService)
     {
         _quotationService = quotationService;
+        _employeeService = employeeService;
     }
 
     [BindProperty]
     public NewDealInput Input { get; set; } = new();
 
+    public List<SelectListItem> Owners { get; private set; } = new();
+
     public void OnGet()
     {
         Input.EstimatedDate = DateTime.Today.AddMonths(1);
+        LoadOwners();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
         {
+            LoadOwners();
             return Page();
         }
 
@@ -44,12 +51,29 @@ public class NewModel : PageModel
         {
             Title = Input.Title,
             Description = Input.Description,
-            EstimatedDate = Input.EstimatedDate
+            EstimatedDate = Input.EstimatedDate,
+            EmployeeId = Input.OwnerId
         };
 
-        await _quotationService.CreateWithNewClientAsync(client, deal);
+        try
+        {
+            await _quotationService.CreateWithNewClientAsync(client, deal);
+        }
+        catch (ArgumentException exception)
+        {
+            ModelState.AddModelError("Input.OwnerId", exception.Message);
+            LoadOwners();
+            return Page();
+        }
 
         return RedirectToPage("./Index");
+    }
+
+    private void LoadOwners()
+    {
+        Owners = _employeeService.GetSalesEmployees()
+            .Select(employee => new SelectListItem(employee.FullName, employee.Id.ToString()))
+            .ToList();
     }
 
     public class NewDealInput
@@ -77,5 +101,8 @@ public class NewModel : PageModel
 
         [Required, DataType(DataType.Date)]
         public DateTime EstimatedDate { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Choose the Sales employee who owns this deal.")]
+        public int OwnerId { get; set; }
     }
 }
