@@ -101,3 +101,15 @@ create table deal_module
 
 
 
+
+create table deal_client
+(
+    deal_id   int not null,
+    client_id int not null,
+    primary key (deal_id, client_id),
+    constraint deal_client_deal_id_fk
+        foreign key (deal_id) references deal (id)
+            on delete cascade,
+    constraint deal_client_client_id_fk
+        foreign key (client_id) references client (id)
+);
