@@ -134,6 +134,11 @@ public class DetailModel : PageModel
 
     private void LoadPage(int id)
     {
+        if (StatusId == 0)
+        {
+            StatusId = Deal.StatusId;
+        }
+
         Statuses = _dealService.GetStatuses()
             .Select(status => new SelectListItem(status.Name, status.Id.ToString(), status.Id == Deal.StatusId))
             .ToList();
