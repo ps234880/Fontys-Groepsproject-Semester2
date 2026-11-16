@@ -1,3 +1,4 @@
+using Dashboard_Sales_Dev.Logic.Exceptions;
 using Dashboard_Sales_Dev.Logic.Interfaces;
 using Dashboard_Sales_Dev.Logic.Models;
 using MySqlConnector;
@@ -92,5 +93,49 @@ INNER JOIN employee e ON q.employee_id = e.id";
         cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
 
         await cmd.ExecuteNonQueryAsync();
+    }
+    
+    public async Task<bool> UpdateClientAsync(Quotation quotation)
+    {
+        using var connection = CreateConnection();
+        connection.Open();
+
+        var sql =
+            @"UPDATE quotation set quotation_id = @quotation_id, employee_id = @employeeid, title = @title, description = @description, estimatedDate = @estimatedDate, updatedAt  = @updatedAt WHERE id = @id ";
+
+        await using var cmd = new MySqlCommand(sql, connection);
+
+        cmd.Parameters.AddWithValue("@client_id", quotation.ClientId);
+        cmd.Parameters.AddWithValue("@employee_id", quotation.EmployeeId);
+        cmd.Parameters.AddWithValue("@title", quotation.Title);
+        cmd.Parameters.AddWithValue("@description", quotation.Description);
+        cmd.Parameters.AddWithValue("@estimatedDate", quotation.EstimatedDate);
+        cmd.Parameters.AddWithValue("@updateAt", DateTime.Now);
+
+        int affectedRows = await cmd.ExecuteNonQueryAsync();
+        return affectedRows > 0;
+    }
+
+
+    public async Task<bool> DeleteClientAsync(int id)
+    {
+        var connection = CreateConnection();
+        await connection.OpenAsync();
+
+        var sql = "DELETE FROM quotation WHERE id = @id";
+
+        using var cmd = new MySqlCommand(sql, connection);
+        cmd.Parameters.AddWithValue("@id", id);
+
+        try
+        {
+            int AffectedRows = await cmd.ExecuteNonQueryAsync();
+
+            return AffectedRows > 0;
+        }
+        catch (MySqlException exception) when (exception.ErrorCode == MySqlErrorCode.RowIsReferenced2)
+        {
+            throw new ModuleInUseException(id, exception);
+        }
     }
 }

@@ -108,7 +108,7 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
                        updatedAt = @updatedAt
                    WHERE id = @id";
 
-        using var cmd = new MySqlCommand(sql, connection);
+        await using var cmd = new MySqlCommand(sql, connection);
         cmd.Parameters.AddWithValue("@id", module.Id);
         cmd.Parameters.AddWithValue("@name", module.Name);
         cmd.Parameters.AddWithValue("@description", module.Description);
