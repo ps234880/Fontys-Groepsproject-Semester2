@@ -20,13 +20,13 @@ public class NewModel : PageModel
     }
 
     [BindProperty]
-    public NewDealInput Input { get; set; } = new();
+    public DealInput Input { get; set; } = new();
 
     public List<SelectListItem> Owners { get; private set; } = new();
 
     public void OnGet()
     {
-        Input.EstimatedDate = DateTime.Today.AddMonths(1);
+        Input.EstimatedDate = DateTime.Today;
         LoadOwners();
     }
 
@@ -40,24 +40,26 @@ public class NewModel : PageModel
 
         Customer client = new Customer
         {
-            CompanyName = Input.CompanyName,
-            FirstName = Input.FirstName,
-            LastName = Input.LastName,
-            Email = Input.Email,
-            PhoneNumber = Input.PhoneNumber
+            CompanyName = Input.CompanyName.Trim(),
+            FirstName = Input.FirstName.Trim(),
+            LastName = Input.LastName.Trim(),
+            Email = Input.Email.Trim(),
+            PhoneNumber = Input.PhoneNumber.Trim()
         };
 
         Deal deal = new Deal
         {
-            Title = Input.Title,
-            Requirement = Input.Requirement,
-            EstimatedDate = Input.EstimatedDate,
-            EmployeeId = Input.OwnerId
+            EmployeeId = Input.OwnerId,
+            Title = Input.Title.Trim(),
+            Requirement = Input.Requirement.Trim(),
+            EstimatedDate = Input.EstimatedDate
         };
+
+        int dealId;
 
         try
         {
-            await _dealService.CreateWithNewClientAsync(client, deal);
+            dealId = await _dealService.CreateWithNewClientAsync(client, deal);
         }
         catch (ArgumentException exception)
         {
@@ -66,43 +68,44 @@ public class NewModel : PageModel
             return Page();
         }
 
-        return RedirectToPage("./Index");
+        return RedirectToPage("/Deals/Detail", new { id = dealId });
     }
 
     private void LoadOwners()
     {
-        Owners = _employeeService.GetSalesEmployees()
+        Owners = _employeeService.GetAll()
+            .Where(employee => employee.RoleName == EmployeeService.SalesRole)
             .Select(employee => new SelectListItem(employee.FullName, employee.Id.ToString()))
             .ToList();
     }
 
-    public class NewDealInput
+    public class DealInput
     {
-        [Required, StringLength(255)]
+        [Required(ErrorMessage = "Enter a company name.")]
         public string CompanyName { get; set; } = string.Empty;
 
-        [Required, StringLength(255)]
+        [Required(ErrorMessage = "Enter a first name.")]
         public string FirstName { get; set; } = string.Empty;
 
-        [Required, StringLength(255)]
+        [Required(ErrorMessage = "Enter a last name.")]
         public string LastName { get; set; } = string.Empty;
 
-        [Required, EmailAddress, StringLength(255)]
+        [Required(ErrorMessage = "Enter an email address."), EmailAddress(ErrorMessage = "Enter a valid email address.")]
         public string Email { get; set; } = string.Empty;
 
-        [Required, StringLength(255)]
+        [Required(ErrorMessage = "Enter a phone number.")]
         public string PhoneNumber { get; set; } = string.Empty;
 
-        [Required, StringLength(255)]
+        [Required(ErrorMessage = "Enter a project name.")]
         public string Title { get; set; } = string.Empty;
 
-        [Required, StringLength(255)]
+        [Required(ErrorMessage = "Describe the requirement.")]
         public string Requirement { get; set; } = string.Empty;
 
-        [Required, DataType(DataType.Date)]
+        [Required(ErrorMessage = "Choose an estimated date.")]
         public DateTime EstimatedDate { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Choose the Sales employee who owns this deal.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Choose an owner.")]
         public int OwnerId { get; set; }
     }
 }

@@ -83,14 +83,15 @@ INNER JOIN status s ON d.status_id = s.id";
         };
     }
 
-    public async Task AddDealAsync(Deal deal)
+    public async Task<int> AddDealAsync(Deal deal)
     {
         using var connection = CreateConnection();
         await connection.OpenAsync();
 
         var sql = @"INSERT INTO deal (client_id, employee_id, status_id, title, requirement,
                                estimatedDate, createdAt)
-                       VALUES (@client_id, @employee_id, @status_id, @title, @requirement, @estimatedDate, @CreatedAt)";
+                       VALUES (@client_id, @employee_id, @status_id, @title, @requirement, @estimatedDate, @CreatedAt);
+                    SELECT LAST_INSERT_ID();";
 
         using var cmd = new MySqlCommand(sql, connection);
         cmd.Parameters.AddWithValue("@client_id", deal.ClientId);
@@ -101,7 +102,9 @@ INNER JOIN status s ON d.status_id = s.id";
         cmd.Parameters.AddWithValue("@estimatedDate", deal.EstimatedDate);
         cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
 
-        await cmd.ExecuteNonQueryAsync();
+        object? result = await cmd.ExecuteScalarAsync();
+
+        return Convert.ToInt32(result);
     }
 
     public async Task UpdateStatusAsync(int dealId, int statusId)

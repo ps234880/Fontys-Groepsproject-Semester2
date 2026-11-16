@@ -33,7 +33,7 @@ public class DealService
         return _dealRepository.GetById(id);
     }
 
-    public async Task CreateWithNewClientAsync(Client client, Deal deal)
+    public async Task<int> CreateWithNewClientAsync(Client client, Deal deal)
     {
         Employee? owner = _employeeRepository.GetById(deal.EmployeeId);
 
@@ -54,7 +54,13 @@ public class DealService
         deal.ClientId = clientId;
         deal.StatusId = newStatus.Id;
 
-        await _dealRepository.AddDealAsync(deal);
+        return await _dealRepository.AddDealAsync(deal);
+    }
+
+    public async Task CreateContactAsync(int dealId, Client contact)
+    {
+        int clientId = await _clientRepository.AddClientAsync(contact);
+        await _dealRepository.AddClientAsync(dealId, clientId);
     }
 
     public List<Status> GetStatuses()

@@ -129,6 +129,23 @@
         <button type="submit" class="btn">Add contact</button>
       </form>
     }
+
+    <details style="margin-top:14px" @(Model.NewContactError != null ? "open" : null)>
+      <summary class="lnk sm" style="cursor:pointer">Create a new contact person</summary>
+      <form method="post" asp-page-handler="CreateContact" asp-route-id="@Model.Deal.Id" style="margin-top:12px">
+        @if (Model.NewContactError != null)
+        {
+          <div class="banner stop" role="alert">@Model.NewContactError</div>
+        }
+        <div class="cols">
+          <div class="fld"><label asp-for="NewContact.FirstName">First name</label><input asp-for="NewContact.FirstName" class="in" /></div>
+          <div class="fld"><label asp-for="NewContact.LastName">Last name</label><input asp-for="NewContact.LastName" class="in" /></div>
+          <div class="fld"><label asp-for="NewContact.Email">Email address</label><input asp-for="NewContact.Email" type="email" class="in" /></div>
+          <div class="fld"><label asp-for="NewContact.PhoneNumber">Phone number</label><input asp-for="NewContact.PhoneNumber" class="in" /></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end"><button type="submit" class="btn">Create and add</button></div>
+      </form>
+    </details>
   </div></div>
 
   <div class="card"><div class="h"><h2>Comments</h2><span class="sm dim">@Model.Comments.Count @(Model.Comments.Count == 1 ? "comment" : "comments")</span></div>

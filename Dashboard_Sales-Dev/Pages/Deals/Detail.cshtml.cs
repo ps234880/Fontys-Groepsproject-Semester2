@@ -38,6 +38,8 @@ public class DetailModel : PageModel
     public List<SelectListItem> Authors { get; private set; } = new();
     public string? CommentError { get; private set; }
 
+    public string? NewContactError { get; private set; }
+
     [BindProperty]
     public int ModuleId { get; set; }
 
@@ -52,6 +54,9 @@ public class DetailModel : PageModel
 
     [BindProperty]
     public string? CommentMessage { get; set; }
+
+    [BindProperty]
+    public Customer NewContact { get; set; } = new();
 
     public IActionResult OnGet(int id)
     {
@@ -151,6 +156,30 @@ public class DetailModel : PageModel
         {
             await _dealService.LinkContactAsync(deal, ContactId);
         }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostCreateContactAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        if (string.IsNullOrWhiteSpace(NewContact.FirstName) || string.IsNullOrWhiteSpace(NewContact.LastName) ||
+            string.IsNullOrWhiteSpace(NewContact.Email) || string.IsNullOrWhiteSpace(NewContact.PhoneNumber))
+        {
+            Deal = deal;
+            NewContactError = "Fill in first name, last name, email address and phone number.";
+            LoadPage(id);
+            return Page();
+        }
+
+        NewContact.CompanyName = deal.ClientCompanyName;
+        await _dealService.CreateContactAsync(id, NewContact);
 
         return RedirectToPage(new { id });
     }
