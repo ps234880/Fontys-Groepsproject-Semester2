@@ -1,7 +1,7 @@
 @page
 @model Dashboard_Sales_Dev.Pages.Sales.IndexModel
 @using System.Globalization
-@using Dashboard_Sales_Dev.Pages.Sales
+@using Dashboard_Sales_Dev.Logic.Models
 @{
     ViewData["Title"] = "Overview";
     ViewData["Role"] = "Sales";
@@ -42,10 +42,10 @@
               <td>
                 @switch (item.Progress)
                 {
-                  case IndexModel.DealProgress.NoModules:
+                  case DealProgress.NoModules:
                     <span class="tag stop">No modules yet</span>
                     break;
-                  case IndexModel.DealProgress.DateTooEarly:
+                  case DealProgress.DateTooEarly:
                     <span class="tag warn">Date too early</span>
                     break;
                   default:

@@ -76,6 +76,30 @@ public class DealService
         return deal.StatusName != WonStatus && deal.StatusName != LostStatus;
     }
 
+    public List<DealOverview> GetOpenDealOverviews(DateTime today)
+    {
+        List<DealOverview> overviews = new List<DealOverview>();
+
+        foreach (Deal deal in GetAll().Where(IsOpen))
+        {
+            List<Module> modules = GetModules(deal.Id);
+            DealProgress progress = DealProgress.OnTrack;
+
+            if (modules.Count == 0)
+            {
+                progress = DealProgress.NoModules;
+            }
+            else if (deal.EstimatedDate.Date < GetEarliestDeliveryDate(modules, today))
+            {
+                progress = DealProgress.DateTooEarly;
+            }
+
+            overviews.Add(new DealOverview(deal, modules.Count, GetProductionTimeInWeeks(modules), progress));
+        }
+
+        return overviews;
+    }
+
     public List<Module> GetModules(int dealId)
     {
         return _dealRepository.GetModules(dealId);
