@@ -1,22 +1,22 @@
+using Dashboard_Sales_Dev.Logic.Models;
 using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Deal = Dashboard_Sales_Dev.Logic.Models.Quotation;
 
 namespace Dashboard_Sales_Dev.Pages.Deals;
 
 public class IndexModel : PageModel
 {
-    private readonly QuotationService _quotationService;
+    private readonly DealService _dealService;
 
-    public IndexModel(QuotationService quotationService)
+    public IndexModel(DealService dealService)
     {
-        _quotationService = quotationService;
+        _dealService = dealService;
     }
 
     public List<Deal> Deals { get; private set; } = [];
 
     public void OnGet()
     {
-        Deals = _quotationService.GetAll();
+        Deals = _dealService.GetAll();
     }
 }
