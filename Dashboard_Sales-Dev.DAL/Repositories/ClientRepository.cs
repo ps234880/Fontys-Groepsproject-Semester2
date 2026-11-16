@@ -5,63 +5,60 @@ using MySqlConnector;
 
 namespace Dashboard_Sales_Dev.DAL.Repositories;
 
-public class ClientRepository : RepositoryBase, IClientRepository
+public class ClientRepository(string connectionString)
+    : RepositoryBase(connectionString), IClientRepository
 {
-    public ClientRepository(string connectionString) : base(connectionString)
-    {
-    }
+    private const string SelectColumns =
+        "id, companyName, firstName, lastName, email, phoneNumber, createdAt, updatedAt";
 
     public List<Client> GetAll()
     {
-        List<Client> clients = new List<Client>();
+        List<Client> clients = [];
 
         using MySqlConnection connection = CreateConnection();
         connection.Open();
 
-        string query =
-            @"SELECT id, companyName, firstName, lastName, 
-                    email, phoneNumber, createdAt, updatedAt 
-            FROM client";
+        string query = $"SELECT {SelectColumns} FROM client";
 
         using MySqlCommand command = new MySqlCommand(query, connection);
         using MySqlDataReader reader = command.ExecuteReader();
 
         while (reader.Read())
         {
-            Client client = new Client
-            {
-                Id = reader.GetInt32("id"),
-                CompanyName = reader.GetString("companyName"),
-                FirstName = reader.GetString("firstName"),
-                LastName = reader.GetString("lastName"),
-                Email = reader.GetString("email"),
-                PhoneNumber = reader.GetString("phoneNumber"),
-                CreatedAt = reader.GetDateTime("createdAt"),
-                UpdatedAt = reader.IsDBNull(reader.GetOrdinal("updatedAt"))
-                    ? null
-                    : reader.GetDateTime("updatedAt")
-            };
-            clients.Add((client));
+            clients.Add(MapClient(reader));
         }
 
         return clients;
     }
 
+    public Client? GetById(int id)
+    {
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        string query = $"SELECT {SelectColumns} FROM client WHERE id = @id";
+
+        using MySqlCommand command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@id", id);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        return reader.Read() ? MapClient(reader) : null;
+    }
+
     public async Task<int> AddClientAsync(Client client)
     {
-        using var connection = CreateConnection();
+        await using var connection = CreateConnection();
         await connection.OpenAsync();
 
-        var sql = @"
-        INSERT INTO client
-            (firstName, lastName, companyName, email, phoneNumber, createdAt)
-        VALUES
-            (@firstName, @lastName, @companyName, @email, @phoneNumber, @createdAt);
+        const string sql = @"
+            INSERT INTO client
+                (firstName, lastName, companyName, email, phoneNumber, createdAt)
+            VALUES
+                (@firstName, @lastName, @companyName, @email, @phoneNumber, @createdAt);
 
-        SELECT LAST_INSERT_ID();
-    ";
+            SELECT LAST_INSERT_ID();";
 
-        using var cmd = new MySqlCommand(sql, connection);
+        await using var cmd = new MySqlCommand(sql, connection);
 
         cmd.Parameters.AddWithValue("@firstName", client.FirstName);
         cmd.Parameters.AddWithValue("@lastName", client.LastName);
@@ -75,48 +72,70 @@ public class ClientRepository : RepositoryBase, IClientRepository
         return Convert.ToInt32(result);
     }
 
-
     public async Task<bool> UpdateClientAsync(Client client)
     {
-        using var connection = CreateConnection();
-        connection.Open();
+        await using var connection = CreateConnection();
+        await connection.OpenAsync();
 
-        var sql =
-            @"UPDATE client set firstName = @firstName, lastName = @lastName, companyName = @companyName, email = @email, phoneNumber = @phoneNumber, updatedAt  = @updatedAt WHERE id = @id ";
+        const string sql = @"
+            UPDATE client
+            SET firstName = @firstName,
+                lastName = @lastName,
+                companyName = @companyName,
+                email = @email,
+                phoneNumber = @phoneNumber,
+                updatedAt = @updatedAt
+            WHERE id = @id";
 
         await using var cmd = new MySqlCommand(sql, connection);
 
+        cmd.Parameters.AddWithValue("@id", client.Id);
         cmd.Parameters.AddWithValue("@firstName", client.FirstName);
         cmd.Parameters.AddWithValue("@lastName", client.LastName);
         cmd.Parameters.AddWithValue("@companyName", client.CompanyName);
         cmd.Parameters.AddWithValue("@email", client.Email);
         cmd.Parameters.AddWithValue("@phoneNumber", client.PhoneNumber);
-        cmd.Parameters.AddWithValue("@updateAt", DateTime.Now);
+        cmd.Parameters.AddWithValue("@updatedAt", DateTime.Now);
 
         int affectedRows = await cmd.ExecuteNonQueryAsync();
         return affectedRows > 0;
     }
 
-
     public async Task<bool> DeleteClientAsync(int id)
     {
-        var connection = CreateConnection();
+        await using var connection = CreateConnection();
         await connection.OpenAsync();
 
-        var sql = "DELETE FROM client WHERE id = @id";
+        const string sql = "DELETE FROM client WHERE id = @id";
 
-        using var cmd = new MySqlCommand(sql, connection);
+        await using var cmd = new MySqlCommand(sql, connection);
         cmd.Parameters.AddWithValue("@id", id);
 
         try
         {
-            int AffectedRows = await cmd.ExecuteNonQueryAsync();
-
-            return AffectedRows > 0;
+            int affectedRows = await cmd.ExecuteNonQueryAsync();
+            return affectedRows > 0;
         }
         catch (MySqlException exception) when (exception.ErrorCode == MySqlErrorCode.RowIsReferenced2)
         {
-            throw new ModuleInUseException(id, exception);
+            throw new ClientInUseException(id, exception);
         }
+    }
+
+    private static Client MapClient(MySqlDataReader reader)
+    {
+        return new Client
+        {
+            Id = reader.GetInt32("id"),
+            CompanyName = reader.GetString("companyName"),
+            FirstName = reader.GetString("firstName"),
+            LastName = reader.GetString("lastName"),
+            Email = reader.GetString("email"),
+            PhoneNumber = reader.GetString("phoneNumber"),
+            CreatedAt = reader.GetDateTime("createdAt"),
+            UpdatedAt = reader.IsDBNull(reader.GetOrdinal("updatedAt"))
+                ? null
+                : reader.GetDateTime("updatedAt")
+        };
     }
 }

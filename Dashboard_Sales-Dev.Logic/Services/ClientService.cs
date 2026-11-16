@@ -16,4 +16,19 @@ public class ClientService
     {
         return _clientRepository.GetAll();
     }
+
+    public Client? GetById(int id)
+    {
+        return _clientRepository.GetById(id);
+    }
+
+    public Task<bool> UpdateClientAsync(Client client)
+    {
+        return _clientRepository.UpdateClientAsync(client);
+    }
+
+    public Task<bool> DeleteClientAsync(int id)
+    {
+        return _clientRepository.DeleteClientAsync(id);
+    }
 }
