@@ -12,13 +12,14 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 builder.Services.AddScoped<IClientRepository>(_ => new ClientRepository(connectionString));
 builder.Services.AddScoped<IModuleRepository>(_ => new ModuleRepository(connectionString));
-builder.Services.AddScoped<IQuotationRepository>(_ => new QuotationRepository(connectionString));
+builder.Services.AddScoped<IDealRepository>(_ => new DealRepository(connectionString));
 builder.Services.AddScoped<IEmployeeRepository>(_ => new EmployeeRepository(connectionString));
 builder.Services.AddScoped<ICommentRepository>(_ => new CommentRepository(connectionString));
+builder.Services.AddScoped<IStatusRepository>(_ => new StatusRepository(connectionString));
 
 builder.Services.AddScoped<ClientService>();
 builder.Services.AddScoped<ModuleService>();
-builder.Services.AddScoped<QuotationService>();
+builder.Services.AddScoped<DealService>();
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<CommentService>();
 

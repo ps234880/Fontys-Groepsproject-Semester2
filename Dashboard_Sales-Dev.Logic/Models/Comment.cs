@@ -3,11 +3,11 @@ namespace Dashboard_Sales_Dev.Logic.Models;
 public class Comment
 {
     public int Id { get; set; }
-    public int QuotationId { get; set; }
+    public int DealId { get; set; }
     public int EmployeeId { get; set; }
     public string EmployeeName { get; set; } = string.Empty;
     public string EmployeeRole { get; set; } = string.Empty;
-    public string QuotationTitle { get; set; } = string.Empty;
+    public string DealTitle { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }

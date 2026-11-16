@@ -4,20 +4,19 @@ using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Deal = Dashboard_Sales_Dev.Logic.Models.Quotation;
 
 namespace Dashboard_Sales_Dev.Pages.Deals;
 
 public class DetailModel : PageModel
 {
-    private readonly QuotationService _quotationService;
+    private readonly DealService _dealService;
     private readonly ModuleService _moduleService;
     private readonly CommentService _commentService;
     private readonly EmployeeService _employeeService;
 
-    public DetailModel(QuotationService quotationService, ModuleService moduleService, CommentService commentService, EmployeeService employeeService)
+    public DetailModel(DealService dealService, ModuleService moduleService, CommentService commentService, EmployeeService employeeService)
     {
-        _quotationService = quotationService;
+        _dealService = dealService;
         _moduleService = moduleService;
         _commentService = commentService;
         _employeeService = employeeService;
@@ -26,6 +25,8 @@ public class DetailModel : PageModel
     public Deal Deal { get; private set; } = default!;
     public List<LibraryModule> LinkedModules { get; private set; } = new();
     public List<SelectListItem> AvailableModules { get; private set; } = new();
+    public List<SelectListItem> Statuses { get; private set; } = new();
+    public string? StatusError { get; private set; }
     public int ProductionTimeInWeeks { get; private set; }
     public DateTime EarliestDeliveryDate { get; private set; }
     public bool EstimatedDateTooEarly { get; private set; }
@@ -38,6 +39,9 @@ public class DetailModel : PageModel
     public int ModuleId { get; set; }
 
     [BindProperty]
+    public int StatusId { get; set; }
+
+    [BindProperty]
     public int CommentEmployeeId { get; set; }
 
     [BindProperty]
@@ -45,7 +49,7 @@ public class DetailModel : PageModel
 
     public IActionResult OnGet(int id)
     {
-        Deal? deal = _quotationService.GetById(id);
+        Deal? deal = _dealService.GetById(id);
 
         if (deal == null)
         {
@@ -53,15 +57,38 @@ public class DetailModel : PageModel
         }
 
         Deal = deal;
-        LoadModules(id);
-        LoadComments(id);
+        LoadPage(id);
 
         return Page();
     }
 
+    public async Task<IActionResult> OnPostStatusAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            await _dealService.ChangeStatusAsync(id, StatusId);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            StatusError = exception.Message;
+            LoadPage(id);
+            return Page();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
     public async Task<IActionResult> OnPostCommentAsync(int id)
     {
-        Deal? deal = _quotationService.GetById(id);
+        Deal? deal = _dealService.GetById(id);
 
         if (deal == null)
         {
@@ -76,8 +103,7 @@ public class DetailModel : PageModel
         {
             Deal = deal;
             CommentError = exception.Message;
-            LoadModules(id);
-            LoadComments(id);
+            LoadPage(id);
             return Page();
         }
 
@@ -86,14 +112,14 @@ public class DetailModel : PageModel
 
     public async Task<IActionResult> OnPostLinkAsync(int id)
     {
-        if (_quotationService.GetById(id) == null)
+        if (_dealService.GetById(id) == null)
         {
             return NotFound();
         }
 
         if (ModuleId > 0)
         {
-            await _quotationService.LinkModuleAsync(id, ModuleId);
+            await _dealService.LinkModuleAsync(id, ModuleId);
         }
 
         return RedirectToPage(new { id });
@@ -101,9 +127,18 @@ public class DetailModel : PageModel
 
     public async Task<IActionResult> OnPostUnlinkAsync(int id, int moduleId)
     {
-        await _quotationService.UnlinkModuleAsync(id, moduleId);
+        await _dealService.UnlinkModuleAsync(id, moduleId);
 
         return RedirectToPage(new { id });
+    }
+
+    private void LoadPage(int id)
+    {
+        Statuses = _dealService.GetStatuses()
+            .Select(status => new SelectListItem(status.Name, status.Id.ToString(), status.Id == Deal.StatusId))
+            .ToList();
+        LoadModules(id);
+        LoadComments(id);
     }
 
     private void LoadComments(int id)
@@ -116,9 +151,9 @@ public class DetailModel : PageModel
 
     private void LoadModules(int id)
     {
-        LinkedModules = _quotationService.GetModules(id);
-        ProductionTimeInWeeks = _quotationService.GetProductionTimeInWeeks(LinkedModules);
-        EarliestDeliveryDate = _quotationService.GetEarliestDeliveryDate(LinkedModules, DateTime.Today);
+        LinkedModules = _dealService.GetModules(id);
+        ProductionTimeInWeeks = _dealService.GetProductionTimeInWeeks(LinkedModules);
+        EarliestDeliveryDate = _dealService.GetEarliestDeliveryDate(LinkedModules, DateTime.Today);
         EstimatedDateTooEarly = LinkedModules.Count > 0 && Deal.EstimatedDate.Date < EarliestDeliveryDate;
 
         HashSet<int> linkedIds = LinkedModules.Select(module => module.Id).ToHashSet();

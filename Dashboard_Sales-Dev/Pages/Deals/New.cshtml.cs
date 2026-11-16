@@ -1,21 +1,21 @@
 using System.ComponentModel.DataAnnotations;
+using Dashboard_Sales_Dev.Logic.Models;
 using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Customer = Dashboard_Sales_Dev.Logic.Models.Client;
-using Deal = Dashboard_Sales_Dev.Logic.Models.Quotation;
 
 namespace Dashboard_Sales_Dev.Pages.Deals;
 
 public class NewModel : PageModel
 {
-    private readonly QuotationService _quotationService;
+    private readonly DealService _dealService;
     private readonly EmployeeService _employeeService;
 
-    public NewModel(QuotationService quotationService, EmployeeService employeeService)
+    public NewModel(DealService dealService, EmployeeService employeeService)
     {
-        _quotationService = quotationService;
+        _dealService = dealService;
         _employeeService = employeeService;
     }
 
@@ -50,14 +50,14 @@ public class NewModel : PageModel
         Deal deal = new Deal
         {
             Title = Input.Title,
-            Description = Input.Description,
+            Requirement = Input.Requirement,
             EstimatedDate = Input.EstimatedDate,
             EmployeeId = Input.OwnerId
         };
 
         try
         {
-            await _quotationService.CreateWithNewClientAsync(client, deal);
+            await _dealService.CreateWithNewClientAsync(client, deal);
         }
         catch (ArgumentException exception)
         {
@@ -97,7 +97,7 @@ public class NewModel : PageModel
         public string Title { get; set; } = string.Empty;
 
         [Required, StringLength(255)]
-        public string Description { get; set; } = string.Empty;
+        public string Requirement { get; set; } = string.Empty;
 
         [Required, DataType(DataType.Date)]
         public DateTime EstimatedDate { get; set; }

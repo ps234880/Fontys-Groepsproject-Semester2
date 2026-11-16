@@ -9,48 +9,48 @@ public class IndexModel : PageModel
 {
     private const int LatestCommentCount = 5;
 
-    private readonly QuotationService _quotationService;
+    private readonly DealService _dealService;
     private readonly CommentService _commentService;
 
-    public IndexModel(QuotationService quotationService, CommentService commentService)
+    public IndexModel(DealService dealService, CommentService commentService)
     {
-        _quotationService = quotationService;
+        _dealService = dealService;
         _commentService = commentService;
     }
 
     public List<DealOverview> Deals { get; private set; } = new();
     public List<Comment> LatestComments { get; private set; } = new();
-    public int DealsNeedingAction => Deals.Count(deal => deal.Status != DealStatus.OnTrack);
+    public int DealsNeedingAction => Deals.Count(deal => deal.Progress != DealProgress.OnTrack);
 
     public void OnGet()
     {
-        foreach (Quotation deal in _quotationService.GetAll())
+        foreach (Deal deal in _dealService.GetAll().Where(_dealService.IsOpen))
         {
-            List<LibraryModule> modules = _quotationService.GetModules(deal.Id);
-            DateTime earliest = _quotationService.GetEarliestDeliveryDate(modules, DateTime.Today);
+            List<LibraryModule> modules = _dealService.GetModules(deal.Id);
+            DateTime earliest = _dealService.GetEarliestDeliveryDate(modules, DateTime.Today);
 
-            DealStatus status = DealStatus.OnTrack;
+            DealProgress progress = DealProgress.OnTrack;
             if (modules.Count == 0)
             {
-                status = DealStatus.NoModules;
+                progress = DealProgress.NoModules;
             }
             else if (deal.EstimatedDate.Date < earliest)
             {
-                status = DealStatus.DateTooEarly;
+                progress = DealProgress.DateTooEarly;
             }
 
-            Deals.Add(new DealOverview(deal, modules.Count, _quotationService.GetProductionTimeInWeeks(modules), status));
+            Deals.Add(new DealOverview(deal, modules.Count, _dealService.GetProductionTimeInWeeks(modules), progress));
         }
 
         LatestComments = _commentService.GetLatest(LatestCommentCount);
     }
 
-    public enum DealStatus
+    public enum DealProgress
     {
         OnTrack,
         NoModules,
         DateTooEarly
     }
 
-    public record DealOverview(Quotation Deal, int ModuleCount, int ProductionTimeInWeeks, DealStatus Status);
+    public record DealOverview(Deal Deal, int ModuleCount, int ProductionTimeInWeeks, DealProgress Progress);
 }

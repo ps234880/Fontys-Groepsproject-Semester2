@@ -15,11 +15,12 @@
   <div class="card"><div class="h"><h2>Deal</h2></div><div class="b">
     <div class="fields" style="max-width:none">
       <div class="fld"><label>Project name</label><div>@Model.Deal.Title</div></div>
-      <div class="fld"><label>Description</label><div style="white-space:pre-line">@Model.Deal.Description</div></div>
+      <div class="fld"><label>Requirement</label><div style="white-space:pre-line">@Model.Deal.Requirement</div></div>
       <div class="cols">
         <div class="fld"><label>Estimated date</label><div>@Model.Deal.EstimatedDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</div></div>
         <div class="fld"><label>Production time</label><div>@(Model.LinkedModules.Count == 0 ? "No modules linked yet" : Model.ProductionTimeInWeeks + (Model.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</div></div>
         <div class="fld"><label>Owner</label><div>@Model.Deal.EmployeeName</div></div>
+        <div class="fld"><label>Stage</label><div>@Model.Deal.StatusName</div></div>
         <div class="fld" style="margin-bottom:0"><label>Created</label><div>@Model.Deal.CreatedAt.ToString("d MMMM yyyy HH:mm", CultureInfo.InvariantCulture)</div></div>
       </div>
       @if (Model.EstimatedDateTooEarly)
@@ -27,6 +28,17 @@
         <div style="margin-top:12px"><span class="tag warn">The estimated date is earlier than the production time allows. Earliest delivery: @Model.EarliestDeliveryDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</span></div>
       }
     </div></div></div>
+
+  <div class="card"><div class="h"><h2>Stage</h2></div><div class="b">
+    <form method="post" asp-page-handler="Status" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;align-items:center">
+      <select asp-for="StatusId" asp-items="Model.Statuses" class="in" style="max-width:240px"></select>
+      <button type="submit" class="btn n">Change stage</button>
+    </form>
+    @if (Model.StatusError != null)
+    {
+      <p class="field-error" style="margin-top:8px">@Model.StatusError</p>
+    }
+  </div></div>
 
   <div class="card"><div class="h"><h2>Modules</h2></div><div class="b">
     @if (Model.LinkedModules.Count == 0)

@@ -16,9 +16,9 @@ public class CommentService
         _employeeRepository = employeeRepository;
     }
 
-    public List<Comment> GetForDeal(int quotationId)
+    public List<Comment> GetForDeal(int dealId)
     {
-        return _commentRepository.GetByQuotation(quotationId);
+        return _commentRepository.GetByDeal(dealId);
     }
 
     public List<Comment> GetLatest(int count)
@@ -26,7 +26,7 @@ public class CommentService
         return _commentRepository.GetLatest(count);
     }
 
-    public async Task AddAsync(int quotationId, int employeeId, string? message)
+    public async Task AddAsync(int dealId, int employeeId, string? message)
     {
         string text = (message ?? string.Empty).Trim();
 
@@ -47,7 +47,7 @@ public class CommentService
 
         await _commentRepository.AddCommentAsync(new Comment
         {
-            QuotationId = quotationId,
+            DealId = dealId,
             EmployeeId = employeeId,
             Message = text
         });

@@ -46,50 +46,6 @@ create table employee
         foreign key (role_id) references role (id)
 );
 
-create table quotation
-(
-    id            int auto_increment
-        primary key,
-    client_id     int          not null,
-    employee_id   int          not null,
-    title         varchar(255) not null,
-    description   varchar(255) not null,
-    estimatedDate datetime     not null,
-    createdAt     datetime     not null,
-    updatedAt     datetime     null,
-    constraint Quotation_client_id_fk
-        foreign key (client_id) references client (id),
-    constraint quotation_employee_id_fk
-        foreign key (employee_id) references employee (id)
-);
-
-create table comment
-(
-    id           int auto_increment
-        primary key,
-    employee_id  int      not null,
-    quotation_id int      not null,
-    saleOrder_id int      null,
-    message      text     not null,
-    createdAt    datetime not null,
-    updatedAt    datetime null,
-    constraint Comment_employee_id_fk
-        foreign key (employee_id) references employee (id),
-    constraint Comment_quotation_id_fk
-        foreign key (quotation_id) references quotation (id)
-);
-
-create table quotation_module
-(
-    module_id    int not null,
-    quotation_id int not null,
-    primary key (quotation_id, module_id),
-    constraint quotation_module_module_id_fk
-        foreign key (module_id) references module (id),
-    constraint quotation_module_quotation_id_fk
-        foreign key (quotation_id) references quotation (id)
-);
-
 create table status
 (
     id   int auto_increment
@@ -97,29 +53,51 @@ create table status
     name varchar(255) not null
 );
 
-create table sale_order
+create table deal
 (
-    id                 int auto_increment
+    id            int auto_increment
         primary key,
-    definiteModule_id  int      not null,
-    satus_id           int      not null,
-    agreedPriceInCents int      not null,
-    deadline           datetime not null,
-    createdAt          datetime not null,
-    updatedAt          datetime null,
-    constraint sale_order_status_id_fk
-        foreign key (satus_id) references status (id)
+    client_id     int          not null,
+    employee_id   int          not null,
+    status_id     int          not null,
+    title         varchar(255) not null,
+    requirement   varchar(255) not null,
+    estimatedDate datetime     not null,
+    createdAt     datetime     not null,
+    updatedAt     datetime     null,
+    constraint deal_client_id_fk
+        foreign key (client_id) references client (id),
+    constraint deal_employee_id_fk
+        foreign key (employee_id) references employee (id),
+    constraint deal_status_id_fk
+        foreign key (status_id) references status (id)
 );
 
-create table module_sale_order
+create table comment
 (
-    module_id     int not null,
-    sale_order_id int not null,
-    primary key (module_id, sale_order_id),
-    constraint module_sale_order_module_id_fk
-        foreign key (module_id) references module (id),
-    constraint module_sale_order_sale_order_id_fk
-        foreign key (sale_order_id) references sale_order (id)
+    id          int auto_increment
+        primary key,
+    employee_id int      not null,
+    deal_id     int      not null,
+    message     text     not null,
+    createdAt   datetime not null,
+    updatedAt   datetime null,
+    constraint comment_employee_id_fk
+        foreign key (employee_id) references employee (id),
+    constraint comment_deal_id_fk
+        foreign key (deal_id) references deal (id)
 );
+
+create table deal_module
+(
+    module_id int not null,
+    deal_id   int not null,
+    primary key (deal_id, module_id),
+    constraint deal_module_module_id_fk
+        foreign key (module_id) references module (id),
+    constraint deal_module_deal_id_fk
+        foreign key (deal_id) references deal (id)
+);
+
 
 

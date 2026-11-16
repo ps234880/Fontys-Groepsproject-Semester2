@@ -23,10 +23,11 @@
         <thead><tr>
           <th>Customer / project</th>
           <th style="width:150px">Owner</th>
+          <th style="width:110px">Stage</th>
           <th class="c" style="width:80px">Modules</th>
           <th class="c" style="width:120px">Production time</th>
           <th style="width:120px">Estimated date</th>
-          <th style="width:150px">Status</th>
+          <th style="width:150px">Progress</th>
         </tr></thead>
         <tbody>
           @foreach (var item in Model.Deals)
@@ -34,16 +35,17 @@
             <tr>
               <td><a class="lnk" asp-page="/Deals/Detail" asp-route-id="@item.Deal.Id">@item.Deal.ClientCompanyName</a><div class="s">@item.Deal.Title</div></td>
               <td class="dim">@item.Deal.EmployeeName</td>
+              <td class="dim nowrap">@item.Deal.StatusName</td>
               <td class="c num">@item.ModuleCount</td>
               <td class="c num nowrap">@(item.ModuleCount == 0 ? "–" : item.ProductionTimeInWeeks + (item.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</td>
               <td class="nowrap dim">@item.Deal.EstimatedDate.ToString("d MMM yyyy", CultureInfo.InvariantCulture)</td>
               <td>
-                @switch (item.Status)
+                @switch (item.Progress)
                 {
-                  case IndexModel.DealStatus.NoModules:
+                  case IndexModel.DealProgress.NoModules:
                     <span class="tag stop">No modules yet</span>
                     break;
-                  case IndexModel.DealStatus.DateTooEarly:
+                  case IndexModel.DealProgress.DateTooEarly:
                     <span class="tag warn">Date too early</span>
                     break;
                   default:
@@ -68,7 +70,7 @@
       <div class="msg"><span class="av">@comment.Initials</span><div class="bd">
         <div class="hd"><span class="w">@comment.EmployeeName</span><span class="tag @(comment.EmployeeRole == "Development" ? "info" : "idle")">@comment.EmployeeRole</span><span class="t">@comment.CreatedAt.ToString("d MMM yyyy HH:mm", CultureInfo.InvariantCulture)</span></div>
         <p>@comment.Message</p>
-        <p style="margin-top:8px"><a class="sm" style="color:var(--accent-text);font-weight:600" asp-page="/Deals/Detail" asp-route-id="@comment.QuotationId">@comment.CompanyName · @comment.QuotationTitle</a></p>
+        <p style="margin-top:8px"><a class="sm" style="color:var(--accent-text);font-weight:600" asp-page="/Deals/Detail" asp-route-id="@comment.DealId">@comment.CompanyName · @comment.DealTitle</a></p>
       </div></div>
     }
   </div>
