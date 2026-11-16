@@ -15,13 +15,73 @@
   <div class="card"><div class="h"><h2>Deal</h2></div><div class="b">
     <div class="fields" style="max-width:none">
       <div class="fld"><label>Project name</label><div>@Model.Deal.Title</div></div>
-      <div class="fld"><label>Description</label><div style="white-space:pre-line">@Model.Deal.Description</div></div>
+      <div class="fld"><label>Requirement</label><div style="white-space:pre-line">@Model.Deal.Requirement</div></div>
       <div class="cols">
         <div class="fld"><label>Estimated date</label><div>@Model.Deal.EstimatedDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</div></div>
+        <div class="fld"><label>Production time</label><div>@(Model.LinkedModules.Count == 0 ? "No modules linked yet" : Model.ProductionTimeInWeeks + (Model.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</div></div>
         <div class="fld"><label>Owner</label><div>@Model.Deal.EmployeeName</div></div>
+        <div class="fld"><label>Stage</label><div>@Model.Deal.StatusName</div></div>
         <div class="fld" style="margin-bottom:0"><label>Created</label><div>@Model.Deal.CreatedAt.ToString("d MMMM yyyy HH:mm", CultureInfo.InvariantCulture)</div></div>
       </div>
+      @if (Model.EstimatedDateTooEarly)
+      {
+        <div style="margin-top:12px"><span class="tag warn">The estimated date is earlier than the production time allows. Earliest delivery: @Model.EarliestDeliveryDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</span></div>
+      }
     </div></div></div>
+
+  <div class="card"><div class="h"><h2>Stage</h2></div><div class="b">
+    <form method="post" asp-page-handler="Status" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;align-items:center">
+      <select asp-for="StatusId" asp-items="Model.Statuses" class="in" style="max-width:240px"></select>
+      <button type="submit" class="btn n">Change stage</button>
+    </form>
+    @if (Model.StatusError != null)
+    {
+      <p class="field-error" style="margin-top:8px">@Model.StatusError</p>
+    }
+  </div></div>
+
+  <div class="card"><div class="h"><h2>Modules</h2></div><div class="b">
+    @if (Model.LinkedModules.Count == 0)
+    {
+      <p class="sm dim">No modules are linked to this deal yet. Link existing modules so development can see what can be reused.</p>
+    }
+    else
+    {
+      <div class="tw"><table class="tbl">
+        <thead><tr>
+          <th>Module</th>
+          <th class="c" style="width:130px">Production time</th>
+          <th class="r" style="width:130px">Price</th>
+          <th class="r" style="width:90px"></th>
+        </tr></thead>
+        <tbody>
+          @foreach (var module in Model.LinkedModules)
+          {
+            <tr>
+              <td><span class="t">@module.Name</span><div class="s">@module.Description</div></td>
+              <td class="c num nowrap">@module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks")</td>
+              <td class="r num nowrap">€ @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</td>
+              <td class="r nowrap">
+                <form method="post" asp-page-handler="Unlink" asp-route-id="@Model.Deal.Id" asp-route-moduleId="@module.Id" class="inline-form">
+                  <button type="submit" class="lnk-stop sm">Remove</button>
+                </form>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <div class="tfoot"><span>@Model.LinkedModules.Count @(Model.LinkedModules.Count == 1 ? "module" : "modules") · @Model.ProductionTimeInWeeks @(Model.ProductionTimeInWeeks == 1 ? "week" : "weeks") in total</span></div></div>
+    }
+    @if (Model.AvailableModules.Count > 0)
+    {
+      <form method="post" asp-page-handler="Link" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;margin-top:14px">
+        <select asp-for="ModuleId" asp-items="Model.AvailableModules" class="sel in" style="flex:1">
+          <option value="">Choose a module from the library</option>
+        </select>
+        <button type="submit" class="btn">Link module</button>
+      </form>
+    }
+  </div></div>
 
   <div class="card"><div class="h"><h2>Customer</h2></div><div class="b">
     <div class="fields" style="max-width:none">
@@ -32,4 +92,32 @@
         <div class="fld" style="margin-bottom:0"><label>Phone number</label><div>@Model.Deal.ClientPhoneNumber</div></div>
       </div>
     </div></div></div>
+  <div class="card"><div class="h"><h2>Comments</h2><span class="sm dim">@Model.Comments.Count @(Model.Comments.Count == 1 ? "comment" : "comments")</span></div>
+    @if (Model.Comments.Count == 0)
+    {
+      <div class="b"><p class="sm dim">No comments yet. Development can give feedback here, and Sales can reply.</p></div>
+    }
+    @foreach (var comment in Model.Comments)
+    {
+      <div class="msg"><span class="av">@comment.Initials</span><div class="bd">
+        <div class="hd"><span class="w">@comment.EmployeeName</span><span class="tag @(comment.EmployeeRole == "Development" ? "info" : "idle")">@comment.EmployeeRole</span><span class="t">@comment.CreatedAt.ToString("d MMM yyyy HH:mm", CultureInfo.InvariantCulture)</span></div>
+        <p style="white-space:pre-line">@comment.Message</p>
+      </div></div>
+    }
+    <div class="b" style="border-top:1px solid var(--line-2)">
+      @if (Model.CommentError != null)
+      {
+        <div class="banner stop" role="alert">@Model.CommentError</div>
+      }
+      <form method="post" asp-page-handler="Comment" asp-route-id="@Model.Deal.Id">
+        <div class="fld"><label asp-for="CommentEmployeeId">Comment as</label>
+          <select asp-for="CommentEmployeeId" asp-items="Model.Authors" class="sel in">
+            <option value="">Choose who is writing</option>
+          </select></div>
+        <div class="fld"><label asp-for="CommentMessage">Comment</label>
+          <textarea asp-for="CommentMessage" class="ta" maxlength="2000" placeholder="Feedback, an alternative solution or a question"></textarea></div>
+        <div style="display:flex;justify-content:flex-end"><button type="submit" class="btn">Post comment</button></div>
+      </form>
+    </div>
+  </div>
 </div></div>

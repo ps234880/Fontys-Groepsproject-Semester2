@@ -1,4 +1,7 @@
 @page
+@model Dashboard_Sales_Dev.Pages.Sales.IndexModel
+@using System.Globalization
+@using Dashboard_Sales_Dev.Logic.Models
 @{
     ViewData["Title"] = "Overview";
     ViewData["Role"] = "Sales";
@@ -7,46 +10,68 @@
 }
 @section Crumb {<span class="cur">Sales</span><span class="sep">/</span><span class="cur">Overview</span>}
 
-<div class="ph"><div class="r1"><div><h1>Overview</h1><div class="sub">Three deals are waiting for your action.</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Proposal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg> Deal proposal</a><a class="btn" asp-page="/Deals/New"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> New deal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div></div><div class="content pad">
-   <div class="card"><div class="h"><h2>Waiting for you</h2>
-     <a class="sm" style="color:var(--accent-text);font-weight:600" asp-page="/Deals/Index">All deals</a></div><div style="padding:0"><div class="tw"><table class="tbl"><thead><tr><th class="" style="">Customer / project</th><th class="r" style="width:96px">Value</th><th class="" style="width:140px">Stage</th><th class="c" style="width:64px">Reqs</th><th class="" style="width:150px">Development</th><th class="" style="width:100px">Signing date</th></tr></thead><tbody><tr>
-      <td><a class="lnk" asp-page="/Deals/Detail">Gemeente Tilburg</a><div class="s">Citizen Portal 2027</div></td>
-      <td class="r num nowrap">84,000</td>
-      <td><span class="tag warn">Negotiation</span></td>
-      <td class="c num">6</td>
-      <td><span class="tag warn">2 open</span></td>
-      <td class="nowrap dim">15 Nov</td>
-    </tr><tr>
-      <td><a class="lnk" asp-page="/Deals/Detail">Zorggroep Noord</a><div class="s">EHR integration</div></td>
-      <td class="r num nowrap">132,000</td>
-      <td><span class="tag info">Proposal</span></td>
-      <td class="c num">9</td>
-      <td><span class="tag stop">Waiting for dev</span></td>
-      <td class="nowrap dim">1 Dec</td>
-    </tr><tr>
-      <td><a class="lnk" asp-page="/Deals/Detail">Woonstichting Ven</a><div class="s">Tenant app</div></td>
-      <td class="r num nowrap">96,000</td>
-      <td><span class="tag idle">Qualification</span></td>
-      <td class="c num">0</td>
-      <td><span class="tag stop">No requirements</span></td>
-      <td class="nowrap dim">—</td>
-    </tr></tbody></table></div></div></div><div class="card"><div class="h"><h2>Latest assessments from development</h2></div>
-   <div class="msg"><span class="av">SD</span><div class="bd">
-     <div class="hd"><span class="w">Sanne de Groot</span><span class="t">2 hours ago</span>
-       <span class="pill">REQ-01</span><span class="tag ok">Available now</span></div>
-     <p>DigiD login works with the existing auth-gateway and digid-adapter, provided the customer
-       accepts a redirect to DigiD instead of a login inside the site. Logius requires this.</p>
-     <p style="margin-top:8px"><a class="sm" style="color:var(--accent-text);font-weight:600"
-       asp-page="/Discussion">Reply in the discussion</a></p></div></div>
-   <div class="msg"><span class="av">TK</span><div class="bd">
-     <div class="hd"><span class="w">Tom van Kaathoven</span><span class="t">Yesterday</span>
-       <span class="pill">REQ-04</span><span class="tag stop">Custom build</span></div>
-     <p>Real-time synchronization with Decos does not exist yet and takes six to eight weeks. Proposal for phase 1:
-       a sync every fifteen minutes, about two weeks of work.</p></div></div>
-   </div>
+<div class="ph"><div class="r1"><div><h1>Overview</h1><div class="sub">@Model.Deals.Count @(Model.Deals.Count == 1 ? "deal" : "deals") in progress, @Model.DealsNeedingAction @(Model.DealsNeedingAction == 1 ? "needs" : "need") your attention.</div></div><div style="display:flex;gap:8px"><a class="btn" asp-page="/Deals/New"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> New deal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div></div>
+<div class="content pad">
+  <div class="card"><div class="h"><h2>Deals</h2><a class="sm" style="color:var(--accent-text);font-weight:600" asp-page="/Deals/Index">All deals</a></div>
+    @if (Model.Deals.Count == 0)
+    {
+      <div class="b"><p class="sm dim">There are no deals yet. Use "New deal" to add the first one.</p></div>
+    }
+    else
+    {
+      <div style="padding:0"><div class="tw"><table class="tbl">
+        <thead><tr>
+          <th>Customer / project</th>
+          <th style="width:150px">Owner</th>
+          <th style="width:110px">Stage</th>
+          <th class="c" style="width:80px">Modules</th>
+          <th class="c" style="width:120px">Production time</th>
+          <th style="width:120px">Estimated date</th>
+          <th style="width:150px">Progress</th>
+        </tr></thead>
+        <tbody>
+          @foreach (var item in Model.Deals)
+          {
+            <tr>
+              <td><a class="lnk" asp-page="/Deals/Detail" asp-route-id="@item.Deal.Id">@item.Deal.ClientCompanyName</a><div class="s">@item.Deal.Title</div></td>
+              <td class="dim">@item.Deal.EmployeeName</td>
+              <td class="dim nowrap">@item.Deal.StatusName</td>
+              <td class="c num">@item.ModuleCount</td>
+              <td class="c num nowrap">@(item.ModuleCount == 0 ? "–" : item.ProductionTimeInWeeks + (item.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</td>
+              <td class="nowrap dim">@item.Deal.EstimatedDate.ToString("d MMM yyyy", CultureInfo.InvariantCulture)</td>
+              <td>
+                @switch (item.Progress)
+                {
+                  case DealProgress.NoModules:
+                    <span class="tag stop">No modules yet</span>
+                    break;
+                  case DealProgress.DateTooEarly:
+                    <span class="tag warn">Date too early</span>
+                    break;
+                  default:
+                    <span class="tag ok">On track</span>
+                    break;
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table></div></div>
+    }
+  </div>
 
-   <div class="card"><div class="h"><h2>Open questions</h2><span class="sm dim">2 questions</span></div>
-   <div style="padding:0"><div class="tw"><table class="tbl"><thead><tr><th class="" style="">Question</th><th class="" style="width:110px">Requirement</th><th class="" style="width:150px">From</th><th class="" style="width:90px">Since</th></tr></thead><tbody><tr><td><a class="lnk" asp-page="/Discussion">Can the DigiD login be a redirect?</a></td>
-        <td><span class="pill">REQ-01</span></td><td class="dim">Sanne de Groot</td><td class="dim nowrap">2 hours</td></tr>
-        <tr><td><a class="lnk" asp-page="/Discussion">Is a fifteen-minute delay acceptable for Decos?</a></td>
-        <td><span class="pill">REQ-04</span></td><td class="dim">Tom van Kaathoven</td><td class="dim nowrap">1 day</td></tr></tbody></table></div></div></div></div>
+  <div class="card"><div class="h"><h2>Latest comments</h2></div>
+    @if (Model.LatestComments.Count == 0)
+    {
+      <div class="b"><p class="sm dim">No comments yet.</p></div>
+    }
+    @foreach (var comment in Model.LatestComments)
+    {
+      <div class="msg"><span class="av">@comment.Initials</span><div class="bd">
+        <div class="hd"><span class="w">@comment.EmployeeName</span><span class="tag @(comment.EmployeeRole == "Development" ? "info" : "idle")">@comment.EmployeeRole</span><span class="t">@comment.CreatedAt.ToString("d MMM yyyy HH:mm", CultureInfo.InvariantCulture)</span></div>
+        <p>@comment.Message</p>
+        <p style="margin-top:8px"><a class="sm" style="color:var(--accent-text);font-weight:600" asp-page="/Deals/Detail" asp-route-id="@comment.DealId">@comment.CompanyName · @comment.DealTitle</a></p>
+      </div></div>
+    }
+  </div>
+</div>
