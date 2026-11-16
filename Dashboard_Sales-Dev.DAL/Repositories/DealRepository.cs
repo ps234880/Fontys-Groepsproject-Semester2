@@ -93,7 +93,7 @@ INNER JOIN status s ON d.status_id = s.id";
                        VALUES (@client_id, @employee_id, @status_id, @title, @requirement, @estimatedDate, @CreatedAt)";
 
         using var cmd = new MySqlCommand(sql, connection);
-        cmd.Parameters.AddWithValue("@client_id", deal.ClientId) ;
+        cmd.Parameters.AddWithValue("@client_id", deal.ClientId);
         cmd.Parameters.AddWithValue("@employee_id", deal.EmployeeId);
         cmd.Parameters.AddWithValue("@status_id", deal.StatusId);
         cmd.Parameters.AddWithValue("@title", deal.Title ?? (object)DBNull.Value);
@@ -172,5 +172,86 @@ ORDER BY m.name;";
         command.Parameters.AddWithValue("@moduleId", moduleId);
 
         await command.ExecuteNonQueryAsync();
+    }
+
+    public List<Client> GetClients(int dealId)
+    {
+        List<Client> clients = new List<Client>();
+
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        string query = @"SELECT c.id, c.companyName, c.firstName, c.lastName,
+                            c.email, c.phoneNumber, c.createdAt, c.updatedAt
+FROM deal_client dc
+INNER JOIN client c ON dc.client_id = c.id
+WHERE dc.deal_id = @dealId
+ORDER BY c.lastName, c.firstName;";
+
+        using MySqlCommand command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            clients.Add(new Client
+            {
+                Id = reader.GetInt32("id"),
+                CompanyName = reader.GetString("companyName"),
+                FirstName = reader.GetString("firstName"),
+                LastName = reader.GetString("lastName"),
+                Email = reader.GetString("email"),
+                PhoneNumber = reader.GetString("phoneNumber"),
+                CreatedAt = reader.GetDateTime("createdAt"),
+                UpdatedAt = reader.IsDBNull(reader.GetOrdinal("updatedAt"))
+                    ? null
+                    : reader.GetDateTime("updatedAt")
+            });
+        }
+
+        return clients;
+    }
+
+    public async Task AddClientAsync(int dealId, int clientId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("INSERT IGNORE INTO deal_client (deal_id, client_id) VALUES (@dealId, @clientId);", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@clientId", clientId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task RemoveClientAsync(int dealId, int clientId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("DELETE FROM deal_client WHERE deal_id = @dealId AND client_id = @clientId;", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@clientId", clientId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task ReplacePrimaryClientAsync(int dealId, int newClientId)
+    {
+        await using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+        await using var transaction = await connection.BeginTransactionAsync();
+
+        const string sql = @"
+            UPDATE deal SET client_id = @newClientId, updatedAt = @updatedAt WHERE id = @dealId;
+            DELETE FROM deal_client WHERE deal_id = @dealId AND client_id = @newClientId;";
+
+        await using MySqlCommand command = new MySqlCommand(sql, connection, transaction);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@newClientId", newClientId);
+        command.Parameters.AddWithValue("@updatedAt", DateTime.Now);
+
+        await command.ExecuteNonQueryAsync();
+        await transaction.CommitAsync();
     }
 }

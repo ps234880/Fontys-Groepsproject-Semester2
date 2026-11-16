@@ -83,15 +83,54 @@
     }
   </div></div>
 
-  <div class="card"><div class="h"><h2>Customer</h2></div><div class="b">
-    <div class="fields" style="max-width:none">
-      <div class="fld"><label>Company</label><div>@Model.Deal.ClientCompanyName</div></div>
-      <div class="cols">
-        <div class="fld" style="margin-bottom:0"><label>Contact person</label><div>@Model.Deal.ClientName</div></div>
-        <div class="fld" style="margin-bottom:0"><label>Email address</label><div>@Model.Deal.ClientEmail</div></div>
-        <div class="fld" style="margin-bottom:0"><label>Phone number</label><div>@Model.Deal.ClientPhoneNumber</div></div>
-      </div>
-    </div></div></div>
+  <div class="card"><div class="h"><h2>Contact persons</h2></div><div class="b">
+    <div class="tw"><table class="tbl">
+      <thead><tr>
+        <th>Name</th>
+        <th style="width:220px">Email address</th>
+        <th style="width:160px">Phone number</th>
+        <th class="r" style="width:90px"></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td>@Model.Deal.ClientName <span class="tag info">Primary</span><div class="s">@Model.Deal.ClientCompanyName</div></td>
+          <td class="dim nowrap">@Model.Deal.ClientEmail</td>
+          <td class="dim nowrap">@Model.Deal.ClientPhoneNumber</td>
+          <td class="r nowrap">
+            @if (Model.Contacts.Count > 0)
+            {
+              <form method="post" asp-page-handler="RemovePrimary" asp-route-id="@Model.Deal.Id" class="inline-form" onsubmit="return confirm('Remove the primary contact from this deal? The next contact becomes primary.')">
+                <button type="submit" class="lnk-stop sm">Remove</button>
+              </form>
+            }
+          </td>
+        </tr>
+        @foreach (var contact in Model.Contacts)
+        {
+          <tr>
+            <td>@contact.FirstName @contact.LastName<div class="s">@contact.CompanyName</div></td>
+            <td class="dim nowrap">@contact.Email</td>
+            <td class="dim nowrap">@contact.PhoneNumber</td>
+            <td class="r nowrap">
+              <form method="post" asp-page-handler="UnlinkContact" asp-route-id="@Model.Deal.Id" asp-route-clientId="@contact.Id" class="inline-form" onsubmit="return confirm('Remove this contact person from the deal?')">
+                <button type="submit" class="lnk-stop sm">Remove</button>
+              </form>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table></div>
+    @if (Model.AvailableContacts.Count > 0)
+    {
+      <form method="post" asp-page-handler="LinkContact" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;margin-top:14px">
+        <select asp-for="ContactId" asp-items="Model.AvailableContacts" class="sel in" style="flex:1">
+          <option value="">Choose an existing customer</option>
+        </select>
+        <button type="submit" class="btn">Add contact</button>
+      </form>
+    }
+  </div></div>
+
   <div class="card"><div class="h"><h2>Comments</h2><span class="sm dim">@Model.Comments.Count @(Model.Comments.Count == 1 ? "comment" : "comments")</span></div>
     @if (Model.Comments.Count == 0)
     {

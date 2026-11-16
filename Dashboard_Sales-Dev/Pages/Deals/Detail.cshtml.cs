@@ -1,5 +1,6 @@
 using Dashboard_Sales_Dev.Logic.Models;
 using LibraryModule = Dashboard_Sales_Dev.Logic.Models.Module;
+using Customer = Dashboard_Sales_Dev.Logic.Models.Client;
 using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -25,6 +26,8 @@ public class DetailModel : PageModel
     public Deal Deal { get; private set; } = default!;
     public List<LibraryModule> LinkedModules { get; private set; } = new();
     public List<SelectListItem> AvailableModules { get; private set; } = new();
+    public List<Customer> Contacts { get; private set; } = new();
+    public List<SelectListItem> AvailableContacts { get; private set; } = new();
     public List<SelectListItem> Statuses { get; private set; } = new();
     public string? StatusError { get; private set; }
     public int ProductionTimeInWeeks { get; private set; }
@@ -37,6 +40,9 @@ public class DetailModel : PageModel
 
     [BindProperty]
     public int ModuleId { get; set; }
+
+    [BindProperty]
+    public int ContactId { get; set; }
 
     [BindProperty]
     public int StatusId { get; set; }
@@ -132,6 +138,44 @@ public class DetailModel : PageModel
         return RedirectToPage(new { id });
     }
 
+    public async Task<IActionResult> OnPostLinkContactAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        if (ContactId > 0)
+        {
+            await _dealService.LinkContactAsync(deal, ContactId);
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostUnlinkContactAsync(int id, int clientId)
+    {
+        await _dealService.UnlinkContactAsync(id, clientId);
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostRemovePrimaryAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        await _dealService.RemovePrimaryContactAsync(deal);
+
+        return RedirectToPage(new { id });
+    }
+
     private void LoadPage(int id)
     {
         if (StatusId == 0)
@@ -143,7 +187,16 @@ public class DetailModel : PageModel
             .Select(status => new SelectListItem(status.Name, status.Id.ToString(), status.Id == Deal.StatusId))
             .ToList();
         LoadModules(id);
+        LoadContacts(id);
         LoadComments(id);
+    }
+
+    private void LoadContacts(int id)
+    {
+        Contacts = _dealService.GetContacts(id);
+        AvailableContacts = _dealService.GetAvailableContacts(Deal)
+            .Select(client => new SelectListItem($"{client.CompanyName} - {client.FirstName} {client.LastName}", client.Id.ToString()))
+            .ToList();
     }
 
     private void LoadComments(int id)

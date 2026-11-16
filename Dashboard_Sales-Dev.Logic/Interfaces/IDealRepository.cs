@@ -8,7 +8,13 @@ public interface IDealRepository
     Deal? GetById(int id);
     Task AddDealAsync(Deal deal);
     Task UpdateStatusAsync(int dealId, int statusId);
+
     List<Module> GetModules(int dealId);
     Task AddModuleAsync(int dealId, int moduleId);
     Task RemoveModuleAsync(int dealId, int moduleId);
+
+    List<Client> GetClients(int dealId);
+    Task AddClientAsync(int dealId, int clientId);
+    Task RemoveClientAsync(int dealId, int clientId);
+    Task ReplacePrimaryClientAsync(int dealId, int newClientId);
 }

@@ -14,7 +14,8 @@ public class DealService
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IStatusRepository _statusRepository;
 
-    public DealService(IDealRepository dealRepository, IClientRepository clientRepository, IEmployeeRepository employeeRepository, IStatusRepository statusRepository)
+    public DealService(IDealRepository dealRepository, IClientRepository clientRepository,
+        IEmployeeRepository employeeRepository, IStatusRepository statusRepository)
     {
         _dealRepository = dealRepository;
         _clientRepository = clientRepository;
@@ -130,5 +131,48 @@ public class DealService
     public DateTime GetEarliestDeliveryDate(List<Module> modules, DateTime today)
     {
         return today.Date.AddDays(7 * GetProductionTimeInWeeks(modules));
+    }
+
+    public List<Client> GetContacts(int dealId)
+    {
+        return _dealRepository.GetClients(dealId);
+    }
+
+    public List<Client> GetAvailableContacts(Deal deal)
+    {
+        HashSet<int> linkedIds = GetContacts(deal.Id).Select(client => client.Id).ToHashSet();
+
+        return _clientRepository.GetAll()
+            .Where(client => client.Id != deal.ClientId && !linkedIds.Contains(client.Id))
+            .OrderBy(client => client.CompanyName)
+            .ThenBy(client => client.LastName)
+            .ToList();
+    }
+
+    public async Task LinkContactAsync(Deal deal, int clientId)
+    {
+        if (clientId == deal.ClientId || GetContacts(deal.Id).Any(client => client.Id == clientId))
+        {
+            return;
+        }
+
+        await _dealRepository.AddClientAsync(deal.Id, clientId);
+    }
+
+    public Task UnlinkContactAsync(int dealId, int clientId)
+    {
+        return _dealRepository.RemoveClientAsync(dealId, clientId);
+    }
+
+    public async Task RemovePrimaryContactAsync(Deal deal)
+    {
+        Client? next = GetContacts(deal.Id).FirstOrDefault();
+
+        if (next == null)
+        {
+            return;
+        }
+
+        await _dealRepository.ReplacePrimaryClientAsync(deal.Id, next.Id);
     }
 }
