@@ -34,7 +34,7 @@
         <tr>
           <td><a class="lnk" asp-page="/Deals/Detail" asp-route-id="@deal.Id">@deal.ClientCompanyName</a><div class="s">@deal.Title</div></td>
           <td class="dim nowrap">@deal.ClientName</td>
-          <td class="nowrap"><span class="tag @(deal.StatusName == "Won" ? "ok" : deal.StatusName == "Lost" ? "stop" : "idle")">@deal.StatusName</span></td>
+          <td class="nowrap"><span class="tag @(deal.StatusName == "Won" ? "ok" : deal.StatusName == "Lost" ? "stop" : "idle")">@deal.StatusName</span>@if (deal.WaitingOnRole != null) {<div class="s">Waiting for @deal.WaitingOnRole</div>}</td>
           <td class="nowrap dim">@deal.EstimatedDate.ToString("d MMM yyyy", CultureInfo.InvariantCulture)</td>
           <td class="dim nowrap">@deal.EmployeeName</td>
           <td class="nowrap dim">@deal.CreatedAt.ToString("d MMM yyyy", CultureInfo.InvariantCulture)</td>

@@ -183,6 +183,17 @@
     {
       <p class="field-error" style="margin-top:8px">@Model.StatusError</p>
     }
+    <form method="post" asp-page-handler="WaitingOn" asp-route-id="@Model.Deal.Id" style="margin-top:16px">
+      <label for="WaitingOn" class="sm strong" style="display:block;margin-bottom:5px">Whose turn is it?</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select asp-for="WaitingOn" asp-items="Model.WaitingOnOptions" class="sel in" style="max-width:240px"></select>
+        <button type="submit" class="btn n">Save</button>
+      </div>
+    </form>
+    @if (Model.WaitingOnError != null)
+    {
+      <p class="field-error" style="margin-top:8px">@Model.WaitingOnError</p>
+    }
   </div></div>
 
   <div class="card"><div class="h"><h2>Comments</h2><span class="sm dim">@Model.Comments.Count @(Model.Comments.Count == 1 ? "comment" : "comments")</span></div>

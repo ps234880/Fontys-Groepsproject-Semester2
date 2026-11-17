@@ -6,6 +6,7 @@ namespace Dashboard_Sales_Dev.Logic.Services;
 public class EmployeeService
 {
     public const string SalesRole = "Sales";
+    public const string DevelopmentRole = "Development";
 
     private readonly IEmployeeRepository _employeeRepository;
 

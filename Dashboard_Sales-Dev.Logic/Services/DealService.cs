@@ -81,6 +81,20 @@ public class DealService
         await _dealRepository.UpdateStatusAsync(dealId, statusId);
     }
 
+    public static readonly string[] WaitingOnRoles = [EmployeeService.SalesRole, EmployeeService.DevelopmentRole];
+
+    public async Task ChangeWaitingOnAsync(int dealId, string? roleName)
+    {
+        string? role = string.IsNullOrWhiteSpace(roleName) ? null : roleName;
+
+        if (role != null && !WaitingOnRoles.Contains(role))
+        {
+            throw new ArgumentException($"'{roleName}' is not a team that can be waited on. Choose Sales or Development.");
+        }
+
+        await _dealRepository.UpdateWaitingOnAsync(dealId, role);
+    }
+
     public bool IsOpen(Deal deal)
     {
         return deal.StatusName != WonStatus && deal.StatusName != LostStatus;
