@@ -1,8 +1,9 @@
 using Dashboard_Sales_Dev.Logic.Models;
-using LibraryModule = Dashboard_Sales_Dev.Logic.Models.Module;
 using Customer = Dashboard_Sales_Dev.Logic.Models.Client;
+using LibraryModule = Dashboard_Sales_Dev.Logic.Models.Module;
 using Dashboard_Sales_Dev.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -24,7 +25,10 @@ public class DetailModel : PageModel
     }
 
     public Deal Deal { get; private set; } = default!;
-    public List<LibraryModule> LinkedModules { get; private set; } = new();
+    public List<DealModule> LinkedModules { get; private set; } = new();
+    public int TotalPriceInCents { get; private set; }
+    public string? ModuleError { get; private set; }
+    public string? NewModuleError { get; private set; }
     public List<SelectListItem> AvailableModules { get; private set; } = new();
     public List<Customer> Contacts { get; private set; } = new();
     public List<SelectListItem> AvailableContacts { get; private set; } = new();
@@ -45,6 +49,15 @@ public class DetailModel : PageModel
 
     [BindProperty]
     public int ContactId { get; set; }
+
+    [BindProperty]
+    public int? ModulePriceInEuros { get; set; }
+
+    [BindProperty]
+    public int? ModuleWeeks { get; set; }
+
+    [BindProperty]
+    public LibraryModule NewModule { get; set; } = new();
 
     [BindProperty]
     public int StatusId { get; set; }
@@ -131,6 +144,75 @@ public class DetailModel : PageModel
         if (ModuleId > 0)
         {
             await _dealService.LinkModuleAsync(id, ModuleId);
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostUpdateModuleAsync(int id, int moduleId)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            if (ModelState.GetFieldValidationState(nameof(ModuleWeeks)) == ModelValidationState.Invalid)
+            {
+                throw new ArgumentException("Enter the production time in whole weeks, for example 3.");
+            }
+
+            if (ModelState.GetFieldValidationState(nameof(ModulePriceInEuros)) == ModelValidationState.Invalid)
+            {
+                throw new ArgumentException("Enter the deal price in whole euros, for example 12500.");
+            }
+
+            await _dealService.UpdateDealModuleAsync(id, moduleId, ModulePriceInEuros, ModuleWeeks);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            ModuleError = exception.Message;
+            LoadPage(id);
+            return Page();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostCreateModuleAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            string? bindingError = ModelState
+                .Where(entry => entry.Key.StartsWith(nameof(NewModule) + ".") && entry.Value is { ValidationState: ModelValidationState.Invalid })
+                .SelectMany(entry => entry.Value!.Errors)
+                .Select(error => string.IsNullOrEmpty(error.ErrorMessage) ? "Check the module fields: price and weeks must be whole numbers." : error.ErrorMessage)
+                .FirstOrDefault();
+
+            if (bindingError != null)
+            {
+                throw new ArgumentException(bindingError);
+            }
+
+            await _dealService.CreateModuleForDealAsync(id, NewModule);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            NewModuleError = exception.Message;
+            LoadPage(id);
+            return Page();
         }
 
         return RedirectToPage(new { id });
@@ -240,6 +322,7 @@ public class DetailModel : PageModel
     {
         LinkedModules = _dealService.GetModules(id);
         ProductionTimeInWeeks = _dealService.GetProductionTimeInWeeks(LinkedModules);
+        TotalPriceInCents = _dealService.GetTotalPriceInCents(LinkedModules);
         EarliestDeliveryDate = _dealService.GetEarliestDeliveryDate(LinkedModules, DateTime.Today);
         EstimatedDateTooEarly = LinkedModules.Count > 0 && Deal.EstimatedDate.Date < EarliestDeliveryDate;
 

@@ -43,14 +43,15 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
         return modules;
     }
 
-    public async Task AddModuleAsync(Module module)
+    public async Task<int> AddModuleAsync(Module module)
     {
         using var connection = CreateConnection();
         await connection.OpenAsync();
 
         var sql = @"INSERT INTO module (name, description, 
                            priceInCents, productionTimeInWeeks, createdAt) 
-                   VALUES (@name, @description, @priceInCents, @productionTimeInWeeks, @CreatedAt)";
+                   VALUES (@name, @description, @priceInCents, @productionTimeInWeeks, @CreatedAt);
+                   SELECT LAST_INSERT_ID();";
 
         using var cmd = new MySqlCommand(sql, connection);
         cmd.Parameters.AddWithValue("@name", module.Name);
@@ -59,7 +60,7 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
         cmd.Parameters.AddWithValue("@productionTimeInWeeks", module.ProductionTimeInWeeks);
         cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
 
-        await cmd.ExecuteNonQueryAsync();
+        return Convert.ToInt32(await cmd.ExecuteScalarAsync());
     }
 
     public Module? GetById(int id)
