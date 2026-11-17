@@ -25,3 +25,5 @@ insert into deal_module (deal_id, module_id) values (1, 1), (1, 3);
 insert into comment (employee_id, deal_id, message, createdAt)
 values (3, 1, 'Login can reuse auth-gateway. Booking appointments needs a custom calendar module, about three weeks of work.', now()),
        (1, 1, 'Thanks. The customer is fine with a redirect for the login. I will ask about the calendar.', now());
+
+insert into deal_employee (deal_id, employee_id) values (1, 3), (1, 2);

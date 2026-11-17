@@ -40,6 +40,13 @@ public class DetailModel : PageModel
 
     public string? NewContactError { get; private set; }
 
+    public List<Employee> TeamMembers { get; private set; } = new();
+    public List<SelectListItem> AvailableTeamMembers { get; private set; } = new();
+    public string? TeamError { get; private set; }
+
+    [BindProperty]
+    public int TeamMemberId { get; set; }
+
     [BindProperty]
     public int ModuleId { get; set; }
 
@@ -191,6 +198,37 @@ public class DetailModel : PageModel
         return RedirectToPage(new { id });
     }
 
+    public async Task<IActionResult> OnPostAddTeamMemberAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            await _dealService.AddTeamMemberAsync(deal, TeamMemberId);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            TeamError = exception.Message;
+            LoadPage(id);
+            return Page();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostRemoveTeamMemberAsync(int id, int employeeId)
+    {
+        await _dealService.RemoveTeamMemberAsync(id, employeeId);
+
+        return RedirectToPage(new { id });
+    }
+
     public async Task<IActionResult> OnPostRemovePrimaryAsync(int id)
     {
         Deal? deal = _dealService.GetById(id);
@@ -217,6 +255,7 @@ public class DetailModel : PageModel
             .ToList();
         LoadModules(id);
         LoadContacts(id);
+        LoadTeam(id);
         LoadComments(id);
     }
 
@@ -225,6 +264,14 @@ public class DetailModel : PageModel
         Contacts = _dealService.GetContacts(id);
         AvailableContacts = _dealService.GetAvailableContacts(Deal)
             .Select(client => new SelectListItem($"{client.CompanyName} - {client.FirstName} {client.LastName}", client.Id.ToString()))
+            .ToList();
+    }
+
+    private void LoadTeam(int id)
+    {
+        TeamMembers = _dealService.GetTeamMembers(id);
+        AvailableTeamMembers = _dealService.GetAvailableTeamMembers(Deal)
+            .Select(employee => new SelectListItem($"{employee.FullName} ({employee.RoleName})", employee.Id.ToString()))
             .ToList();
     }
 

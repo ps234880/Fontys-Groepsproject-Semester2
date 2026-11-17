@@ -17,4 +17,8 @@ public interface IDealRepository
     Task AddClientAsync(int dealId, int clientId);
     Task RemoveClientAsync(int dealId, int clientId);
     Task ReplacePrimaryClientAsync(int dealId, int newClientId);
+
+    List<Employee> GetTeamMembers(int dealId);
+    Task AddTeamMemberAsync(int dealId, int employeeId);
+    Task RemoveTeamMemberAsync(int dealId, int employeeId);
 }
