@@ -15,6 +15,7 @@ public class DealRepository : RepositoryBase, IDealRepository
     d.client_id,
     d.employee_id,
     d.status_id,
+    d.probability,
     d.title,
     d.estimatedDate,
     d.createdAt,
@@ -73,6 +74,7 @@ LEFT JOIN role w ON d.waiting_role_id = w.id";
             StatusId = reader.GetInt32("status_id"),
             StatusName = reader.GetString("statusName"),
             WaitingOnRole = reader.IsDBNull(reader.GetOrdinal("waitingRoleName")) ? null : reader.GetString("waitingRoleName"),
+            Probability = reader.GetInt32("probability"),
             Title = reader.GetString("title"),
             EstimatedDate = reader.GetDateTime("estimatedDate"),
             CreatedAt = reader.GetDateTime("createdAt"),
@@ -92,12 +94,13 @@ LEFT JOIN role w ON d.waiting_role_id = w.id";
 
         DateTime now = DateTime.Now;
 
-        await using MySqlCommand dealCommand = new MySqlCommand(@"INSERT INTO deal (client_id, employee_id, status_id, title, estimatedDate, createdAt)
-VALUES (@clientId, @employeeId, @statusId, @title, @estimatedDate, @createdAt);
+        await using MySqlCommand dealCommand = new MySqlCommand(@"INSERT INTO deal (client_id, employee_id, status_id, probability, title, estimatedDate, createdAt)
+VALUES (@clientId, @employeeId, @statusId, @probability, @title, @estimatedDate, @createdAt);
 SELECT LAST_INSERT_ID();", connection, transaction);
         dealCommand.Parameters.AddWithValue("@clientId", deal.ClientId);
         dealCommand.Parameters.AddWithValue("@employeeId", deal.EmployeeId);
         dealCommand.Parameters.AddWithValue("@statusId", deal.StatusId);
+        dealCommand.Parameters.AddWithValue("@probability", deal.Probability);
         dealCommand.Parameters.AddWithValue("@title", deal.Title);
         dealCommand.Parameters.AddWithValue("@estimatedDate", deal.EstimatedDate);
         dealCommand.Parameters.AddWithValue("@createdAt", now);
@@ -184,7 +187,7 @@ SELECT LAST_INSERT_ID();", connection, transaction);
         using MySqlConnection connection = CreateConnection();
         connection.Open();
 
-        using MySqlCommand command = new MySqlCommand("SELECT id, deal_id, description, inScope FROM deal_scope WHERE deal_id = @dealId ORDER BY inScope DESC, id;", connection);
+        using MySqlCommand command = new MySqlCommand("SELECT id, deal_id, description, inScope, effortLevel FROM deal_scope WHERE deal_id = @dealId ORDER BY inScope DESC, id;", connection);
         command.Parameters.AddWithValue("@dealId", dealId);
         using MySqlDataReader reader = command.ExecuteReader();
 
@@ -195,11 +198,38 @@ SELECT LAST_INSERT_ID();", connection, transaction);
                 Id = reader.GetInt32("id"),
                 DealId = reader.GetInt32("deal_id"),
                 Description = reader.GetString("description"),
-                InScope = reader.GetBoolean("inScope")
+                InScope = reader.GetBoolean("inScope"),
+                EffortLevel = reader.IsDBNull(reader.GetOrdinal("effortLevel")) ? null : reader.GetString("effortLevel")
             });
         }
 
         return items;
+    }
+
+    public async Task UpdateProbabilityAsync(int dealId, int probability)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("UPDATE deal SET probability = @probability, updatedAt = @updatedAt WHERE id = @dealId;", connection);
+        command.Parameters.AddWithValue("@probability", probability);
+        command.Parameters.AddWithValue("@updatedAt", DateTime.Now);
+        command.Parameters.AddWithValue("@dealId", dealId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task UpdateScopeEffortAsync(int dealId, int itemId, string? effortLevel)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("UPDATE deal_scope SET effortLevel = @effortLevel WHERE id = @itemId AND deal_id = @dealId;", connection);
+        command.Parameters.AddWithValue("@effortLevel", effortLevel ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@itemId", itemId);
+        command.Parameters.AddWithValue("@dealId", dealId);
+
+        await command.ExecuteNonQueryAsync();
     }
 
     public async Task AddScopeItemAsync(int dealId, string description, bool inScope)

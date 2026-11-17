@@ -34,6 +34,7 @@ public class NewModel : PageModel
     public void OnGet()
     {
         Input.EstimatedDate = DateTime.Today;
+        Input.Probability = 10;
         LoadLists();
     }
 
@@ -66,7 +67,8 @@ public class NewModel : PageModel
         {
             EmployeeId = Input.OwnerId,
             Title = Input.Title.Trim(),
-            EstimatedDate = Input.EstimatedDate
+            EstimatedDate = Input.EstimatedDate,
+            Probability = Input.Probability
         };
 
         List<DealScopeItem> scopeItems = SplitLines(Input.InScope)
@@ -146,5 +148,8 @@ public class NewModel : PageModel
 
         [Range(1, int.MaxValue, ErrorMessage = "Choose an owner.")]
         public int OwnerId { get; set; }
+
+        [Range(0, 100, ErrorMessage = "Enter a probability between 0 and 100 percent.")]
+        public int Probability { get; set; }
     }
 }

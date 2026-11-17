@@ -21,6 +21,7 @@
         <div class="fld"><label>Production time</label><div>@(Model.LinkedModules.Count == 0 ? "No modules linked yet" : Model.ProductionTimeInWeeks + (Model.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</div></div>
         <div class="fld"><label>Owner</label><div>@Model.Deal.EmployeeName</div></div>
         <div class="fld"><label>Stage</label><div>@Model.Deal.StatusName</div></div>
+        <div class="fld"><label>Probability</label><div>@Model.Deal.Probability%</div></div>
         <div class="fld" style="margin-bottom:0"><label>Created</label><div>@Model.Deal.CreatedAt.ToString("d MMMM yyyy HH:mm", CultureInfo.InvariantCulture)</div></div>
       </div>
       @if (Model.EstimatedDateTooEarly)
@@ -77,6 +78,7 @@
         <thead><tr>
           <th>Item</th>
           <th style="width:130px">Scope</th>
+          <th style="width:190px">Effort</th>
           <th class="r" style="width:240px"></th>
         </tr></thead>
         <tbody>
@@ -85,6 +87,29 @@
             <tr>
               <td style="color:var(--fg)">@item.Description</td>
               <td class="nowrap">@if (item.InScope) {<span class="tag ok">In scope</span>} else {<span class="tag idle">Out of scope</span>}</td>
+              <td class="nowrap">
+                @if (!item.InScope)
+                {
+                  <span class="dim">–</span>
+                }
+                else if (Model.IsDevelopment)
+                {
+                  <form method="post" asp-page-handler="Effort" asp-route-id="@Model.Deal.Id" asp-route-itemId="@item.Id" class="inline-form" style="display:flex;gap:6px">
+                    <select name="EffortLevel" class="sel in" style="width:auto" aria-label="Effort for @item.Description">
+                      <option value="" selected="@(item.EffortLevel == null)">Not yet assessed</option>
+                      @foreach (var level in Model.EffortLevels)
+                      {
+                        <option value="@level" selected="@(item.EffortLevel == level)">@level</option>
+                      }
+                    </select>
+                    <button type="submit" class="lnk sm">Save</button>
+                  </form>
+                }
+                else
+                {
+                  <span class="tag @(item.EffortLevel == null ? "idle" : item.EffortLevel == "Custom build required" ? "warn" : "ok")">@(item.EffortLevel ?? "Not yet assessed")</span>
+                }
+              </td>
               <td class="r nowrap">
                 <form method="post" asp-page-handler="ToggleScope" asp-route-id="@Model.Deal.Id" asp-route-itemId="@item.Id" asp-route-inScope="@(!item.InScope)" class="inline-form">
                   <button type="submit" class="lnk sm">@(item.InScope ? "Mark out of scope" : "Mark in scope")</button>
@@ -314,6 +339,20 @@
     @if (Model.WaitingOnError != null)
     {
       <p class="field-error" style="margin-top:8px">@Model.WaitingOnError</p>
+    }
+    @if (Model.IsSales)
+    {
+      <form method="post" asp-page-handler="Probability" asp-route-id="@Model.Deal.Id" style="margin-top:16px">
+        <label for="Probability" class="sm strong" style="display:block;margin-bottom:5px">Probability that the customer signs (%)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="Probability" name="Probability" type="number" min="0" max="100" step="1" class="in" style="max-width:120px" value="@Model.Deal.Probability" required />
+          <button type="submit" class="btn n">Save</button>
+        </div>
+      </form>
+    }
+    @if (Model.ProbabilityError != null)
+    {
+      <p class="field-error" style="margin-top:8px">@Model.ProbabilityError</p>
     }
   </div></div>
 

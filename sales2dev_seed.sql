@@ -17,9 +17,9 @@ insert into client (id, companyName, firstName, lastName, email, phoneNumber, cr
 values (1, 'Gemeente Tilburg', 'Anouk', 'Jansen', 'anouk@tilburg.example', '0131234567', now()),
        (2, 'Sportbond NL', 'Daan', 'de Wit', 'daan@sportbond.example', '0307654321', now());
 
-insert into deal (client_id, employee_id, status_id, waiting_role_id, title, estimatedDate, createdAt)
-values (1, 1, 2, 1, 'Citizen Portal 2027', '2026-11-15', now()),
-       (2, 2, 1, 2, 'Member portal', '2026-12-20', now());
+insert into deal (client_id, employee_id, status_id, waiting_role_id, probability, title, estimatedDate, createdAt)
+values (1, 1, 2, 1, 70, 'Citizen Portal 2027', '2026-11-15', now()),
+       (2, 2, 1, 2, 30, 'Member portal', '2026-12-20', now());
 
 insert into deal_module (deal_id, module_id, priceInCents, productionTimeInWeeks) values (1, 1, 1100000, null), (1, 3, null, 3);
 
@@ -34,11 +34,11 @@ values (1, 'Residents can arrange their affairs with the municipality online', n
        (1, 'Fewer phone calls to the service desk', now()),
        (2, 'Members manage their membership and events themselves', now());
 
-insert into deal_scope (deal_id, description, inScope, createdAt)
-values (1, 'Book appointments online', 1, now()),
-       (1, 'Follow the status of an application', 1, now()),
-       (1, 'Login with DigiD', 1, now()),
-       (1, 'Online payments', 0, now()),
-       (2, 'Member login', 1, now()),
-       (2, 'Event registration', 1, now()),
-       (2, 'Native mobile app', 0, now());
+insert into deal_scope (deal_id, description, inScope, effortLevel, createdAt)
+values (1, 'Book appointments online', 1, 'Custom build required', now()),
+       (1, 'Follow the status of an application', 1, 'Minor tweak', now()),
+       (1, 'Login with DigiD', 1, 'Ready out-of-the-box', now()),
+       (1, 'Online payments', 0, null, now()),
+       (2, 'Member login', 1, null, now()),
+       (2, 'Event registration', 1, null, now()),
+       (2, 'Native mobile app', 0, null, now());

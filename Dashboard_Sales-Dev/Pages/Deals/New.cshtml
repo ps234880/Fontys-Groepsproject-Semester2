@@ -71,6 +71,10 @@
             <option value="">Choose a Sales employee</option>
           </select>
           <span asp-validation-for="Input.OwnerId" class="field-error"></span></div>
+        <div class="fld" style="margin-bottom:0"><label asp-for="Input.Probability">Probability (%) <span class="req">*</span></label>
+          <input asp-for="Input.Probability" type="number" min="0" max="100" step="1" class="in" required />
+          <div class="help">How likely is it that the customer signs? From 0 to 100 percent.</div>
+          <span asp-validation-for="Input.Probability" class="field-error"></span></div>
       </div>
     </div></div></div>
 

@@ -89,6 +89,11 @@ public class DealService
 
     private int GetStatusIdForNewDeal(Deal deal)
     {
+        if (deal.Probability < MinProbability || deal.Probability > MaxProbability)
+        {
+            throw new ArgumentException($"The probability must be between {MinProbability} and {MaxProbability} percent.");
+        }
+
         Employee? owner = _employeeRepository.GetById(deal.EmployeeId);
 
         if (owner == null || owner.RoleName != EmployeeService.SalesRole)
@@ -134,6 +139,33 @@ public class DealService
     public Task SetScopeItemInScopeAsync(int dealId, int itemId, bool inScope)
     {
         return _dealRepository.UpdateScopeItemAsync(dealId, itemId, inScope);
+    }
+
+    public const int MinProbability = 0;
+    public const int MaxProbability = 100;
+
+    public static readonly string[] EffortLevels = ["Ready out-of-the-box", "Minor tweak", "Custom build required"];
+
+    public Task ChangeProbabilityAsync(int dealId, int probability)
+    {
+        if (probability < MinProbability || probability > MaxProbability)
+        {
+            throw new ArgumentException($"The probability must be between {MinProbability} and {MaxProbability} percent.");
+        }
+
+        return _dealRepository.UpdateProbabilityAsync(dealId, probability);
+    }
+
+    public Task SetScopeEffortAsync(int dealId, int itemId, string? effortLevel)
+    {
+        string? level = string.IsNullOrWhiteSpace(effortLevel) ? null : effortLevel;
+
+        if (level != null && !EffortLevels.Contains(level))
+        {
+            throw new ArgumentException($"'{effortLevel}' is not an effort level. Choose {string.Join(", ", EffortLevels)}.");
+        }
+
+        return _dealRepository.UpdateScopeEffortAsync(dealId, itemId, level);
     }
 
     public Task RemoveScopeItemAsync(int dealId, int itemId)

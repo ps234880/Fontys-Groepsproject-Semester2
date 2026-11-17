@@ -63,6 +63,7 @@ create table deal
     employee_id   int          not null,
     status_id     int          not null,
     waiting_role_id int        null,
+    probability   int          not null default 0,
     title         varchar(255) not null,
     estimatedDate datetime     not null,
     createdAt     datetime     not null,
@@ -151,6 +152,7 @@ create table deal_scope
     deal_id     int          not null,
     description varchar(255) not null,
     inScope     tinyint(1)   not null,
+    effortLevel varchar(30)  null,
     createdAt   datetime     not null,
     constraint deal_scope_deal_id_fk
         foreign key (deal_id) references deal (id)
