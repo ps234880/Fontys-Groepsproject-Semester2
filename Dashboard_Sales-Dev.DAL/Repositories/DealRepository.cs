@@ -127,7 +127,7 @@ INNER JOIN status s ON d.status_id = s.id";
         using MySqlConnection connection = CreateConnection();
         connection.Open();
 
-        string query = @"SELECT m.id, m.name, m.description, m.priceInCents, dm.priceInCents AS dealPriceInCents, m.productionTimeInWeeks, m.createdAt
+        string query = @"SELECT m.id, m.name, m.description, m.priceInCents, dm.priceInCents AS dealPriceInCents, m.productionTimeInWeeks, dm.productionTimeInWeeks AS dealProductionTimeInWeeks, m.createdAt
 FROM deal_module dm
 INNER JOIN module m ON dm.module_id = m.id
 WHERE dm.deal_id = @dealId
@@ -147,6 +147,7 @@ ORDER BY m.name;";
                 PriceInCents = reader.GetInt32("priceInCents"),
                 DealPriceInCents = reader.IsDBNull(reader.GetOrdinal("dealPriceInCents")) ? null : reader.GetInt32("dealPriceInCents"),
                 ProductionTimeInWeeks = reader.GetInt32("productionTimeInWeeks"),
+                DealProductionTimeInWeeks = reader.IsDBNull(reader.GetOrdinal("dealProductionTimeInWeeks")) ? null : reader.GetInt32("dealProductionTimeInWeeks"),
                 CreatedAt = reader.GetDateTime("createdAt")
             });
         }
@@ -178,13 +179,16 @@ ORDER BY m.name;";
         await command.ExecuteNonQueryAsync();
     }
 
-    public async Task UpdateModulePriceAsync(int dealId, int moduleId, int? priceInCents)
+    public async Task UpdateDealModuleAsync(int dealId, int moduleId, int? priceInCents, int? productionTimeInWeeks)
     {
         using MySqlConnection connection = CreateConnection();
         await connection.OpenAsync();
 
-        using MySqlCommand command = new MySqlCommand("UPDATE deal_module SET priceInCents = @priceInCents WHERE deal_id = @dealId AND module_id = @moduleId;", connection);
+        using MySqlCommand command = new MySqlCommand(@"UPDATE deal_module
+SET priceInCents = @priceInCents, productionTimeInWeeks = @productionTimeInWeeks
+WHERE deal_id = @dealId AND module_id = @moduleId;", connection);
         command.Parameters.AddWithValue("@priceInCents", priceInCents ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@productionTimeInWeeks", productionTimeInWeeks ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@dealId", dealId);
         command.Parameters.AddWithValue("@moduleId", moduleId);
 

@@ -90,9 +90,10 @@ create table comment
 
 create table deal_module
 (
-    module_id   int not null,
-    deal_id     int not null,
-    priceInCents int null,
+    module_id             int not null,
+    deal_id               int not null,
+    priceInCents          int null,
+    productionTimeInWeeks int null,
     primary key (deal_id, module_id),
     constraint deal_module_module_id_fk
         foreign key (module_id) references module (id),

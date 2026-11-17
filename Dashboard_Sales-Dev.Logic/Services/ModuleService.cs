@@ -22,7 +22,7 @@ public class ModuleService
         return _moduleRepository.GetById(id);
     }
 
-    public Task AddModuleAsync(Module module)
+    public Task<int> AddModuleAsync(Module module)
     {
         return _moduleRepository.AddModuleAsync(module);
     }

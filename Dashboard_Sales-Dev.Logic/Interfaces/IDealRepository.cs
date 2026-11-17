@@ -12,7 +12,7 @@ public interface IDealRepository
     List<DealModule> GetModules(int dealId);
     Task AddModuleAsync(int dealId, int moduleId);
     Task RemoveModuleAsync(int dealId, int moduleId);
-    Task UpdateModulePriceAsync(int dealId, int moduleId, int? priceInCents);
+    Task UpdateDealModuleAsync(int dealId, int moduleId, int? priceInCents, int? productionTimeInWeeks);
 
     List<Client> GetClients(int dealId);
     Task AddClientAsync(int dealId, int clientId);
