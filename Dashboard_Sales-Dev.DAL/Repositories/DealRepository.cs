@@ -20,6 +20,7 @@ public class DealRepository : RepositoryBase, IDealRepository
     d.estimatedDate,
     d.createdAt,
     s.name AS statusName,
+    w.name AS waitingRoleName,
     c.companyName,
     c.firstName AS clientFirstName,
     c.lastName AS clientLastName,
@@ -30,7 +31,8 @@ public class DealRepository : RepositoryBase, IDealRepository
 FROM deal d
 INNER JOIN client c ON d.client_id = c.id
 INNER JOIN employee e ON d.employee_id = e.id
-INNER JOIN status s ON d.status_id = s.id";
+INNER JOIN status s ON d.status_id = s.id
+LEFT JOIN role w ON d.waiting_role_id = w.id";
 
     public List<Deal> GetAll()
     {
@@ -71,6 +73,7 @@ INNER JOIN status s ON d.status_id = s.id";
             EmployeeId = reader.GetInt32("employee_id"),
             StatusId = reader.GetInt32("status_id"),
             StatusName = reader.GetString("statusName"),
+            WaitingOnRole = reader.IsDBNull(reader.GetOrdinal("waitingRoleName")) ? null : reader.GetString("waitingRoleName"),
             Title = reader.GetString("title"),
             Requirement = reader.GetString("requirement"),
             EstimatedDate = reader.GetDateTime("estimatedDate"),
@@ -114,6 +117,21 @@ INNER JOIN status s ON d.status_id = s.id";
 
         using MySqlCommand command = new MySqlCommand("UPDATE deal SET status_id = @statusId, updatedAt = @updatedAt WHERE id = @dealId;", connection);
         command.Parameters.AddWithValue("@statusId", statusId);
+        command.Parameters.AddWithValue("@updatedAt", DateTime.Now);
+        command.Parameters.AddWithValue("@dealId", dealId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task UpdateWaitingOnAsync(int dealId, string? roleName)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand(@"UPDATE deal
+SET waiting_role_id = (SELECT id FROM role WHERE name = @roleName), updatedAt = @updatedAt
+WHERE id = @dealId;", connection);
+        command.Parameters.AddWithValue("@roleName", roleName ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@updatedAt", DateTime.Now);
         command.Parameters.AddWithValue("@dealId", dealId);
 

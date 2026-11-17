@@ -35,7 +35,7 @@
             <tr>
               <td><a class="lnk" asp-page="/Deals/Detail" asp-route-id="@item.Deal.Id">@item.Deal.ClientCompanyName</a><div class="s">@item.Deal.Title</div></td>
               <td class="dim">@item.Deal.EmployeeName</td>
-              <td class="dim nowrap">@item.Deal.StatusName</td>
+              <td class="dim nowrap">@item.Deal.StatusName@if (item.Deal.WaitingOnRole != null) {<div class="s">Waiting for @item.Deal.WaitingOnRole</div>}</td>
               <td class="c num">@item.ModuleCount</td>
               <td class="c num nowrap">@(item.ModuleCount == 0 ? "–" : item.ProductionTimeInWeeks + (item.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</td>
               <td class="nowrap dim">@item.Deal.EstimatedDate.ToString("d MMM yyyy", CultureInfo.InvariantCulture)</td>

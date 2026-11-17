@@ -8,6 +8,7 @@ public interface IDealRepository
     Deal? GetById(int id);
     Task<int> AddDealAsync(Deal deal);
     Task UpdateStatusAsync(int dealId, int statusId);
+    Task UpdateWaitingOnAsync(int dealId, string? roleName);
 
     List<Module> GetModules(int dealId);
     Task AddModuleAsync(int dealId, int moduleId);

@@ -16,9 +16,9 @@ insert into client (id, companyName, firstName, lastName, email, phoneNumber, cr
 values (1, 'Gemeente Tilburg', 'Anouk', 'Jansen', 'anouk@tilburg.example', '0131234567', now()),
        (2, 'Sportbond NL', 'Daan', 'de Wit', 'daan@sportbond.example', '0307654321', now());
 
-insert into deal (client_id, employee_id, status_id, title, requirement, estimatedDate, createdAt)
-values (1, 1, 2, 'Citizen Portal 2027', 'Online portal where residents can book appointments and follow their applications.', '2026-11-15', now()),
-       (2, 2, 1, 'Member portal', 'Portal for members with login and event registration.', '2026-12-20', now());
+insert into deal (client_id, employee_id, status_id, waiting_role_id, title, requirement, estimatedDate, createdAt)
+values (1, 1, 2, 1, 'Citizen Portal 2027', 'Online portal where residents can book appointments and follow their applications.', '2026-11-15', now()),
+       (2, 2, 1, 2, 'Member portal', 'Portal for members with login and event registration.', '2026-12-20', now());
 
 insert into deal_module (deal_id, module_id) values (1, 1), (1, 3);
 

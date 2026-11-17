@@ -30,6 +30,8 @@ public class DetailModel : PageModel
     public List<SelectListItem> AvailableContacts { get; private set; } = new();
     public List<SelectListItem> Statuses { get; private set; } = new();
     public string? StatusError { get; private set; }
+    public List<SelectListItem> WaitingOnOptions { get; private set; } = new();
+    public string? WaitingOnError { get; private set; }
     public int ProductionTimeInWeeks { get; private set; }
     public DateTime EarliestDeliveryDate { get; private set; }
     public bool EstimatedDateTooEarly { get; private set; }
@@ -48,6 +50,9 @@ public class DetailModel : PageModel
 
     [BindProperty]
     public int StatusId { get; set; }
+
+    [BindProperty]
+    public string? WaitingOn { get; set; }
 
     [BindProperty]
     public int CommentEmployeeId { get; set; }
@@ -90,6 +95,30 @@ public class DetailModel : PageModel
         {
             Deal = deal;
             StatusError = exception.Message;
+            LoadPage(id);
+            return Page();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostWaitingOnAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            await _dealService.ChangeWaitingOnAsync(id, WaitingOn);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            WaitingOnError = exception.Message;
             LoadPage(id);
             return Page();
         }
@@ -215,6 +244,9 @@ public class DetailModel : PageModel
         Statuses = _dealService.GetStatuses()
             .Select(status => new SelectListItem(status.Name, status.Id.ToString(), status.Id == Deal.StatusId))
             .ToList();
+        WaitingOnOptions = new List<SelectListItem> { new("Nobody, the deal is not blocked", string.Empty, Deal.WaitingOnRole == null) };
+        WaitingOnOptions.AddRange(DealService.WaitingOnRoles
+            .Select(role => new SelectListItem($"Waiting for {role}", role, role == Deal.WaitingOnRole)));
         LoadModules(id);
         LoadContacts(id);
         LoadComments(id);

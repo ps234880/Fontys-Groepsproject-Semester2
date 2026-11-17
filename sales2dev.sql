@@ -60,6 +60,7 @@ create table deal
     client_id     int          not null,
     employee_id   int          not null,
     status_id     int          not null,
+    waiting_role_id int        null,
     title         varchar(255) not null,
     requirement   varchar(255) not null,
     estimatedDate datetime     not null,
@@ -70,7 +71,9 @@ create table deal
     constraint deal_employee_id_fk
         foreign key (employee_id) references employee (id),
     constraint deal_status_id_fk
-        foreign key (status_id) references status (id)
+        foreign key (status_id) references status (id),
+    constraint deal_waiting_role_id_fk
+        foreign key (waiting_role_id) references role (id)
 );
 
 create table comment
