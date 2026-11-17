@@ -18,7 +18,7 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
         using MySqlConnection connection = CreateConnection();
         connection.Open();
 
-        string query = @"SELECT id, name, description, priceInCents, 
+        string query = @"SELECT id, name, description, 
                 productionTimeInWeeks, createdAt, updatedAt 
         FROM module";
 
@@ -32,7 +32,6 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("name"),
                 Description = reader.GetString("description"),
-                PriceInCents = reader.GetInt32("priceInCents"),
                 ProductionTimeInWeeks = reader.GetInt32("productionTimeInWeeks"),
                 CreatedAt = reader.GetDateTime("createdAt")
             };
@@ -49,13 +48,12 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
         await connection.OpenAsync();
 
         var sql = @"INSERT INTO module (name, description, 
-                           priceInCents, productionTimeInWeeks, createdAt) 
-                   VALUES (@name, @description, @priceInCents, @productionTimeInWeeks, @CreatedAt)";
+                           productionTimeInWeeks, createdAt) 
+                   VALUES (@name, @description, @productionTimeInWeeks, @CreatedAt)";
 
         using var cmd = new MySqlCommand(sql, connection);
         cmd.Parameters.AddWithValue("@name", module.Name);
         cmd.Parameters.AddWithValue("@description", module.Description);
-        cmd.Parameters.AddWithValue("@priceInCents", module.PriceInCents);
         cmd.Parameters.AddWithValue("@productionTimeInWeeks", module.ProductionTimeInWeeks);
         cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
 
@@ -67,7 +65,7 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
         using MySqlConnection connection = CreateConnection();
         connection.Open();
 
-        string query = @"SELECT id, name, description, priceInCents,
+        string query = @"SELECT id, name, description,
                 productionTimeInWeeks, createdAt, updatedAt
         FROM module
         WHERE id = @id";
@@ -86,7 +84,6 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
             Id = reader.GetInt32("id"),
             Name = reader.GetString("name"),
             Description = reader.GetString("description"),
-            PriceInCents = reader.GetInt32("priceInCents"),
             ProductionTimeInWeeks = reader.GetInt32("productionTimeInWeeks"),
             CreatedAt = reader.GetDateTime("createdAt"),
             UpdatedAt = reader.IsDBNull(reader.GetOrdinal("updatedAt"))
@@ -103,7 +100,6 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
         var sql = @"UPDATE module
                    SET name = @name,
                        description = @description,
-                       priceInCents = @priceInCents,
                        productionTimeInWeeks = @productionTimeInWeeks,
                        updatedAt = @updatedAt
                    WHERE id = @id";
@@ -112,7 +108,6 @@ public class ModuleRepository : RepositoryBase, IModuleRepository
         cmd.Parameters.AddWithValue("@id", module.Id);
         cmd.Parameters.AddWithValue("@name", module.Name);
         cmd.Parameters.AddWithValue("@description", module.Description);
-        cmd.Parameters.AddWithValue("@priceInCents", module.PriceInCents);
         cmd.Parameters.AddWithValue("@productionTimeInWeeks", module.ProductionTimeInWeeks);
         cmd.Parameters.AddWithValue("@updatedAt", DateTime.Now);
 

@@ -27,7 +27,6 @@
     <div class="tw"><table class="tbl">
       <thead><tr>
         <th>Module</th>
-        <th class="r" style="width:130px">Price</th>
         <th class="c" style="width:130px">Production time</th>
         <th style="width:130px">Created</th>
         <th class="r" style="width:150px"></th>
@@ -37,7 +36,6 @@
       {
         <tr>
           <td><span class="t">@module.Name</span><div class="s">@module.Description</div></td>
-          <td class="r num nowrap">€ @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</td>
           <td class="c num nowrap">@module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks")</td>
           <td class="nowrap dim">@module.CreatedAt.ToString("d MMM yyyy", CultureInfo.InvariantCulture)</td>
           <td class="r nowrap">
