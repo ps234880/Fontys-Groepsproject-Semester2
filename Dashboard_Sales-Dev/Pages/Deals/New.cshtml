@@ -11,7 +11,7 @@
 <form method="post">
 <div class="ph"><div class="r1"><div><h1>New deal</h1><div class="sub">Record the deal as soon as negotiation starts, so development can follow along.</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Index">Cancel</a><button type="submit" class="btn">Save deal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button></div></div></div>
 
-<div class="content pad"><div style="max-width:760px">
+<div class="content pad"><div class="split even">
   <div class="card"><div class="h"><h2>Customer</h2></div><div class="b">
     <div class="fields" style="max-width:none">
       <div class="fld"><label asp-for="Input.CompanyName">Company name <span class="req">*</span></label>
@@ -54,7 +54,7 @@
       </div>
     </div></div></div>
 
-  <div class="f" style="display:flex;justify-content:flex-end;gap:8px">
+  <div class="f span" style="display:flex;justify-content:flex-end;gap:8px">
     <a class="btn n" asp-page="/Deals/Index">Cancel</a>
     <button type="submit" class="btn">Save deal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button>
   </div>

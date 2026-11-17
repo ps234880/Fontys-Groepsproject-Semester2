@@ -11,7 +11,7 @@
 
 <div class="ph"><div class="r1"><div><h1>@Model.Deal.ClientCompanyName</h1><div class="sub">@Model.Deal.Title</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Index">Back to deals</a></div></div></div>
 
-<div class="content pad"><div style="max-width:760px">
+<div class="content pad"><div class="split"><div>
   <div class="card"><div class="h"><h2>Deal</h2></div><div class="b">
     <div class="fields" style="max-width:none">
       <div class="fld"><label>Project name</label><div>@Model.Deal.Title</div></div>
@@ -25,20 +25,9 @@
       </div>
       @if (Model.EstimatedDateTooEarly)
       {
-        <div style="margin-top:12px"><span class="tag warn">The estimated date is earlier than the production time allows. Earliest delivery: @Model.EarliestDeliveryDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</span></div>
+        <div style="margin-top:12px"><span class="tag warn wrap">The estimated date is earlier than the production time allows. Earliest delivery: @Model.EarliestDeliveryDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</span></div>
       }
     </div></div></div>
-
-  <div class="card"><div class="h"><h2>Stage</h2></div><div class="b">
-    <form method="post" asp-page-handler="Status" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;align-items:center">
-      <select asp-for="StatusId" asp-items="Model.Statuses" class="in" style="max-width:240px"></select>
-      <button type="submit" class="btn n">Change stage</button>
-    </form>
-    @if (Model.StatusError != null)
-    {
-      <p class="field-error" style="margin-top:8px">@Model.StatusError</p>
-    }
-  </div></div>
 
   <div class="card"><div class="h"><h2>Modules</h2></div><div class="b">
     @if (Model.LinkedModules.Count == 0)
@@ -148,6 +137,18 @@
     </details>
   </div></div>
 
+</div><div>
+  <div class="card"><div class="h"><h2>Stage</h2></div><div class="b">
+    <form method="post" asp-page-handler="Status" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;align-items:center">
+      <select asp-for="StatusId" asp-items="Model.Statuses" class="in" style="max-width:240px"></select>
+      <button type="submit" class="btn n">Change stage</button>
+    </form>
+    @if (Model.StatusError != null)
+    {
+      <p class="field-error" style="margin-top:8px">@Model.StatusError</p>
+    }
+  </div></div>
+
   <div class="card"><div class="h"><h2>Comments</h2><span class="sm dim">@Model.Comments.Count @(Model.Comments.Count == 1 ? "comment" : "comments")</span></div>
     @if (Model.Comments.Count == 0)
     {
@@ -176,4 +177,4 @@
       </form>
     </div>
   </div>
-</div></div>
+</div></div></div>
