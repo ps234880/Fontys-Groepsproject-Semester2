@@ -47,11 +47,16 @@
     }
     else
     {
+      @if (Model.ModulePriceError != null)
+      {
+        <div class="banner stop" role="alert">@Model.ModulePriceError</div>
+      }
       <div class="tw"><table class="tbl">
         <thead><tr>
           <th>Module</th>
           <th class="c" style="width:130px">Production time</th>
-          <th class="r" style="width:130px">Price</th>
+          <th class="r" style="width:120px">List price</th>
+          <th class="r" style="width:200px">Deal price (€)</th>
           <th class="r" style="width:90px"></th>
         </tr></thead>
         <tbody>
@@ -60,7 +65,14 @@
             <tr>
               <td><span class="t">@module.Name</span><div class="s">@module.Description</div></td>
               <td class="c num nowrap">@module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks")</td>
-              <td class="r num nowrap">€ @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</td>
+              <td class="r num nowrap dim">€ @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</td>
+              <td class="r nowrap">
+                <form method="post" asp-page-handler="ModulePrice" asp-route-id="@Model.Deal.Id" asp-route-moduleId="@module.Id" style="display:inline-flex;gap:6px;align-items:center">
+                  <input name="ModulePriceInEuros" type="number" min="0" step="1" class="in num" style="width:110px;text-align:right"
+                         value="@(module.DealPriceInCents / 100)" placeholder="@(module.PriceInCents / 100)" aria-label="Deal price for @module.Name in euros" />
+                  <button type="submit" class="btn n">Save</button>
+                </form>
+              </td>
               <td class="r nowrap">
                 <form method="post" asp-page-handler="Unlink" asp-route-id="@Model.Deal.Id" asp-route-moduleId="@module.Id" class="inline-form">
                   <button type="submit" class="lnk-stop sm">Remove</button>
@@ -70,7 +82,8 @@
           }
         </tbody>
       </table>
-      <div class="tfoot"><span>@Model.LinkedModules.Count @(Model.LinkedModules.Count == 1 ? "module" : "modules") · @Model.ProductionTimeInWeeks @(Model.ProductionTimeInWeeks == 1 ? "week" : "weeks") in total</span></div></div>
+      <div class="tfoot"><span>@Model.LinkedModules.Count @(Model.LinkedModules.Count == 1 ? "module" : "modules") · @Model.ProductionTimeInWeeks @(Model.ProductionTimeInWeeks == 1 ? "week" : "weeks") in total</span><span class="num strong">Total € @((Model.TotalPriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</span></div></div>
+      <p class="xs dimmer" style="margin-top:8px">Sales sets the final price per deal. Leave the deal price empty to use the list price.</p>
     }
     @if (Model.AvailableModules.Count > 0)
     {

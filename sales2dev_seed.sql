@@ -20,7 +20,7 @@ insert into deal (client_id, employee_id, status_id, title, requirement, estimat
 values (1, 1, 2, 'Citizen Portal 2027', 'Online portal where residents can book appointments and follow their applications.', '2026-11-15', now()),
        (2, 2, 1, 'Member portal', 'Portal for members with login and event registration.', '2026-12-20', now());
 
-insert into deal_module (deal_id, module_id) values (1, 1), (1, 3);
+insert into deal_module (deal_id, module_id, priceInCents) values (1, 1, 1100000), (1, 3, null);
 
 insert into comment (employee_id, deal_id, message, createdAt)
 values (3, 1, 'Login can reuse auth-gateway. Booking appointments needs a custom calendar module, about three weeks of work.', now()),

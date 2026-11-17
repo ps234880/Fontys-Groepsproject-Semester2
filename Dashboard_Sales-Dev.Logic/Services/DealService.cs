@@ -89,7 +89,7 @@ public class DealService
 
         foreach (Deal deal in GetAll().Where(IsOpen))
         {
-            List<Module> modules = GetModules(deal.Id);
+            List<DealModule> modules = GetModules(deal.Id);
             DealProgress progress = DealProgress.OnTrack;
 
             if (modules.Count == 0)
@@ -107,7 +107,7 @@ public class DealService
         return overviews;
     }
 
-    public List<Module> GetModules(int dealId)
+    public List<DealModule> GetModules(int dealId)
     {
         return _dealRepository.GetModules(dealId);
     }
@@ -129,12 +129,32 @@ public class DealService
         return _dealRepository.RemoveModuleAsync(dealId, moduleId);
     }
 
-    public int GetProductionTimeInWeeks(List<Module> modules)
+    public async Task SetModulePriceAsync(int dealId, int moduleId, int? priceInEuros)
+    {
+        if (priceInEuros < 0 || priceInEuros > int.MaxValue / 100)
+        {
+            throw new ArgumentException($"Enter a deal price between 0 and {int.MaxValue / 100} euros.");
+        }
+
+        if (!GetModules(dealId).Any(module => module.Id == moduleId))
+        {
+            throw new ArgumentException("This module is not linked to the deal.");
+        }
+
+        await _dealRepository.UpdateModulePriceAsync(dealId, moduleId, priceInEuros * 100);
+    }
+
+    public int GetTotalPriceInCents(IEnumerable<DealModule> modules)
+    {
+        return modules.Sum(module => module.FinalPriceInCents);
+    }
+
+    public int GetProductionTimeInWeeks(IEnumerable<Module> modules)
     {
         return modules.Sum(module => module.ProductionTimeInWeeks);
     }
 
-    public DateTime GetEarliestDeliveryDate(List<Module> modules, DateTime today)
+    public DateTime GetEarliestDeliveryDate(IEnumerable<Module> modules, DateTime today)
     {
         return today.Date.AddDays(7 * GetProductionTimeInWeeks(modules));
     }

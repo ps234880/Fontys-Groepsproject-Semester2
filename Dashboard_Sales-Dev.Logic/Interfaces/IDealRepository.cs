@@ -9,9 +9,10 @@ public interface IDealRepository
     Task<int> AddDealAsync(Deal deal);
     Task UpdateStatusAsync(int dealId, int statusId);
 
-    List<Module> GetModules(int dealId);
+    List<DealModule> GetModules(int dealId);
     Task AddModuleAsync(int dealId, int moduleId);
     Task RemoveModuleAsync(int dealId, int moduleId);
+    Task UpdateModulePriceAsync(int dealId, int moduleId, int? priceInCents);
 
     List<Client> GetClients(int dealId);
     Task AddClientAsync(int dealId, int clientId);
