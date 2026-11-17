@@ -21,6 +21,9 @@
         <textarea asp-for="Module.Description" class="ta" required></textarea>
         <span asp-validation-for="Module.Description" class="field-error"></span></div>
       <div class="cols">
+        <div class="fld" style="margin-bottom:0"><label asp-for="Module.PriceInEuros">Price in euros <span class="req">*</span></label>
+          <input asp-for="Module.PriceInEuros" type="number" min="0" step="1" class="in" placeholder="e.g. 12500" required />
+          <span asp-validation-for="Module.PriceInEuros" class="field-error"></span></div>
         <div class="fld" style="margin-bottom:0"><label asp-for="Module.ProductionTimeInWeeks">Production time in weeks <span class="req">*</span></label>
           <input asp-for="Module.ProductionTimeInWeeks" type="number" min="1" class="in" required />
           <span asp-validation-for="Module.ProductionTimeInWeeks" class="field-error"></span></div>

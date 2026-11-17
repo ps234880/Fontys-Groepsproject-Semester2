@@ -7,10 +7,10 @@ values (1, 1, 'Milan', 'Vermeer', 'milan@example.com', '0612345678', 'dev-only',
        (2, 1, 'Lotte', 'Bakker', 'lotte@example.com', '0612345679', 'dev-only', now()),
        (3, 2, 'Sanne', 'de Groot', 'sanne@example.com', '0612345680', 'dev-only', now());
 
-insert into module (name, description, productionTimeInWeeks, createdAt)
-values ('auth-gateway', 'OAuth2/OIDC gateway with session management and MFA', 4, now()),
-       ('case-tracker', 'Case and status management with configurable stages', 3, now()),
-       ('notification-hub', 'Email, SMS and push from one template manager', 2, now());
+insert into module (name, description, priceInCents, productionTimeInWeeks, createdAt)
+values ('auth-gateway', 'OAuth2/OIDC gateway with session management and MFA', 1250000, 4, now()),
+       ('case-tracker', 'Case and status management with configurable stages', 980000, 3, now()),
+       ('notification-hub', 'Email, SMS and push from one template manager', 640000, 2, now());
 
 insert into client (id, companyName, firstName, lastName, email, phoneNumber, createdAt)
 values (1, 'Gemeente Tilburg', 'Anouk', 'Jansen', 'anouk@tilburg.example', '0131234567', now()),
