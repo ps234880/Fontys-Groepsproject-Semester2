@@ -67,14 +67,13 @@
   {
     <div class="card"><div class="h"><h2>Modules</h2><span class="sm dim">@Model.Results.Modules.Count</span></div>
       <div class="tw" style="border:0;border-radius:0 0 10px 10px"><table class="tbl">
-        <thead><tr><th>Module</th><th class="c" style="width:130px">Production time</th><th class="r" style="width:130px">Price</th></tr></thead>
+        <thead><tr><th>Module</th><th class="c" style="width:130px">Production time</th></tr></thead>
         <tbody>
           @foreach (var module in Model.Results.Modules)
           {
             <tr>
               <td><a class="lnk" asp-page="/Module/Edit" asp-route-id="@module.Id">@module.Name</a><div class="s">@module.Description</div></td>
               <td class="c num nowrap">@module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks")</td>
-              <td class="r num nowrap">€ @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</td>
             </tr>
           }
         </tbody>

@@ -17,7 +17,6 @@ create table module
         primary key,
     name                  varchar(255) not null,
     description           varchar(255) null,
-    priceInCents          int          not null,
     productionTimeInWeeks int          not null,
     createdAt             datetime     not null,
     updatedAt             datetime     null

@@ -352,7 +352,17 @@ public class DetailModel : PageModel
                 throw new ArgumentException("Enter the deal price in whole euros, for example 12500.");
             }
 
-            await _dealService.UpdateDealModuleAsync(id, moduleId, ModulePriceInEuros, ModuleWeeks);
+            DealModule? current = _dealService.GetModules(id).FirstOrDefault(module => module.Id == moduleId);
+
+            if (current == null)
+            {
+                throw new ArgumentException("This module is not linked to the deal.");
+            }
+
+            int? price = IsSales ? ModulePriceInEuros : current.DealPriceInCents / 100;
+            int? weeks = IsDevelopment ? ModuleWeeks : current.DealProductionTimeInWeeks;
+
+            await _dealService.UpdateDealModuleAsync(id, moduleId, price, weeks);
         }
         catch (ArgumentException exception)
         {
@@ -379,7 +389,7 @@ public class DetailModel : PageModel
             string? bindingError = ModelState
                 .Where(entry => entry.Key.StartsWith(nameof(NewModule) + ".") && entry.Value is { ValidationState: ModelValidationState.Invalid })
                 .SelectMany(entry => entry.Value!.Errors)
-                .Select(error => string.IsNullOrEmpty(error.ErrorMessage) ? "Check the module fields: price and weeks must be whole numbers." : error.ErrorMessage)
+                .Select(error => string.IsNullOrEmpty(error.ErrorMessage) ? "Check the module fields: the weeks must be a whole number." : error.ErrorMessage)
                 .FirstOrDefault();
 
             if (bindingError != null)
