@@ -193,6 +193,45 @@ public class DealService
         await _dealRepository.UpdateWaitingOnAsync(dealId, role);
     }
 
+    public List<Deal> Filter(List<Deal> deals, DealFilter filter, int currentEmployeeId)
+    {
+        IEnumerable<Deal> result = deals;
+
+        if (filter.Owner == DealFilter.MyDeals)
+        {
+            result = result.Where(deal => deal.EmployeeId == currentEmployeeId);
+        }
+        else if (!string.IsNullOrEmpty(filter.Owner))
+        {
+            if (!int.TryParse(filter.Owner, out int ownerId))
+            {
+                throw new ArgumentException($"'{filter.Owner}' is not a valid owner filter.");
+            }
+
+            result = result.Where(deal => deal.EmployeeId == ownerId);
+        }
+
+        if (filter.Stage == DealFilter.OpenDeals)
+        {
+            result = result.Where(IsOpen);
+        }
+        else if (filter.Stage == DealFilter.ClosedDeals)
+        {
+            result = result.Where(deal => !IsOpen(deal));
+        }
+        else if (!string.IsNullOrEmpty(filter.Stage))
+        {
+            if (!int.TryParse(filter.Stage, out int statusId))
+            {
+                throw new ArgumentException($"'{filter.Stage}' is not a valid stage filter.");
+            }
+
+            result = result.Where(deal => deal.StatusId == statusId);
+        }
+
+        return result.ToList();
+    }
+
     public bool IsOpen(Deal deal)
     {
         return deal.StatusName != WonStatus && deal.StatusName != LostStatus;
