@@ -31,7 +31,7 @@ public class ModuleLibraryModel : PageModel
         }
         catch (ModuleInUseException)
         {
-            ErrorMessage = "This module cannot be deleted, because it is still linked to a deal or an order.";
+            ErrorMessage = "This module cannot be deleted, because it is still linked to a deal.";
             Modules = _moduleService.GetAll();
 
             return Page();
