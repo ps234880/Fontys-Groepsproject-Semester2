@@ -22,6 +22,7 @@ builder.Services.AddScoped<ModuleService>();
 builder.Services.AddScoped<DealService>();
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<SearchService>();
 
 var app = builder.Build();
 

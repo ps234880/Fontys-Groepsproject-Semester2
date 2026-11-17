@@ -1,0 +1,83 @@
+@page
+@model Dashboard_Sales_Dev.Pages.Search.IndexModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Search";
+    ViewData["Role"] = "Sales";
+    Layout = "_AppLayout";
+}
+@section Crumb {<span class="cur">Search</span>}
+
+<div class="ph"><div class="r1"><div><h1>Search</h1>
+  <div class="sub">
+    @if (string.IsNullOrWhiteSpace(Model.Q))
+    {
+      <text>Search for deals, customers and modules.</text>
+    }
+    else
+    {
+      <text>@Model.Results.Count @(Model.Results.Count == 1 ? "result" : "results") for "@Model.Q"</text>
+    }
+  </div></div></div></div>
+
+<div class="content pad">
+  @if (!string.IsNullOrWhiteSpace(Model.Q) && Model.Results.Count == 0)
+  {
+    <div class="card"><div class="b"><p class="sm dim">Nothing matches "@Model.Q". Try a company name, a contact person or a module name.</p></div></div>
+  }
+
+  @if (Model.Results.Deals.Count > 0)
+  {
+    <div class="card"><div class="h"><h2>Deals</h2><span class="sm dim">@Model.Results.Deals.Count</span></div>
+      <div class="tw" style="border:0;border-radius:0 0 10px 10px"><table class="tbl">
+        <thead><tr><th>Customer / project</th><th style="width:180px">Contact person</th><th style="width:120px">Stage</th><th style="width:160px">Owner</th></tr></thead>
+        <tbody>
+          @foreach (var deal in Model.Results.Deals)
+          {
+            <tr>
+              <td><a class="lnk" asp-page="/Deals/Detail" asp-route-id="@deal.Id">@deal.ClientCompanyName</a><div class="s">@deal.Title</div></td>
+              <td class="dim nowrap">@deal.ClientName</td>
+              <td class="dim nowrap">@deal.StatusName</td>
+              <td class="dim nowrap">@deal.EmployeeName</td>
+            </tr>
+          }
+        </tbody>
+      </table></div></div>
+  }
+
+  @if (Model.Results.Clients.Count > 0)
+  {
+    <div class="card"><div class="h"><h2>Customers</h2><span class="sm dim">@Model.Results.Clients.Count</span></div>
+      <div class="tw" style="border:0;border-radius:0 0 10px 10px"><table class="tbl">
+        <thead><tr><th>Company</th><th style="width:200px">Contact person</th><th style="width:240px">Email</th></tr></thead>
+        <tbody>
+          @foreach (var client in Model.Results.Clients)
+          {
+            <tr>
+              <td><a class="lnk" asp-page="/Client/Edit" asp-route-id="@client.Id">@client.CompanyName</a></td>
+              <td class="dim nowrap">@client.FirstName @client.LastName</td>
+              <td class="dim nowrap">@client.Email</td>
+            </tr>
+          }
+        </tbody>
+      </table></div></div>
+  }
+
+  @if (Model.Results.Modules.Count > 0)
+  {
+    <div class="card"><div class="h"><h2>Modules</h2><span class="sm dim">@Model.Results.Modules.Count</span></div>
+      <div class="tw" style="border:0;border-radius:0 0 10px 10px"><table class="tbl">
+        <thead><tr><th>Module</th><th class="c" style="width:130px">Production time</th><th class="r" style="width:130px">Price</th></tr></thead>
+        <tbody>
+          @foreach (var module in Model.Results.Modules)
+          {
+            <tr>
+              <td><a class="lnk" asp-page="/Module/Edit" asp-route-id="@module.Id">@module.Name</a><div class="s">@module.Description</div></td>
+              <td class="c num nowrap">@module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks")</td>
+              <td class="r num nowrap">€ @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</td>
+            </tr>
+          }
+        </tbody>
+      </table></div></div>
+  }
+</div>

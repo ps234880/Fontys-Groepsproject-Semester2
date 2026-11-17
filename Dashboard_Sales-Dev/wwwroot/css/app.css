@@ -149,6 +149,9 @@ h3 { font-size: 13px; font-weight: 600; }
   flex: 0 1 260px; min-width: 0; color: var(--fg-4); font-size: 13px; background: var(--raised);
 }
 .search svg { width: 14px; height: 14px; }
+.search input { flex: 1; min-width: 0; height: 100%; border: 0; background: transparent; outline: 0; color: var(--fg); font-size: 13px; }
+.search input::placeholder { color: var(--fg-4); }
+.search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .kbd { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--fg-4);
   border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
 
@@ -380,7 +383,8 @@ h3 { font-size: 13px; font-weight: 600; }
 .swz .c { height: 48px; border-radius: var(--r); border: 1px solid var(--line); }
 
 @media (max-width: 1240px) {
-  .search { display: none; }
+  .search { flex-basis: 200px; }
+  .search .kbd { display: none; }
 }
 
 @media (max-width: 1080px) {
