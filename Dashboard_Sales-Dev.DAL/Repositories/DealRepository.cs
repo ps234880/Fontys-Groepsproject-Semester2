@@ -306,7 +306,7 @@ WHERE id = @dealId;", connection);
         using MySqlConnection connection = CreateConnection();
         connection.Open();
 
-        string query = @"SELECT m.id, m.name, m.description, m.priceInCents, dm.priceInCents AS dealPriceInCents, m.productionTimeInWeeks, dm.productionTimeInWeeks AS dealProductionTimeInWeeks, m.createdAt
+        string query = @"SELECT m.id, m.name, m.description, dm.priceInCents AS dealPriceInCents, m.productionTimeInWeeks, dm.productionTimeInWeeks AS dealProductionTimeInWeeks, m.createdAt
 FROM deal_module dm
 INNER JOIN module m ON dm.module_id = m.id
 WHERE dm.deal_id = @dealId
@@ -323,7 +323,6 @@ ORDER BY m.name;";
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("name"),
                 Description = reader.IsDBNull(reader.GetOrdinal("description")) ? string.Empty : reader.GetString("description"),
-                PriceInCents = reader.GetInt32("priceInCents"),
                 DealPriceInCents = reader.IsDBNull(reader.GetOrdinal("dealPriceInCents")) ? null : reader.GetInt32("dealPriceInCents"),
                 ProductionTimeInWeeks = reader.GetInt32("productionTimeInWeeks"),
                 DealProductionTimeInWeeks = reader.IsDBNull(reader.GetOrdinal("dealProductionTimeInWeeks")) ? null : reader.GetInt32("dealProductionTimeInWeeks"),

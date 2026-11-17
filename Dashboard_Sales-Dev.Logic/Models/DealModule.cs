@@ -6,7 +6,9 @@ public class DealModule : Module
 
     public int? DealProductionTimeInWeeks { get; set; }
 
-    public int FinalPriceInCents => DealPriceInCents ?? PriceInCents;
+    public bool HasPrice => DealPriceInCents != null;
+
+    public int FinalPriceInCents => DealPriceInCents ?? 0;
 
     public int FinalProductionTimeInWeeks => DealProductionTimeInWeeks ?? ProductionTimeInWeeks;
 }

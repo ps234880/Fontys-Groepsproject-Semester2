@@ -158,14 +158,28 @@
             var formId = $"deal-module-{module.Id}";
             <tr>
               <td><span class="t">@module.Name</span><div class="s">@module.Description</div>
-                <div class="s">Standard: @module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks") · € @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</div></td>
+                <div class="s">Standard: @module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks")</div></td>
               <td class="r nowrap">
+                @if (Model.IsDevelopment)
+                {
                 <input form="@formId" name="ModuleWeeks" type="number" min="1" max="@DealService.MaxDealProductionTimeInWeeks" step="1" class="in num" style="width:80px;text-align:right"
                        value="@module.DealProductionTimeInWeeks" placeholder="@module.ProductionTimeInWeeks" aria-label="Production time for @module.Name in weeks" />
+                }
+                else
+                {
+                  <span class="num">@module.FinalProductionTimeInWeeks</span>
+                }
               </td>
               <td class="r nowrap">
+                @if (Model.IsSales)
+                {
                 <input form="@formId" name="ModulePriceInEuros" type="number" min="0" step="1" class="in num" style="width:110px;text-align:right"
-                       value="@(module.DealPriceInCents / 100)" placeholder="@(module.PriceInCents / 100)" aria-label="Deal price for @module.Name in euros" />
+                       value="@(module.DealPriceInCents / 100)" placeholder="Not set" aria-label="Deal price for @module.Name in euros" />
+                }
+                else
+                {
+                  <span class="num @(module.HasPrice ? "" : "dim")">@(module.HasPrice ? (module.FinalPriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture) : "Not set")</span>
+                }
               </td>
               <td class="r nowrap">
                 <form id="@formId" method="post" asp-page-handler="UpdateModule" asp-route-id="@Model.Deal.Id" asp-route-moduleId="@module.Id" class="inline-form">
@@ -180,8 +194,8 @@
           }
         </tbody>
       </table>
-      <div class="tfoot"><span>@Model.LinkedModules.Count @(Model.LinkedModules.Count == 1 ? "module" : "modules") · @Model.ProductionTimeInWeeks @(Model.ProductionTimeInWeeks == 1 ? "week" : "weeks") in total</span><span class="num strong">Total € @((Model.TotalPriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</span></div></div>
-      <p class="xs dimmer" style="margin-top:8px">Weeks and price apply to this deal only. Leave a field empty to use the module's standard value.</p>
+      <div class="tfoot"><span>@Model.LinkedModules.Count @(Model.LinkedModules.Count == 1 ? "module" : "modules") · @Model.ProductionTimeInWeeks @(Model.ProductionTimeInWeeks == 1 ? "week" : "weeks") in total</span><span class="num strong">Total € @((Model.TotalPriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))@(Model.LinkedModules.Any(m => !m.HasPrice) ? " (price not set for " + Model.LinkedModules.Count(m => !m.HasPrice) + ")" : "")</span></div></div>
+      <p class="xs dimmer" style="margin-top:8px">Development sets the weeks for this deal (empty means the module's standard). Sales sets the price for this deal.</p>
     }
     @if (Model.AvailableModules.Count > 0)
     {
@@ -202,11 +216,8 @@
         }
         <div class="fld"><label asp-for="NewModule.Name">Name</label><input asp-for="NewModule.Name" class="in" maxlength="255" placeholder="e.g. calendar-booking" /></div>
         <div class="fld"><label asp-for="NewModule.Description">Description</label><input asp-for="NewModule.Description" class="in" maxlength="255" /></div>
-        <div class="cols">
-          <div class="fld"><label asp-for="NewModule.PriceInEuros">Standard price in euros</label><input asp-for="NewModule.PriceInEuros" type="number" min="0" step="1" class="in" value="" /></div>
-          <div class="fld"><label asp-for="NewModule.ProductionTimeInWeeks">Standard production time in weeks</label><input asp-for="NewModule.ProductionTimeInWeeks" type="number" min="1" step="1" class="in" value="" /></div>
-        </div>
-        <p class="xs dimmer" style="margin-bottom:12px">The module is added to the module library and linked to this deal. You can change its weeks and price for this deal afterwards.</p>
+        <div class="fld"><label asp-for="NewModule.ProductionTimeInWeeks">Standard production time in weeks</label><input asp-for="NewModule.ProductionTimeInWeeks" type="number" min="1" step="1" class="in" value="" /></div>
+        <p class="xs dimmer" style="margin-bottom:12px">The module is added to the module library and linked to this deal. You can change its weeks for this deal afterwards. Sales sets the price.</p>
         <div style="display:flex;justify-content:flex-end"><button type="submit" class="btn">Create and link</button></div>
       </form>
     </details>
