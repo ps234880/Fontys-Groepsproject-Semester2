@@ -23,18 +23,33 @@ public class NewModel : PageModel
     public DealInput Input { get; set; } = new();
 
     public List<SelectListItem> Owners { get; private set; } = new();
+    public List<SelectListItem> Clients { get; private set; } = new();
+
+    private static readonly string[] NewClientFields =
+    [
+        nameof(DealInput.CompanyName), nameof(DealInput.FirstName), nameof(DealInput.LastName),
+        nameof(DealInput.Email), nameof(DealInput.PhoneNumber)
+    ];
 
     public void OnGet()
     {
         Input.EstimatedDate = DateTime.Today;
-        LoadOwners();
+        LoadLists();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
+        if (Input.ExistingClientId > 0)
+        {
+            foreach (string field in NewClientFields)
+            {
+                ModelState.Remove($"{nameof(Input)}.{field}");
+            }
+        }
+
         if (!ModelState.IsValid)
         {
-            LoadOwners();
+            LoadLists();
             return Page();
         }
 
@@ -59,28 +74,35 @@ public class NewModel : PageModel
 
         try
         {
-            dealId = await _dealService.CreateWithNewClientAsync(client, deal);
+            dealId = Input.ExistingClientId > 0
+                ? await _dealService.CreateWithExistingClientAsync(Input.ExistingClientId, deal)
+                : await _dealService.CreateWithNewClientAsync(client, deal);
         }
         catch (ArgumentException exception)
         {
-            ModelState.AddModelError("Input.OwnerId", exception.Message);
-            LoadOwners();
+            ModelState.AddModelError(string.Empty, exception.Message);
+            LoadLists();
             return Page();
         }
 
         return RedirectToPage("/Deals/Detail", new { id = dealId });
     }
 
-    private void LoadOwners()
+    private void LoadLists()
     {
         Owners = _employeeService.GetAll()
             .Where(employee => employee.RoleName == EmployeeService.SalesRole)
             .Select(employee => new SelectListItem(employee.FullName, employee.Id.ToString()))
             .ToList();
+        Clients = _dealService.GetAllClients()
+            .Select(client => new SelectListItem($"{client.CompanyName} - {client.FirstName} {client.LastName}", client.Id.ToString()))
+            .ToList();
     }
 
     public class DealInput
     {
+        public int ExistingClientId { get; set; }
+
         [Required(ErrorMessage = "Enter a company name.")]
         public string CompanyName { get; set; } = string.Empty;
 
