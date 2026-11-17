@@ -1,3 +1,4 @@
+using Dashboard_Sales_Dev.Authentication;
 using Dashboard_Sales_Dev.Logic.Models;
 using LibraryModule = Dashboard_Sales_Dev.Logic.Models.Module;
 using Customer = Dashboard_Sales_Dev.Logic.Models.Client;
@@ -13,14 +14,12 @@ public class DetailModel : PageModel
     private readonly DealService _dealService;
     private readonly ModuleService _moduleService;
     private readonly CommentService _commentService;
-    private readonly EmployeeService _employeeService;
 
-    public DetailModel(DealService dealService, ModuleService moduleService, CommentService commentService, EmployeeService employeeService)
+    public DetailModel(DealService dealService, ModuleService moduleService, CommentService commentService)
     {
         _dealService = dealService;
         _moduleService = moduleService;
         _commentService = commentService;
-        _employeeService = employeeService;
     }
 
     public Deal Deal { get; private set; } = default!;
@@ -35,7 +34,6 @@ public class DetailModel : PageModel
     public bool EstimatedDateTooEarly { get; private set; }
 
     public List<Comment> Comments { get; private set; } = new();
-    public List<SelectListItem> Authors { get; private set; } = new();
     public string? CommentError { get; private set; }
 
     public string? NewContactError { get; private set; }
@@ -48,9 +46,6 @@ public class DetailModel : PageModel
 
     [BindProperty]
     public int StatusId { get; set; }
-
-    [BindProperty]
-    public int CommentEmployeeId { get; set; }
 
     [BindProperty]
     public string? CommentMessage { get; set; }
@@ -108,7 +103,7 @@ public class DetailModel : PageModel
 
         try
         {
-            await _commentService.AddAsync(id, CommentEmployeeId, CommentMessage);
+            await _commentService.AddAsync(id, User.GetEmployeeId(), CommentMessage);
         }
         catch (ArgumentException exception)
         {
@@ -231,9 +226,6 @@ public class DetailModel : PageModel
     private void LoadComments(int id)
     {
         Comments = _commentService.GetForDeal(id);
-        Authors = _employeeService.GetAll()
-            .Select(employee => new SelectListItem($"{employee.FullName} ({employee.RoleName})", employee.Id.ToString()))
-            .ToList();
     }
 
     private void LoadModules(int id)

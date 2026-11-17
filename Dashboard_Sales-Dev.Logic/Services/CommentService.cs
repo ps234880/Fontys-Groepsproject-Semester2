@@ -42,7 +42,7 @@ public class CommentService
 
         if (_employeeRepository.GetById(employeeId) == null)
         {
-            throw new ArgumentException("Choose who is writing the comment.");
+            throw new ArgumentException($"Employee {employeeId} does not exist, so the comment cannot be posted. Sign out and sign in again.");
         }
 
         await _commentRepository.AddCommentAsync(new Comment

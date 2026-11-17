@@ -166,13 +166,9 @@
         <div class="banner stop" role="alert">@Model.CommentError</div>
       }
       <form method="post" asp-page-handler="Comment" asp-route-id="@Model.Deal.Id">
-        <div class="fld"><label asp-for="CommentEmployeeId">Comment as</label>
-          <select asp-for="CommentEmployeeId" asp-items="Model.Authors" class="sel in">
-            <option value="">Choose who is writing</option>
-          </select></div>
         <div class="fld"><label asp-for="CommentMessage">Comment</label>
           <textarea asp-for="CommentMessage" class="ta" maxlength="2000" placeholder="Feedback, an alternative solution or a question"></textarea></div>
-        <div style="display:flex;justify-content:flex-end"><button type="submit" class="btn">Post comment</button></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span class="xs dimmer">Posting as @User.Identity?.Name</span><button type="submit" class="btn">Post comment</button></div>
       </form>
     </div>
   </div>
