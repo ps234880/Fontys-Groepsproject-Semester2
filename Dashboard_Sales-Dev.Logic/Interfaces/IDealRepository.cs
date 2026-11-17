@@ -6,9 +6,18 @@ public interface IDealRepository
 {
     List<Deal> GetAll();
     Deal? GetById(int id);
-    Task<int> AddDealAsync(Deal deal);
+    Task<int> AddDealAsync(Deal deal, IReadOnlyList<string> goals, IReadOnlyList<DealScopeItem> scopeItems);
     Task UpdateStatusAsync(int dealId, int statusId);
     Task UpdateWaitingOnAsync(int dealId, string? roleName);
+
+    List<DealGoal> GetGoals(int dealId);
+    Task AddGoalAsync(int dealId, string description);
+    Task RemoveGoalAsync(int dealId, int goalId);
+
+    List<DealScopeItem> GetScopeItems(int dealId);
+    Task AddScopeItemAsync(int dealId, string description, bool inScope);
+    Task UpdateScopeItemAsync(int dealId, int itemId, bool inScope);
+    Task RemoveScopeItemAsync(int dealId, int itemId);
 
     List<DealModule> GetModules(int dealId);
     Task AddModuleAsync(int dealId, int moduleId);
