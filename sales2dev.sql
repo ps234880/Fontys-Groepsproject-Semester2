@@ -43,7 +43,9 @@ create table employee
     createdAt   datetime     not null,
     updatedAt   datetime     null,
     constraint role_fk
-        foreign key (role_id) references role (id)
+        foreign key (role_id) references role (id),
+    constraint employee_email_uq
+        unique (email)
 );
 
 create table status
@@ -112,4 +114,20 @@ create table deal_client
             on delete cascade,
     constraint deal_client_client_id_fk
         foreign key (client_id) references client (id)
+);
+
+create table saved_filter
+(
+    id          int auto_increment
+        primary key,
+    employee_id int          not null,
+    name        varchar(100) not null,
+    owner       varchar(20)  null,
+    stage       varchar(20)  null,
+    createdAt   datetime     not null,
+    constraint saved_filter_employee_id_fk
+        foreign key (employee_id) references employee (id)
+            on delete cascade,
+    constraint saved_filter_employee_name_uq
+        unique (employee_id, name)
 );

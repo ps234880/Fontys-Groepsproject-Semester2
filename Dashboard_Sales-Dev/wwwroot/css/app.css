@@ -150,6 +150,8 @@ h3 { font-size: 13px; font-weight: 600; }
 .chip svg { width: 13px; height: 13px; color: var(--fg-4); }
 .chip.set { border-color: transparent; background: var(--accent-soft); color: var(--accent-text); }
 .chip.set svg { color: var(--accent-hi); }
+.chip .inline-form button { color: inherit; opacity: .6; font-size: 15px; line-height: 1; }
+.chip .inline-form button:hover { opacity: 1; }
 
 .content { padding: 0 24px 56px; }
 .content.pad { padding-top: 20px; }
