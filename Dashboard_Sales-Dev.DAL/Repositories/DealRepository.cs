@@ -127,7 +127,7 @@ INNER JOIN status s ON d.status_id = s.id";
         using MySqlConnection connection = CreateConnection();
         connection.Open();
 
-        string query = @"SELECT m.id, m.name, m.description, m.productionTimeInWeeks, m.createdAt
+        string query = @"SELECT m.id, m.name, m.description, m.priceInCents, m.productionTimeInWeeks, m.createdAt
 FROM deal_module dm
 INNER JOIN module m ON dm.module_id = m.id
 WHERE dm.deal_id = @dealId
@@ -144,6 +144,7 @@ ORDER BY m.name;";
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("name"),
                 Description = reader.IsDBNull(reader.GetOrdinal("description")) ? string.Empty : reader.GetString("description"),
+                PriceInCents = reader.GetInt32("priceInCents"),
                 ProductionTimeInWeeks = reader.GetInt32("productionTimeInWeeks"),
                 CreatedAt = reader.GetDateTime("createdAt")
             });

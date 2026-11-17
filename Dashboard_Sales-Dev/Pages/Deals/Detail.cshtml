@@ -51,6 +51,7 @@
         <thead><tr>
           <th>Module</th>
           <th class="c" style="width:130px">Production time</th>
+          <th class="r" style="width:130px">Price</th>
           <th class="r" style="width:90px"></th>
         </tr></thead>
         <tbody>
@@ -59,6 +60,7 @@
             <tr>
               <td><span class="t">@module.Name</span><div class="s">@module.Description</div></td>
               <td class="c num nowrap">@module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks")</td>
+              <td class="r num nowrap">€ @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</td>
               <td class="r nowrap">
                 <form method="post" asp-page-handler="Unlink" asp-route-id="@Model.Deal.Id" asp-route-moduleId="@module.Id" class="inline-form">
                   <button type="submit" class="lnk-stop sm">Remove</button>

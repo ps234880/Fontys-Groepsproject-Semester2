@@ -14,6 +14,9 @@ public class Module
     [StringLength(255)]
     public string Description { get; set; } = string.Empty;
 
+    [Range(0, int.MaxValue)]
+    public int PriceInCents { get; set; }
+
     [Range(1, int.MaxValue)]
     public int ProductionTimeInWeeks { get; set; }
 
