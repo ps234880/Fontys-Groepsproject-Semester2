@@ -1,6 +1,7 @@
 @page "{id:int}"
 @model Dashboard_Sales_Dev.Pages.Deals.DetailModel
 @using System.Globalization
+@using Dashboard_Sales_Dev.Logic.Services
 @{
     ViewData["Title"] = Model.Deal.ClientCompanyName;
     ViewData["Role"] = "Sales";
@@ -11,11 +12,10 @@
 
 <div class="ph"><div class="r1"><div><h1>@Model.Deal.ClientCompanyName</h1><div class="sub">@Model.Deal.Title</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Index">Back to deals</a></div></div></div>
 
-<div class="content pad"><div style="max-width:760px">
+<div class="content pad"><div class="split"><div>
   <div class="card"><div class="h"><h2>Deal</h2></div><div class="b">
     <div class="fields" style="max-width:none">
       <div class="fld"><label>Project name</label><div>@Model.Deal.Title</div></div>
-      <div class="fld"><label>Requirement</label><div style="white-space:pre-line">@Model.Deal.Requirement</div></div>
       <div class="cols">
         <div class="fld"><label>Estimated date</label><div>@Model.Deal.EstimatedDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</div></div>
         <div class="fld"><label>Production time</label><div>@(Model.LinkedModules.Count == 0 ? "No modules linked yet" : Model.ProductionTimeInWeeks + (Model.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</div></div>
@@ -25,22 +25,95 @@
       </div>
       @if (Model.EstimatedDateTooEarly)
       {
-        <div style="margin-top:12px"><span class="tag warn">The estimated date is earlier than the production time allows. Earliest delivery: @Model.EarliestDeliveryDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</span></div>
+        <div style="margin-top:12px"><span class="tag warn wrap">The estimated date is earlier than the production time allows. Earliest delivery: @Model.EarliestDeliveryDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</span></div>
       }
     </div></div></div>
 
-  <div class="card"><div class="h"><h2>Stage</h2></div><div class="b">
-    <form method="post" asp-page-handler="Status" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;align-items:center">
-      <select asp-for="StatusId" asp-items="Model.Statuses" class="in" style="max-width:240px"></select>
-      <button type="submit" class="btn n">Change stage</button>
-    </form>
-    @if (Model.StatusError != null)
+  <div class="card"><div class="h"><h2>Goals</h2><span class="sm dim">@Model.Goals.Count</span></div><div class="b">
+    @if (Model.GoalError != null)
     {
-      <p class="field-error" style="margin-top:8px">@Model.StatusError</p>
+      <div class="banner stop" role="alert">@Model.GoalError</div>
     }
+    @if (Model.Goals.Count == 0)
+    {
+      <p class="sm dim">No goals yet. Add what the customer wants to achieve.</p>
+    }
+    else
+    {
+      <div class="tw"><table class="tbl">
+        <tbody>
+          @foreach (var goal in Model.Goals)
+          {
+            <tr>
+              <td style="color:var(--fg)">@goal.Description</td>
+              <td class="r nowrap" style="width:90px">
+                <form method="post" asp-page-handler="RemoveGoal" asp-route-id="@Model.Deal.Id" asp-route-goalId="@goal.Id" class="inline-form">
+                  <button type="submit" class="lnk-stop sm">Remove</button>
+                </form>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table></div>
+    }
+    <form method="post" asp-page-handler="AddGoal" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;margin-top:14px">
+      <input asp-for="NewGoal" class="in" style="flex:1" maxlength="255" placeholder="New goal" aria-label="New goal" required />
+      <button type="submit" class="btn">Add goal</button>
+    </form>
+  </div></div>
+
+  <div class="card"><div class="h"><h2>Scope</h2><span class="sm dim">@Model.ScopeItems.Count(item => item.InScope) in · @Model.ScopeItems.Count(item => !item.InScope) out</span></div><div class="b">
+    @if (Model.ScopeError != null)
+    {
+      <div class="banner stop" role="alert">@Model.ScopeError</div>
+    }
+    @if (Model.ScopeItems.Count == 0)
+    {
+      <p class="sm dim">No scope yet. Add what is and is not part of the project.</p>
+    }
+    else
+    {
+      <div class="tw"><table class="tbl">
+        <thead><tr>
+          <th>Item</th>
+          <th style="width:130px">Scope</th>
+          <th class="r" style="width:240px"></th>
+        </tr></thead>
+        <tbody>
+          @foreach (var item in Model.ScopeItems)
+          {
+            <tr>
+              <td style="color:var(--fg)">@item.Description</td>
+              <td class="nowrap">@if (item.InScope) {<span class="tag ok">In scope</span>} else {<span class="tag idle">Out of scope</span>}</td>
+              <td class="r nowrap">
+                <form method="post" asp-page-handler="ToggleScope" asp-route-id="@Model.Deal.Id" asp-route-itemId="@item.Id" asp-route-inScope="@(!item.InScope)" class="inline-form">
+                  <button type="submit" class="lnk sm">@(item.InScope ? "Mark out of scope" : "Mark in scope")</button>
+                </form>
+                &nbsp;
+                <form method="post" asp-page-handler="RemoveScope" asp-route-id="@Model.Deal.Id" asp-route-itemId="@item.Id" class="inline-form">
+                  <button type="submit" class="lnk-stop sm">Remove</button>
+                </form>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table></div>
+    }
+    <form method="post" asp-page-handler="AddScope" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <input asp-for="NewScopeItem" class="in" style="flex:1 1 200px" maxlength="255" placeholder="New scope item" aria-label="New scope item" required />
+      <select asp-for="NewScopeInScope" class="sel in" style="width:auto" aria-label="In or out of scope">
+        <option value="true">In scope</option>
+        <option value="false">Out of scope</option>
+      </select>
+      <button type="submit" class="btn">Add</button>
+    </form>
   </div></div>
 
   <div class="card"><div class="h"><h2>Modules</h2></div><div class="b">
+    @if (Model.ModuleError != null)
+    {
+      <div class="banner stop" role="alert">@Model.ModuleError</div>
+    }
     @if (Model.LinkedModules.Count == 0)
     {
       <p class="sm dim">No modules are linked to this deal yet. Link existing modules so development can see what can be reused.</p>
@@ -50,18 +123,30 @@
       <div class="tw"><table class="tbl">
         <thead><tr>
           <th>Module</th>
-          <th class="c" style="width:130px">Production time</th>
-          <th class="r" style="width:130px">Price</th>
-          <th class="r" style="width:90px"></th>
+          <th class="r" style="width:120px">Weeks</th>
+          <th class="r" style="width:140px">Price (€)</th>
+          <th class="r" style="width:150px"></th>
         </tr></thead>
         <tbody>
           @foreach (var module in Model.LinkedModules)
           {
+            var formId = $"deal-module-{module.Id}";
             <tr>
-              <td><span class="t">@module.Name</span><div class="s">@module.Description</div></td>
-              <td class="c num nowrap">@module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks")</td>
-              <td class="r num nowrap">€ @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</td>
+              <td><span class="t">@module.Name</span><div class="s">@module.Description</div>
+                <div class="s">Standard: @module.ProductionTimeInWeeks @(module.ProductionTimeInWeeks == 1 ? "week" : "weeks") · € @((module.PriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</div></td>
               <td class="r nowrap">
+                <input form="@formId" name="ModuleWeeks" type="number" min="1" max="@DealService.MaxDealProductionTimeInWeeks" step="1" class="in num" style="width:80px;text-align:right"
+                       value="@module.DealProductionTimeInWeeks" placeholder="@module.ProductionTimeInWeeks" aria-label="Production time for @module.Name in weeks" />
+              </td>
+              <td class="r nowrap">
+                <input form="@formId" name="ModulePriceInEuros" type="number" min="0" step="1" class="in num" style="width:110px;text-align:right"
+                       value="@(module.DealPriceInCents / 100)" placeholder="@(module.PriceInCents / 100)" aria-label="Deal price for @module.Name in euros" />
+              </td>
+              <td class="r nowrap">
+                <form id="@formId" method="post" asp-page-handler="UpdateModule" asp-route-id="@Model.Deal.Id" asp-route-moduleId="@module.Id" class="inline-form">
+                  <button type="submit" class="lnk sm">Save</button>
+                </form>
+                &nbsp;
                 <form method="post" asp-page-handler="Unlink" asp-route-id="@Model.Deal.Id" asp-route-moduleId="@module.Id" class="inline-form">
                   <button type="submit" class="lnk-stop sm">Remove</button>
                 </form>
@@ -70,7 +155,8 @@
           }
         </tbody>
       </table>
-      <div class="tfoot"><span>@Model.LinkedModules.Count @(Model.LinkedModules.Count == 1 ? "module" : "modules") · @Model.ProductionTimeInWeeks @(Model.ProductionTimeInWeeks == 1 ? "week" : "weeks") in total</span></div></div>
+      <div class="tfoot"><span>@Model.LinkedModules.Count @(Model.LinkedModules.Count == 1 ? "module" : "modules") · @Model.ProductionTimeInWeeks @(Model.ProductionTimeInWeeks == 1 ? "week" : "weeks") in total</span><span class="num strong">Total € @((Model.TotalPriceInCents / 100m).ToString("N2", CultureInfo.InvariantCulture))</span></div></div>
+      <p class="xs dimmer" style="margin-top:8px">Weeks and price apply to this deal only. Leave a field empty to use the module's standard value.</p>
     }
     @if (Model.AvailableModules.Count > 0)
     {
@@ -81,6 +167,24 @@
         <button type="submit" class="btn">Link module</button>
       </form>
     }
+
+    <details style="margin-top:14px" @(Model.NewModuleError != null ? "open" : null)>
+      <summary class="lnk sm" style="cursor:pointer">Create a new module</summary>
+      <form method="post" asp-page-handler="CreateModule" asp-route-id="@Model.Deal.Id" style="margin-top:12px">
+        @if (Model.NewModuleError != null)
+        {
+          <div class="banner stop" role="alert">@Model.NewModuleError</div>
+        }
+        <div class="fld"><label asp-for="NewModule.Name">Name</label><input asp-for="NewModule.Name" class="in" maxlength="255" placeholder="e.g. calendar-booking" /></div>
+        <div class="fld"><label asp-for="NewModule.Description">Description</label><input asp-for="NewModule.Description" class="in" maxlength="255" /></div>
+        <div class="cols">
+          <div class="fld"><label asp-for="NewModule.PriceInEuros">Standard price in euros</label><input asp-for="NewModule.PriceInEuros" type="number" min="0" step="1" class="in" value="" /></div>
+          <div class="fld"><label asp-for="NewModule.ProductionTimeInWeeks">Standard production time in weeks</label><input asp-for="NewModule.ProductionTimeInWeeks" type="number" min="1" step="1" class="in" value="" /></div>
+        </div>
+        <p class="xs dimmer" style="margin-bottom:12px">The module is added to the module library and linked to this deal. You can change its weeks and price for this deal afterwards.</p>
+        <div style="display:flex;justify-content:flex-end"><button type="submit" class="btn">Create and link</button></div>
+      </form>
+    </details>
   </div></div>
 
   <div class="card"><div class="h"><h2>Contact persons</h2></div><div class="b">
@@ -148,6 +252,71 @@
     </details>
   </div></div>
 
+  <div class="card"><div class="h"><h2>Team</h2><span class="sm dim">@(Model.TeamMembers.Count + 1) @(Model.TeamMembers.Count == 0 ? "person" : "people")</span></div><div class="b">
+    @if (Model.TeamError != null)
+    {
+      <div class="banner stop" role="alert">@Model.TeamError</div>
+    }
+    <div class="tw"><table class="tbl">
+      <thead><tr>
+        <th>Name</th>
+        <th style="width:160px">Team</th>
+        <th class="r" style="width:90px"></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td>@Model.Deal.EmployeeName <span class="tag info">Owner</span></td>
+          <td class="dim nowrap">Sales</td>
+          <td></td>
+        </tr>
+        @foreach (var member in Model.TeamMembers)
+        {
+          <tr>
+            <td>@member.FullName</td>
+            <td class="dim nowrap">@member.RoleName</td>
+            <td class="r nowrap">
+              <form method="post" asp-page-handler="RemoveTeamMember" asp-route-id="@Model.Deal.Id" asp-route-employeeId="@member.Id" class="inline-form">
+                <button type="submit" class="lnk-stop sm">Remove</button>
+              </form>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table></div>
+    @if (Model.AvailableTeamMembers.Count > 0)
+    {
+      <form method="post" asp-page-handler="AddTeamMember" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;margin-top:14px">
+        <select asp-for="TeamMemberId" asp-items="Model.AvailableTeamMembers" class="sel in" style="flex:1">
+          <option value="">Choose a colleague</option>
+        </select>
+        <button type="submit" class="btn">Add to team</button>
+      </form>
+    }
+  </div></div>
+
+</div><div>
+  <div class="card"><div class="h"><h2>Stage</h2></div><div class="b">
+    <form method="post" asp-page-handler="Status" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;align-items:center">
+      <select asp-for="StatusId" asp-items="Model.Statuses" class="in" style="max-width:240px"></select>
+      <button type="submit" class="btn n">Change stage</button>
+    </form>
+    @if (Model.StatusError != null)
+    {
+      <p class="field-error" style="margin-top:8px">@Model.StatusError</p>
+    }
+    <form method="post" asp-page-handler="WaitingOn" asp-route-id="@Model.Deal.Id" style="margin-top:16px">
+      <label for="WaitingOn" class="sm strong" style="display:block;margin-bottom:5px">Whose turn is it?</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select asp-for="WaitingOn" asp-items="Model.WaitingOnOptions" class="sel in" style="max-width:240px"></select>
+        <button type="submit" class="btn n">Save</button>
+      </div>
+    </form>
+    @if (Model.WaitingOnError != null)
+    {
+      <p class="field-error" style="margin-top:8px">@Model.WaitingOnError</p>
+    }
+  </div></div>
+
   <div class="card"><div class="h"><h2>Comments</h2><span class="sm dim">@Model.Comments.Count @(Model.Comments.Count == 1 ? "comment" : "comments")</span></div>
     @if (Model.Comments.Count == 0)
     {
@@ -166,14 +335,10 @@
         <div class="banner stop" role="alert">@Model.CommentError</div>
       }
       <form method="post" asp-page-handler="Comment" asp-route-id="@Model.Deal.Id">
-        <div class="fld"><label asp-for="CommentEmployeeId">Comment as</label>
-          <select asp-for="CommentEmployeeId" asp-items="Model.Authors" class="sel in">
-            <option value="">Choose who is writing</option>
-          </select></div>
         <div class="fld"><label asp-for="CommentMessage">Comment</label>
           <textarea asp-for="CommentMessage" class="ta" maxlength="2000" placeholder="Feedback, an alternative solution or a question"></textarea></div>
-        <div style="display:flex;justify-content:flex-end"><button type="submit" class="btn">Post comment</button></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span class="xs dimmer">Posting as @User.Identity?.Name</span><button type="submit" class="btn">Post comment</button></div>
       </form>
     </div>
   </div>
-</div></div>
+</div></div></div>

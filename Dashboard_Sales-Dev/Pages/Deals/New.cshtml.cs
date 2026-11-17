@@ -23,18 +23,33 @@ public class NewModel : PageModel
     public DealInput Input { get; set; } = new();
 
     public List<SelectListItem> Owners { get; private set; } = new();
+    public List<SelectListItem> Clients { get; private set; } = new();
+
+    private static readonly string[] NewClientFields =
+    [
+        nameof(DealInput.CompanyName), nameof(DealInput.FirstName), nameof(DealInput.LastName),
+        nameof(DealInput.Email), nameof(DealInput.PhoneNumber)
+    ];
 
     public void OnGet()
     {
         Input.EstimatedDate = DateTime.Today;
-        LoadOwners();
+        LoadLists();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
+        if (Input.ExistingClientId > 0)
+        {
+            foreach (string field in NewClientFields)
+            {
+                ModelState.Remove($"{nameof(Input)}.{field}");
+            }
+        }
+
         if (!ModelState.IsValid)
         {
-            LoadOwners();
+            LoadLists();
             return Page();
         }
 
@@ -51,36 +66,56 @@ public class NewModel : PageModel
         {
             EmployeeId = Input.OwnerId,
             Title = Input.Title.Trim(),
-            Requirement = Input.Requirement.Trim(),
             EstimatedDate = Input.EstimatedDate
         };
+
+        List<DealScopeItem> scopeItems = SplitLines(Input.InScope)
+            .Select(line => new DealScopeItem { Description = line, InScope = true })
+            .Concat(SplitLines(Input.OutOfScope).Select(line => new DealScopeItem { Description = line, InScope = false }))
+            .ToList();
 
         int dealId;
 
         try
         {
-            dealId = await _dealService.CreateWithNewClientAsync(client, deal);
+            dealId = Input.ExistingClientId > 0
+                ? await _dealService.CreateWithExistingClientAsync(Input.ExistingClientId, deal, SplitLines(Input.Goals), scopeItems)
+                : await _dealService.CreateWithNewClientAsync(client, deal, SplitLines(Input.Goals), scopeItems);
         }
         catch (ArgumentException exception)
         {
-            ModelState.AddModelError("Input.OwnerId", exception.Message);
-            LoadOwners();
+            ModelState.AddModelError(string.Empty, exception.Message);
+            LoadLists();
             return Page();
         }
 
         return RedirectToPage("/Deals/Detail", new { id = dealId });
     }
 
-    private void LoadOwners()
+    private static List<string> SplitLines(string? text)
+    {
+        return (text ?? string.Empty)
+            .Split('\n')
+            .Select(line => line.Trim())
+            .Where(line => line.Length > 0)
+            .ToList();
+    }
+
+    private void LoadLists()
     {
         Owners = _employeeService.GetAll()
             .Where(employee => employee.RoleName == EmployeeService.SalesRole)
             .Select(employee => new SelectListItem(employee.FullName, employee.Id.ToString()))
             .ToList();
+        Clients = _dealService.GetAllClients()
+            .Select(client => new SelectListItem($"{client.CompanyName} - {client.FirstName} {client.LastName}", client.Id.ToString()))
+            .ToList();
     }
 
     public class DealInput
     {
+        public int ExistingClientId { get; set; }
+
         [Required(ErrorMessage = "Enter a company name.")]
         public string CompanyName { get; set; } = string.Empty;
 
@@ -99,8 +134,12 @@ public class NewModel : PageModel
         [Required(ErrorMessage = "Enter a project name.")]
         public string Title { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Describe the requirement.")]
-        public string Requirement { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Add at least one goal for the project.")]
+        public string Goals { get; set; } = string.Empty;
+
+        public string? InScope { get; set; }
+
+        public string? OutOfScope { get; set; }
 
         [Required(ErrorMessage = "Choose an estimated date.")]
         public DateTime EstimatedDate { get; set; }

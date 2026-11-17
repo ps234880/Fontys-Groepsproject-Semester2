@@ -12,10 +12,48 @@
 <div class="ph"><div class="r1"><div><h1>Deals</h1><div class="sub">@Model.Deals.Count @(Model.Deals.Count == 1 ? "deal" : "deals")</div></div><div style="display:flex;gap:8px"><a class="btn" asp-page="/Deals/New"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> New deal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></a></div></div></div>
 <nav class="tabs"><a class="on" asp-page="/Deals/Index">All deals</a></nav>
 
+<div class="bar2">
+  @foreach (var filter in Model.SavedFilters)
+  {
+    <span class="chip@(Model.IsActive(filter) ? " set" : "")">
+      <a asp-page="/Deals/Index" asp-route-owner="@filter.Owner" asp-route-stage="@filter.Stage">@filter.Name</a>
+      <form method="post" asp-page-handler="Delete" asp-route-filterId="@filter.Id" asp-route-owner="@Model.Owner" asp-route-stage="@Model.Stage" class="inline-form">
+        <button type="submit" aria-label="Delete the filter @filter.Name" title="Delete filter">&times;</button>
+      </form>
+    </span>
+  }
+  <form method="get" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <select name="owner" asp-items="Model.OwnerOptions" class="sel in" style="width:auto" aria-label="Owner"></select>
+    <select name="stage" asp-items="Model.StageOptions" class="sel in" style="width:auto" aria-label="Stage"></select>
+    <button type="submit" class="btn n">Apply</button>
+    @if (!Model.CurrentFilter.IsEmpty)
+    {
+      <a class="btn q" asp-page="/Deals/Index">Clear</a>
+    }
+  </form>
+  @if (!Model.CurrentFilter.IsEmpty)
+  {
+    <form method="post" asp-page-handler="Save" style="display:flex;gap:8px;align-items:center;margin-left:auto">
+      <input type="hidden" name="owner" value="@Model.Owner" />
+      <input type="hidden" name="stage" value="@Model.Stage" />
+      <input asp-for="FilterName" class="in" style="width:180px" maxlength="100" placeholder="Name this filter" aria-label="Filter name" required />
+      <button type="submit" class="btn n">Save filter</button>
+    </form>
+  }
+</div>
+
 <div class="content pad">
-  @if (Model.Deals.Count == 0)
+  @if (Model.FilterError != null)
+  {
+    <div class="banner stop" role="alert">@Model.FilterError</div>
+  }
+  @if (Model.TotalCount == 0)
   {
     <div class="card"><div class="b"><p class="sm dim">There are no deals yet. Use "New deal" to add the first one.</p></div></div>
+  }
+  else if (Model.Deals.Count == 0)
+  {
+    <div class="card"><div class="b"><p class="sm dim">No deals match this filter.</p></div></div>
   }
   else
   {
@@ -34,13 +72,13 @@
         <tr>
           <td><a class="lnk" asp-page="/Deals/Detail" asp-route-id="@deal.Id">@deal.ClientCompanyName</a><div class="s">@deal.Title</div></td>
           <td class="dim nowrap">@deal.ClientName</td>
-          <td class="nowrap"><span class="tag @(deal.StatusName == "Won" ? "ok" : deal.StatusName == "Lost" ? "stop" : "idle")">@deal.StatusName</span></td>
+          <td class="nowrap"><span class="tag @(deal.StatusName == "Won" ? "ok" : deal.StatusName == "Lost" ? "stop" : "idle")">@deal.StatusName</span>@if (deal.WaitingOnRole != null) {<div class="s">Waiting for @deal.WaitingOnRole</div>}</td>
           <td class="nowrap dim">@deal.EstimatedDate.ToString("d MMM yyyy", CultureInfo.InvariantCulture)</td>
           <td class="dim nowrap">@deal.EmployeeName</td>
           <td class="nowrap dim">@deal.CreatedAt.ToString("d MMM yyyy", CultureInfo.InvariantCulture)</td>
         </tr>
       }
       </tbody></table>
-      <div class="tfoot"><span>@Model.Deals.Count of @Model.Deals.Count deals</span></div></div>
+      <div class="tfoot"><span>@Model.Deals.Count of @Model.TotalCount deals</span></div></div>
   }
 </div>

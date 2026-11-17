@@ -67,6 +67,26 @@ INNER JOIN role r ON e.role_id = r.id";
         return reader.Read() ? MapEmployee(reader) : null;
     }
 
+    public (Employee Employee, string PasswordHash)? GetLoginByEmail(string email)
+    {
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        using MySqlCommand command = new MySqlCommand(@"SELECT e.id, e.firstName, e.lastName, r.name AS roleName, e.password
+FROM employee e
+INNER JOIN role r ON e.role_id = r.id
+WHERE e.email = @email;", connection);
+        command.Parameters.AddWithValue("@email", email);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        if (!reader.Read())
+        {
+            return null;
+        }
+
+        return (MapEmployee(reader), reader.GetString("password"));
+    }
+
     private static Employee MapEmployee(MySqlDataReader reader)
     {
         return new Employee

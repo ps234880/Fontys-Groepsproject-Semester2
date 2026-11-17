@@ -13,8 +13,8 @@ public class Deal
     public string ClientPhoneNumber { get; set; } = string.Empty;
     public string EmployeeName { get; set; } = string.Empty;
     public string StatusName { get; set; } = string.Empty;
+    public string? WaitingOnRole { get; set; }
     public string Title { get; set; } = string.Empty;
-    public string Requirement { get; set; } = string.Empty;
     public DateTime EstimatedDate { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

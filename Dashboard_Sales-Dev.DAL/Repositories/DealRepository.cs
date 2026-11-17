@@ -16,10 +16,10 @@ public class DealRepository : RepositoryBase, IDealRepository
     d.employee_id,
     d.status_id,
     d.title,
-    d.requirement,
     d.estimatedDate,
     d.createdAt,
     s.name AS statusName,
+    w.name AS waitingRoleName,
     c.companyName,
     c.firstName AS clientFirstName,
     c.lastName AS clientLastName,
@@ -30,7 +30,8 @@ public class DealRepository : RepositoryBase, IDealRepository
 FROM deal d
 INNER JOIN client c ON d.client_id = c.id
 INNER JOIN employee e ON d.employee_id = e.id
-INNER JOIN status s ON d.status_id = s.id";
+INNER JOIN status s ON d.status_id = s.id
+LEFT JOIN role w ON d.waiting_role_id = w.id";
 
     public List<Deal> GetAll()
     {
@@ -71,8 +72,8 @@ INNER JOIN status s ON d.status_id = s.id";
             EmployeeId = reader.GetInt32("employee_id"),
             StatusId = reader.GetInt32("status_id"),
             StatusName = reader.GetString("statusName"),
+            WaitingOnRole = reader.IsDBNull(reader.GetOrdinal("waitingRoleName")) ? null : reader.GetString("waitingRoleName"),
             Title = reader.GetString("title"),
-            Requirement = reader.GetString("requirement"),
             EstimatedDate = reader.GetDateTime("estimatedDate"),
             CreatedAt = reader.GetDateTime("createdAt"),
             ClientCompanyName = reader.GetString("companyName"),
@@ -83,28 +84,161 @@ INNER JOIN status s ON d.status_id = s.id";
         };
     }
 
-    public async Task<int> AddDealAsync(Deal deal)
+    public async Task<int> AddDealAsync(Deal deal, IReadOnlyList<string> goals, IReadOnlyList<DealScopeItem> scopeItems)
     {
-        using var connection = CreateConnection();
+        await using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+        await using MySqlTransaction transaction = await connection.BeginTransactionAsync();
+
+        DateTime now = DateTime.Now;
+
+        await using MySqlCommand dealCommand = new MySqlCommand(@"INSERT INTO deal (client_id, employee_id, status_id, title, estimatedDate, createdAt)
+VALUES (@clientId, @employeeId, @statusId, @title, @estimatedDate, @createdAt);
+SELECT LAST_INSERT_ID();", connection, transaction);
+        dealCommand.Parameters.AddWithValue("@clientId", deal.ClientId);
+        dealCommand.Parameters.AddWithValue("@employeeId", deal.EmployeeId);
+        dealCommand.Parameters.AddWithValue("@statusId", deal.StatusId);
+        dealCommand.Parameters.AddWithValue("@title", deal.Title);
+        dealCommand.Parameters.AddWithValue("@estimatedDate", deal.EstimatedDate);
+        dealCommand.Parameters.AddWithValue("@createdAt", now);
+
+        int dealId = Convert.ToInt32(await dealCommand.ExecuteScalarAsync());
+
+        foreach (string goal in goals)
+        {
+            await using MySqlCommand goalCommand = new MySqlCommand("INSERT INTO deal_goal (deal_id, description, createdAt) VALUES (@dealId, @description, @createdAt);", connection, transaction);
+            goalCommand.Parameters.AddWithValue("@dealId", dealId);
+            goalCommand.Parameters.AddWithValue("@description", goal);
+            goalCommand.Parameters.AddWithValue("@createdAt", now);
+            await goalCommand.ExecuteNonQueryAsync();
+        }
+
+        foreach (DealScopeItem item in scopeItems)
+        {
+            await using MySqlCommand scopeCommand = new MySqlCommand("INSERT INTO deal_scope (deal_id, description, inScope, createdAt) VALUES (@dealId, @description, @inScope, @createdAt);", connection, transaction);
+            scopeCommand.Parameters.AddWithValue("@dealId", dealId);
+            scopeCommand.Parameters.AddWithValue("@description", item.Description);
+            scopeCommand.Parameters.AddWithValue("@inScope", item.InScope);
+            scopeCommand.Parameters.AddWithValue("@createdAt", now);
+            await scopeCommand.ExecuteNonQueryAsync();
+        }
+
+        await transaction.CommitAsync();
+
+        return dealId;
+    }
+
+    public List<DealGoal> GetGoals(int dealId)
+    {
+        List<DealGoal> goals = new List<DealGoal>();
+
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        using MySqlCommand command = new MySqlCommand("SELECT id, deal_id, description FROM deal_goal WHERE deal_id = @dealId ORDER BY id;", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            goals.Add(new DealGoal
+            {
+                Id = reader.GetInt32("id"),
+                DealId = reader.GetInt32("deal_id"),
+                Description = reader.GetString("description")
+            });
+        }
+
+        return goals;
+    }
+
+    public async Task AddGoalAsync(int dealId, string description)
+    {
+        using MySqlConnection connection = CreateConnection();
         await connection.OpenAsync();
 
-        var sql = @"INSERT INTO deal (client_id, employee_id, status_id, title, requirement,
-                               estimatedDate, createdAt)
-                       VALUES (@client_id, @employee_id, @status_id, @title, @requirement, @estimatedDate, @CreatedAt);
-                    SELECT LAST_INSERT_ID();";
+        using MySqlCommand command = new MySqlCommand("INSERT INTO deal_goal (deal_id, description, createdAt) VALUES (@dealId, @description, @createdAt);", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@description", description);
+        command.Parameters.AddWithValue("@createdAt", DateTime.Now);
 
-        using var cmd = new MySqlCommand(sql, connection);
-        cmd.Parameters.AddWithValue("@client_id", deal.ClientId);
-        cmd.Parameters.AddWithValue("@employee_id", deal.EmployeeId);
-        cmd.Parameters.AddWithValue("@status_id", deal.StatusId);
-        cmd.Parameters.AddWithValue("@title", deal.Title ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@requirement", deal.Requirement ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@estimatedDate", deal.EstimatedDate);
-        cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+        await command.ExecuteNonQueryAsync();
+    }
 
-        object? result = await cmd.ExecuteScalarAsync();
+    public async Task RemoveGoalAsync(int dealId, int goalId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
 
-        return Convert.ToInt32(result);
+        using MySqlCommand command = new MySqlCommand("DELETE FROM deal_goal WHERE id = @goalId AND deal_id = @dealId;", connection);
+        command.Parameters.AddWithValue("@goalId", goalId);
+        command.Parameters.AddWithValue("@dealId", dealId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public List<DealScopeItem> GetScopeItems(int dealId)
+    {
+        List<DealScopeItem> items = new List<DealScopeItem>();
+
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        using MySqlCommand command = new MySqlCommand("SELECT id, deal_id, description, inScope FROM deal_scope WHERE deal_id = @dealId ORDER BY inScope DESC, id;", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            items.Add(new DealScopeItem
+            {
+                Id = reader.GetInt32("id"),
+                DealId = reader.GetInt32("deal_id"),
+                Description = reader.GetString("description"),
+                InScope = reader.GetBoolean("inScope")
+            });
+        }
+
+        return items;
+    }
+
+    public async Task AddScopeItemAsync(int dealId, string description, bool inScope)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("INSERT INTO deal_scope (deal_id, description, inScope, createdAt) VALUES (@dealId, @description, @inScope, @createdAt);", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@description", description);
+        command.Parameters.AddWithValue("@inScope", inScope);
+        command.Parameters.AddWithValue("@createdAt", DateTime.Now);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task UpdateScopeItemAsync(int dealId, int itemId, bool inScope)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("UPDATE deal_scope SET inScope = @inScope WHERE id = @itemId AND deal_id = @dealId;", connection);
+        command.Parameters.AddWithValue("@inScope", inScope);
+        command.Parameters.AddWithValue("@itemId", itemId);
+        command.Parameters.AddWithValue("@dealId", dealId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task RemoveScopeItemAsync(int dealId, int itemId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("DELETE FROM deal_scope WHERE id = @itemId AND deal_id = @dealId;", connection);
+        command.Parameters.AddWithValue("@itemId", itemId);
+        command.Parameters.AddWithValue("@dealId", dealId);
+
+        await command.ExecuteNonQueryAsync();
     }
 
     public async Task UpdateStatusAsync(int dealId, int statusId)
@@ -120,14 +254,29 @@ INNER JOIN status s ON d.status_id = s.id";
         await command.ExecuteNonQueryAsync();
     }
 
-    public List<Module> GetModules(int dealId)
+    public async Task UpdateWaitingOnAsync(int dealId, string? roleName)
     {
-        List<Module> modules = new List<Module>();
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand(@"UPDATE deal
+SET waiting_role_id = (SELECT id FROM role WHERE name = @roleName), updatedAt = @updatedAt
+WHERE id = @dealId;", connection);
+        command.Parameters.AddWithValue("@roleName", roleName ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@updatedAt", DateTime.Now);
+        command.Parameters.AddWithValue("@dealId", dealId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public List<DealModule> GetModules(int dealId)
+    {
+        List<DealModule> modules = new List<DealModule>();
 
         using MySqlConnection connection = CreateConnection();
         connection.Open();
 
-        string query = @"SELECT m.id, m.name, m.description, m.priceInCents, m.productionTimeInWeeks, m.createdAt
+        string query = @"SELECT m.id, m.name, m.description, m.priceInCents, dm.priceInCents AS dealPriceInCents, m.productionTimeInWeeks, dm.productionTimeInWeeks AS dealProductionTimeInWeeks, m.createdAt
 FROM deal_module dm
 INNER JOIN module m ON dm.module_id = m.id
 WHERE dm.deal_id = @dealId
@@ -139,13 +288,15 @@ ORDER BY m.name;";
 
         while (reader.Read())
         {
-            modules.Add(new Module
+            modules.Add(new DealModule
             {
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("name"),
                 Description = reader.IsDBNull(reader.GetOrdinal("description")) ? string.Empty : reader.GetString("description"),
                 PriceInCents = reader.GetInt32("priceInCents"),
+                DealPriceInCents = reader.IsDBNull(reader.GetOrdinal("dealPriceInCents")) ? null : reader.GetInt32("dealPriceInCents"),
                 ProductionTimeInWeeks = reader.GetInt32("productionTimeInWeeks"),
+                DealProductionTimeInWeeks = reader.IsDBNull(reader.GetOrdinal("dealProductionTimeInWeeks")) ? null : reader.GetInt32("dealProductionTimeInWeeks"),
                 CreatedAt = reader.GetDateTime("createdAt")
             });
         }
@@ -171,6 +322,22 @@ ORDER BY m.name;";
         await connection.OpenAsync();
 
         using MySqlCommand command = new MySqlCommand("DELETE FROM deal_module WHERE deal_id = @dealId AND module_id = @moduleId;", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@moduleId", moduleId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task UpdateDealModuleAsync(int dealId, int moduleId, int? priceInCents, int? productionTimeInWeeks)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand(@"UPDATE deal_module
+SET priceInCents = @priceInCents, productionTimeInWeeks = @productionTimeInWeeks
+WHERE deal_id = @dealId AND module_id = @moduleId;", connection);
+        command.Parameters.AddWithValue("@priceInCents", priceInCents ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@productionTimeInWeeks", productionTimeInWeeks ?? (object)DBNull.Value);
         command.Parameters.AddWithValue("@dealId", dealId);
         command.Parameters.AddWithValue("@moduleId", moduleId);
 
@@ -256,5 +423,61 @@ ORDER BY c.lastName, c.firstName;";
 
         await command.ExecuteNonQueryAsync();
         await transaction.CommitAsync();
+    }
+
+    public List<Employee> GetTeamMembers(int dealId)
+    {
+        List<Employee> members = new List<Employee>();
+
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        string query = @"SELECT e.id, e.firstName, e.lastName, r.name AS roleName
+FROM deal_employee de
+INNER JOIN employee e ON de.employee_id = e.id
+INNER JOIN role r ON e.role_id = r.id
+WHERE de.deal_id = @dealId
+ORDER BY r.name DESC, e.firstName, e.lastName;";
+
+        using MySqlCommand command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            members.Add(new Employee
+            {
+                Id = reader.GetInt32("id"),
+                FirstName = reader.GetString("firstName"),
+                LastName = reader.GetString("lastName"),
+                RoleName = reader.GetString("roleName")
+            });
+        }
+
+        return members;
+    }
+
+    public async Task AddTeamMemberAsync(int dealId, int employeeId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("INSERT IGNORE INTO deal_employee (deal_id, employee_id) VALUES (@dealId, @employeeId);", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@employeeId", employeeId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task RemoveTeamMemberAsync(int dealId, int employeeId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("DELETE FROM deal_employee WHERE deal_id = @dealId AND employee_id = @employeeId;", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@employeeId", employeeId);
+
+        await command.ExecuteNonQueryAsync();
     }
 }
