@@ -17,6 +17,8 @@ public interface IDealRepository
     List<DealScopeItem> GetScopeItems(int dealId);
     Task AddScopeItemAsync(int dealId, string description, bool inScope);
     Task UpdateScopeItemAsync(int dealId, int itemId, bool inScope);
+    Task UpdateScopeEffortAsync(int dealId, int itemId, string? effortLevel);
+    Task UpdateProbabilityAsync(int dealId, int probability);
     Task RemoveScopeItemAsync(int dealId, int itemId);
 
     List<DealModule> GetModules(int dealId);

@@ -35,6 +35,10 @@ public class DetailModel : PageModel
     public string? StatusError { get; private set; }
     public List<SelectListItem> WaitingOnOptions { get; private set; } = new();
     public string? WaitingOnError { get; private set; }
+    public string? ProbabilityError { get; private set; }
+    public List<string> EffortLevels => DealService.EffortLevels.ToList();
+    public bool IsSales => User.IsInRole(EmployeeService.SalesRole);
+    public bool IsDevelopment => User.IsInRole(EmployeeService.DevelopmentRole);
     public int ProductionTimeInWeeks { get; private set; }
     public DateTime EarliestDeliveryDate { get; private set; }
     public bool EstimatedDateTooEarly { get; private set; }
@@ -85,6 +89,12 @@ public class DetailModel : PageModel
 
     [BindProperty]
     public string? WaitingOn { get; set; }
+
+    [BindProperty]
+    public int Probability { get; set; }
+
+    [BindProperty]
+    public string? EffortLevel { get; set; }
 
     [BindProperty]
     public string? CommentMessage { get; set; }
@@ -148,6 +158,64 @@ public class DetailModel : PageModel
         {
             Deal = deal;
             WaitingOnError = exception.Message;
+            LoadPage(id);
+            return Page();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostProbabilityAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        if (!IsSales)
+        {
+            return Forbid();
+        }
+
+        try
+        {
+            await _dealService.ChangeProbabilityAsync(id, Probability);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            ProbabilityError = exception.Message;
+            LoadPage(id);
+            return Page();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostEffortAsync(int id, int itemId)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        if (!IsDevelopment)
+        {
+            return Forbid();
+        }
+
+        try
+        {
+            await _dealService.SetScopeEffortAsync(id, itemId, EffortLevel);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            ScopeError = exception.Message;
             LoadPage(id);
             return Page();
         }
