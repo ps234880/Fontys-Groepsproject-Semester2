@@ -173,6 +173,48 @@
     </details>
   </div></div>
 
+  <div class="card"><div class="h"><h2>Team</h2><span class="sm dim">@(Model.TeamMembers.Count + 1) @(Model.TeamMembers.Count == 0 ? "person" : "people")</span></div><div class="b">
+    @if (Model.TeamError != null)
+    {
+      <div class="banner stop" role="alert">@Model.TeamError</div>
+    }
+    <div class="tw"><table class="tbl">
+      <thead><tr>
+        <th>Name</th>
+        <th style="width:160px">Team</th>
+        <th class="r" style="width:90px"></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td>@Model.Deal.EmployeeName <span class="tag info">Owner</span></td>
+          <td class="dim nowrap">Sales</td>
+          <td></td>
+        </tr>
+        @foreach (var member in Model.TeamMembers)
+        {
+          <tr>
+            <td>@member.FullName</td>
+            <td class="dim nowrap">@member.RoleName</td>
+            <td class="r nowrap">
+              <form method="post" asp-page-handler="RemoveTeamMember" asp-route-id="@Model.Deal.Id" asp-route-employeeId="@member.Id" class="inline-form">
+                <button type="submit" class="lnk-stop sm">Remove</button>
+              </form>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table></div>
+    @if (Model.AvailableTeamMembers.Count > 0)
+    {
+      <form method="post" asp-page-handler="AddTeamMember" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;margin-top:14px">
+        <select asp-for="TeamMemberId" asp-items="Model.AvailableTeamMembers" class="sel in" style="flex:1">
+          <option value="">Choose a colleague</option>
+        </select>
+        <button type="submit" class="btn">Add to team</button>
+      </form>
+    }
+  </div></div>
+
 </div><div>
   <div class="card"><div class="h"><h2>Stage</h2></div><div class="b">
     <form method="post" asp-page-handler="Status" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;align-items:center">

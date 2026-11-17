@@ -269,4 +269,43 @@ public class DealService
 
         await _dealRepository.ReplacePrimaryClientAsync(deal.Id, next.Id);
     }
+
+    public List<Employee> GetTeamMembers(int dealId)
+    {
+        return _dealRepository.GetTeamMembers(dealId);
+    }
+
+    public List<Employee> GetAvailableTeamMembers(Deal deal)
+    {
+        HashSet<int> memberIds = GetTeamMembers(deal.Id).Select(employee => employee.Id).ToHashSet();
+
+        return _employeeRepository.GetAll()
+            .Where(employee => employee.Id != deal.EmployeeId && !memberIds.Contains(employee.Id))
+            .ToList();
+    }
+
+    public async Task AddTeamMemberAsync(Deal deal, int employeeId)
+    {
+        if (employeeId <= 0)
+        {
+            throw new ArgumentException("Choose a colleague to add to the team.");
+        }
+
+        if (employeeId == deal.EmployeeId)
+        {
+            throw new ArgumentException("The owner is already part of the team.");
+        }
+
+        if (_employeeRepository.GetById(employeeId) == null)
+        {
+            throw new ArgumentException($"Employee {employeeId} does not exist. Choose another team member.");
+        }
+
+        await _dealRepository.AddTeamMemberAsync(deal.Id, employeeId);
+    }
+
+    public Task RemoveTeamMemberAsync(int dealId, int employeeId)
+    {
+        return _dealRepository.RemoveTeamMemberAsync(dealId, employeeId);
+    }
 }

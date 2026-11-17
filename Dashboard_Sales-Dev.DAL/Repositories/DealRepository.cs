@@ -293,4 +293,60 @@ ORDER BY c.lastName, c.firstName;";
         await command.ExecuteNonQueryAsync();
         await transaction.CommitAsync();
     }
+
+    public List<Employee> GetTeamMembers(int dealId)
+    {
+        List<Employee> members = new List<Employee>();
+
+        using MySqlConnection connection = CreateConnection();
+        connection.Open();
+
+        string query = @"SELECT e.id, e.firstName, e.lastName, r.name AS roleName
+FROM deal_employee de
+INNER JOIN employee e ON de.employee_id = e.id
+INNER JOIN role r ON e.role_id = r.id
+WHERE de.deal_id = @dealId
+ORDER BY r.name DESC, e.firstName, e.lastName;";
+
+        using MySqlCommand command = new MySqlCommand(query, connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        using MySqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            members.Add(new Employee
+            {
+                Id = reader.GetInt32("id"),
+                FirstName = reader.GetString("firstName"),
+                LastName = reader.GetString("lastName"),
+                RoleName = reader.GetString("roleName")
+            });
+        }
+
+        return members;
+    }
+
+    public async Task AddTeamMemberAsync(int dealId, int employeeId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("INSERT IGNORE INTO deal_employee (deal_id, employee_id) VALUES (@dealId, @employeeId);", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@employeeId", employeeId);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task RemoveTeamMemberAsync(int dealId, int employeeId)
+    {
+        using MySqlConnection connection = CreateConnection();
+        await connection.OpenAsync();
+
+        using MySqlCommand command = new MySqlCommand("DELETE FROM deal_employee WHERE deal_id = @dealId AND employee_id = @employeeId;", connection);
+        command.Parameters.AddWithValue("@dealId", dealId);
+        command.Parameters.AddWithValue("@employeeId", employeeId);
+
+        await command.ExecuteNonQueryAsync();
+    }
 }
