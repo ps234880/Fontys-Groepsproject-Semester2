@@ -16,7 +16,8 @@ public class DealRepository : RepositoryBase, IDealRepository
     d.employee_id,
     d.status_id,
     d.title,
-    d.requirement,
+    d.goal,
+    d.scope,
     d.estimatedDate,
     d.createdAt,
     s.name AS statusName,
@@ -72,7 +73,8 @@ INNER JOIN status s ON d.status_id = s.id";
             StatusId = reader.GetInt32("status_id"),
             StatusName = reader.GetString("statusName"),
             Title = reader.GetString("title"),
-            Requirement = reader.GetString("requirement"),
+            Goal = reader.GetString("goal"),
+            Scope = reader.GetString("scope"),
             EstimatedDate = reader.GetDateTime("estimatedDate"),
             CreatedAt = reader.GetDateTime("createdAt"),
             ClientCompanyName = reader.GetString("companyName"),
@@ -88,9 +90,9 @@ INNER JOIN status s ON d.status_id = s.id";
         using var connection = CreateConnection();
         await connection.OpenAsync();
 
-        var sql = @"INSERT INTO deal (client_id, employee_id, status_id, title, requirement,
+        var sql = @"INSERT INTO deal (client_id, employee_id, status_id, title, goal, scope,
                                estimatedDate, createdAt)
-                       VALUES (@client_id, @employee_id, @status_id, @title, @requirement, @estimatedDate, @CreatedAt);
+                       VALUES (@client_id, @employee_id, @status_id, @title, @goal, @scope, @estimatedDate, @CreatedAt);
                     SELECT LAST_INSERT_ID();";
 
         using var cmd = new MySqlCommand(sql, connection);
@@ -98,7 +100,8 @@ INNER JOIN status s ON d.status_id = s.id";
         cmd.Parameters.AddWithValue("@employee_id", deal.EmployeeId);
         cmd.Parameters.AddWithValue("@status_id", deal.StatusId);
         cmd.Parameters.AddWithValue("@title", deal.Title ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@requirement", deal.Requirement ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@goal", deal.Goal);
+        cmd.Parameters.AddWithValue("@scope", deal.Scope);
         cmd.Parameters.AddWithValue("@estimatedDate", deal.EstimatedDate);
         cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
 

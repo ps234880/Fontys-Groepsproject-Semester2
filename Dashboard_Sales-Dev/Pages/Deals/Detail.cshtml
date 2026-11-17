@@ -15,7 +15,8 @@
   <div class="card"><div class="h"><h2>Deal</h2></div><div class="b">
     <div class="fields" style="max-width:none">
       <div class="fld"><label>Project name</label><div>@Model.Deal.Title</div></div>
-      <div class="fld"><label>Requirement</label><div style="white-space:pre-line">@Model.Deal.Requirement</div></div>
+      <div class="fld"><label>Goal</label><div style="white-space:pre-line">@Model.Deal.Goal</div></div>
+      <div class="fld"><label>Scope</label><div style="white-space:pre-line">@Model.Deal.Scope</div></div>
       <div class="cols">
         <div class="fld"><label>Estimated date</label><div>@Model.Deal.EstimatedDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</div></div>
         <div class="fld"><label>Production time</label><div>@(Model.LinkedModules.Count == 0 ? "No modules linked yet" : Model.ProductionTimeInWeeks + (Model.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</div></div>

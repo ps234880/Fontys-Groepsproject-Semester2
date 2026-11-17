@@ -51,7 +51,8 @@ public class NewModel : PageModel
         {
             EmployeeId = Input.OwnerId,
             Title = Input.Title.Trim(),
-            Requirement = Input.Requirement.Trim(),
+            Goal = Input.Goal.Trim(),
+            Scope = Input.Scope.Trim(),
             EstimatedDate = Input.EstimatedDate
         };
 
@@ -99,8 +100,13 @@ public class NewModel : PageModel
         [Required(ErrorMessage = "Enter a project name.")]
         public string Title { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Describe the requirement.")]
-        public string Requirement { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Describe the goal of the project.")]
+        [StringLength(255, ErrorMessage = "Keep the goal under 255 characters.")]
+        public string Goal { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Describe the scope of the project.")]
+        [StringLength(10000, ErrorMessage = "Keep the scope under 10,000 characters.")]
+        public string Scope { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Choose an estimated date.")]
         public DateTime EstimatedDate { get; set; }
