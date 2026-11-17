@@ -38,6 +38,37 @@ public class DealService
 
     public async Task<int> CreateWithNewClientAsync(Client client, Deal deal)
     {
+        int statusId = GetStatusIdForNewDeal(deal);
+
+        deal.ClientId = await _clientRepository.AddClientAsync(client);
+        deal.StatusId = statusId;
+
+        return await _dealRepository.AddDealAsync(deal);
+    }
+
+    public async Task<int> CreateWithExistingClientAsync(int clientId, Deal deal)
+    {
+        if (_clientRepository.GetById(clientId) == null)
+        {
+            throw new ArgumentException($"Customer {clientId} does not exist. Choose another customer.");
+        }
+
+        deal.ClientId = clientId;
+        deal.StatusId = GetStatusIdForNewDeal(deal);
+
+        return await _dealRepository.AddDealAsync(deal);
+    }
+
+    public List<Client> GetAllClients()
+    {
+        return _clientRepository.GetAll()
+            .OrderBy(client => client.CompanyName)
+            .ThenBy(client => client.LastName)
+            .ToList();
+    }
+
+    private int GetStatusIdForNewDeal(Deal deal)
+    {
         Employee? owner = _employeeRepository.GetById(deal.EmployeeId);
 
         if (owner == null || owner.RoleName != EmployeeService.SalesRole)
@@ -52,12 +83,7 @@ public class DealService
             throw new InvalidOperationException($"The status '{NewStatus}' is missing from the database.");
         }
 
-        int clientId = await _clientRepository.AddClientAsync(client);
-
-        deal.ClientId = clientId;
-        deal.StatusId = newStatus.Id;
-
-        return await _dealRepository.AddDealAsync(deal);
+        return newStatus.Id;
     }
 
     public async Task CreateContactAsync(int dealId, Client contact)

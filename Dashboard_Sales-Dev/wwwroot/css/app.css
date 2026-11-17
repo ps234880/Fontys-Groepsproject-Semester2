@@ -303,6 +303,7 @@ h3 { font-size: 13px; font-weight: 600; }
 }
 .ta { height: auto; min-height: 84px; padding: 8px 10px; resize: vertical; line-height: 1.55; }
 .in::placeholder, .ta::placeholder { color: var(--fg-4); }
+.in:disabled, .sel:disabled, .ta:disabled { opacity: .45; cursor: not-allowed; }
 .in:focus, .sel:focus, .ta:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .sel { appearance: none; padding-right: 26px; cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%239BA1A5' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");

@@ -11,9 +11,20 @@
 <form method="post">
 <div class="ph"><div class="r1"><div><h1>New deal</h1><div class="sub">Record the deal as soon as negotiation starts, so development can follow along.</div></div><div style="display:flex;gap:8px"><a class="btn n" asp-page="/Deals/Index">Cancel</a><button type="submit" class="btn">Save deal<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></span></button></div></div></div>
 
-<div class="content pad"><div class="split even">
+<div class="content pad">
+  @if (ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+  {
+    <div class="banner stop" role="alert">@ViewData.ModelState[string.Empty]!.Errors[0].ErrorMessage</div>
+  }
+<div class="split even">
   <div class="card"><div class="h"><h2>Customer</h2></div><div class="b">
-    <div class="fields" style="max-width:none">
+    <div class="fld"><label asp-for="Input.ExistingClientId">Customer</label>
+      <select asp-for="Input.ExistingClientId" asp-items="Model.Clients" class="sel in"
+              onchange="document.getElementById('new-client').disabled = this.value !== '0'">
+        <option value="0">New customer</option>
+      </select>
+      <div class="help">Choose an existing customer, or keep "New customer" and fill in the details below.</div></div>
+    <fieldset id="new-client" class="fields" style="max-width:none;border:0;margin:0;padding:0;min-width:0" disabled="@(Model.Input.ExistingClientId > 0)">
       <div class="fld"><label asp-for="Input.CompanyName">Company name <span class="req">*</span></label>
         <input asp-for="Input.CompanyName" class="in" placeholder="e.g. Gemeente Tilburg" required />
         <span asp-validation-for="Input.CompanyName" class="field-error"></span></div>
@@ -25,14 +36,14 @@
           <input asp-for="Input.LastName" class="in" required />
           <span asp-validation-for="Input.LastName" class="field-error"></span></div>
         <div class="fld"><label asp-for="Input.Email">Email address <span class="req">*</span></label>
-          <input asp-for="Input.Email" type="email" class="in" placeholder="name@@customer.nl" required />
+          <input asp-for="Input.Email" type="email" class="in" placeholder="name&#64;customer.nl" required />
           <span asp-validation-for="Input.Email" class="field-error"></span></div>
         <div class="fld"><label asp-for="Input.PhoneNumber">Phone number <span class="req">*</span></label>
           <input asp-for="Input.PhoneNumber" class="in" required />
           <span asp-validation-for="Input.PhoneNumber" class="field-error"></span></div>
       </div>
       <div class="help">This is the primary contact person. After saving, you can add more contact persons on the deal page.</div>
-    </div></div></div>
+    </fieldset></div></div>
 
   <div class="card"><div class="h"><h2>Deal</h2></div><div class="b">
     <div class="fields" style="max-width:none">
