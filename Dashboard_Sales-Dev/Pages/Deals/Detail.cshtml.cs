@@ -40,6 +40,20 @@ public class DetailModel : PageModel
 
     public string? NewContactError { get; private set; }
 
+    public List<DealGoal> Goals { get; private set; } = new();
+    public List<DealScopeItem> ScopeItems { get; private set; } = new();
+    public string? GoalError { get; private set; }
+    public string? ScopeError { get; private set; }
+
+    [BindProperty]
+    public string? NewGoal { get; set; }
+
+    [BindProperty]
+    public string? NewScopeItem { get; set; }
+
+    [BindProperty]
+    public bool NewScopeInScope { get; set; } = true;
+
     [BindProperty]
     public int ModuleId { get; set; }
 
@@ -93,6 +107,75 @@ public class DetailModel : PageModel
             LoadPage(id);
             return Page();
         }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostAddGoalAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            await _dealService.AddGoalAsync(id, NewGoal);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            GoalError = exception.Message;
+            LoadPage(id);
+            return Page();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostRemoveGoalAsync(int id, int goalId)
+    {
+        await _dealService.RemoveGoalAsync(id, goalId);
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostAddScopeAsync(int id)
+    {
+        Deal? deal = _dealService.GetById(id);
+
+        if (deal == null)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            await _dealService.AddScopeItemAsync(id, NewScopeItem, NewScopeInScope);
+        }
+        catch (ArgumentException exception)
+        {
+            Deal = deal;
+            ScopeError = exception.Message;
+            LoadPage(id);
+            return Page();
+        }
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostToggleScopeAsync(int id, int itemId, bool inScope)
+    {
+        await _dealService.SetScopeItemInScopeAsync(id, itemId, inScope);
+
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostRemoveScopeAsync(int id, int itemId)
+    {
+        await _dealService.RemoveScopeItemAsync(id, itemId);
 
         return RedirectToPage(new { id });
     }
@@ -215,6 +298,8 @@ public class DetailModel : PageModel
         Statuses = _dealService.GetStatuses()
             .Select(status => new SelectListItem(status.Name, status.Id.ToString(), status.Id == Deal.StatusId))
             .ToList();
+        Goals = _dealService.GetGoals(id);
+        ScopeItems = _dealService.GetScopeItems(id);
         LoadModules(id);
         LoadContacts(id);
         LoadComments(id);

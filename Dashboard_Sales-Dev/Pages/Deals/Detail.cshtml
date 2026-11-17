@@ -15,8 +15,6 @@
   <div class="card"><div class="h"><h2>Deal</h2></div><div class="b">
     <div class="fields" style="max-width:none">
       <div class="fld"><label>Project name</label><div>@Model.Deal.Title</div></div>
-      <div class="fld"><label>Goal</label><div style="white-space:pre-line">@Model.Deal.Goal</div></div>
-      <div class="fld"><label>Scope</label><div style="white-space:pre-line">@Model.Deal.Scope</div></div>
       <div class="cols">
         <div class="fld"><label>Estimated date</label><div>@Model.Deal.EstimatedDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</div></div>
         <div class="fld"><label>Production time</label><div>@(Model.LinkedModules.Count == 0 ? "No modules linked yet" : Model.ProductionTimeInWeeks + (Model.ProductionTimeInWeeks == 1 ? " week" : " weeks"))</div></div>
@@ -29,6 +27,86 @@
         <div style="margin-top:12px"><span class="tag warn">The estimated date is earlier than the production time allows. Earliest delivery: @Model.EarliestDeliveryDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture)</span></div>
       }
     </div></div></div>
+
+  <div class="card"><div class="h"><h2>Goals</h2><span class="sm dim">@Model.Goals.Count</span></div><div class="b">
+    @if (Model.GoalError != null)
+    {
+      <div class="banner stop" role="alert">@Model.GoalError</div>
+    }
+    @if (Model.Goals.Count == 0)
+    {
+      <p class="sm dim">No goals yet. Add what the customer wants to achieve.</p>
+    }
+    else
+    {
+      <div class="tw"><table class="tbl">
+        <tbody>
+          @foreach (var goal in Model.Goals)
+          {
+            <tr>
+              <td style="color:var(--fg)">@goal.Description</td>
+              <td class="r nowrap" style="width:90px">
+                <form method="post" asp-page-handler="RemoveGoal" asp-route-id="@Model.Deal.Id" asp-route-goalId="@goal.Id" class="inline-form">
+                  <button type="submit" class="lnk-stop sm">Remove</button>
+                </form>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table></div>
+    }
+    <form method="post" asp-page-handler="AddGoal" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;margin-top:14px">
+      <input asp-for="NewGoal" class="in" style="flex:1" maxlength="255" placeholder="New goal" aria-label="New goal" required />
+      <button type="submit" class="btn">Add goal</button>
+    </form>
+  </div></div>
+
+  <div class="card"><div class="h"><h2>Scope</h2><span class="sm dim">@Model.ScopeItems.Count(item => item.InScope) in · @Model.ScopeItems.Count(item => !item.InScope) out</span></div><div class="b">
+    @if (Model.ScopeError != null)
+    {
+      <div class="banner stop" role="alert">@Model.ScopeError</div>
+    }
+    @if (Model.ScopeItems.Count == 0)
+    {
+      <p class="sm dim">No scope yet. Add what is and is not part of the project.</p>
+    }
+    else
+    {
+      <div class="tw"><table class="tbl">
+        <thead><tr>
+          <th>Item</th>
+          <th style="width:130px">Scope</th>
+          <th class="r" style="width:240px"></th>
+        </tr></thead>
+        <tbody>
+          @foreach (var item in Model.ScopeItems)
+          {
+            <tr>
+              <td style="color:var(--fg)">@item.Description</td>
+              <td class="nowrap">@if (item.InScope) {<span class="tag ok">In scope</span>} else {<span class="tag idle">Out of scope</span>}</td>
+              <td class="r nowrap">
+                <form method="post" asp-page-handler="ToggleScope" asp-route-id="@Model.Deal.Id" asp-route-itemId="@item.Id" asp-route-inScope="@(!item.InScope)" class="inline-form">
+                  <button type="submit" class="lnk sm">@(item.InScope ? "Mark out of scope" : "Mark in scope")</button>
+                </form>
+                &nbsp;
+                <form method="post" asp-page-handler="RemoveScope" asp-route-id="@Model.Deal.Id" asp-route-itemId="@item.Id" class="inline-form">
+                  <button type="submit" class="lnk-stop sm">Remove</button>
+                </form>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table></div>
+    }
+    <form method="post" asp-page-handler="AddScope" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <input asp-for="NewScopeItem" class="in" style="flex:1 1 200px" maxlength="255" placeholder="New scope item" aria-label="New scope item" required />
+      <select asp-for="NewScopeInScope" class="sel in" style="width:auto" aria-label="In or out of scope">
+        <option value="true">In scope</option>
+        <option value="false">Out of scope</option>
+      </select>
+      <button type="submit" class="btn">Add</button>
+    </form>
+  </div></div>
 
   <div class="card"><div class="h"><h2>Stage</h2></div><div class="b">
     <form method="post" asp-page-handler="Status" asp-route-id="@Model.Deal.Id" style="display:flex;gap:8px;align-items:center">

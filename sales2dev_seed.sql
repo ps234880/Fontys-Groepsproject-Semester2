@@ -16,12 +16,26 @@ insert into client (id, companyName, firstName, lastName, email, phoneNumber, cr
 values (1, 'Gemeente Tilburg', 'Anouk', 'Jansen', 'anouk@tilburg.example', '0131234567', now()),
        (2, 'Sportbond NL', 'Daan', 'de Wit', 'daan@sportbond.example', '0307654321', now());
 
-insert into deal (client_id, employee_id, status_id, title, goal, scope, estimatedDate, createdAt)
-values (1, 1, 2, 'Citizen Portal 2027', 'Residents can arrange their affairs with the municipality online.', 'Online portal where residents book appointments and follow their applications. Login with DigiD. Out of scope: payments.', '2026-11-15', now()),
-       (2, 2, 1, 'Member portal', 'Members can manage their membership and events themselves.', 'Portal with member login and event registration. Must work on mobile.', '2026-12-20', now());
+insert into deal (client_id, employee_id, status_id, title, estimatedDate, createdAt)
+values (1, 1, 2, 'Citizen Portal 2027', '2026-11-15', now()),
+       (2, 2, 1, 'Member portal', '2026-12-20', now());
 
 insert into deal_module (deal_id, module_id) values (1, 1), (1, 3);
 
 insert into comment (employee_id, deal_id, message, createdAt)
 values (3, 1, 'Login can reuse auth-gateway. Booking appointments needs a custom calendar module, about three weeks of work.', now()),
        (1, 1, 'Thanks. The customer is fine with a redirect for the login. I will ask about the calendar.', now());
+
+insert into deal_goal (deal_id, description, createdAt)
+values (1, 'Residents can arrange their affairs with the municipality online', now()),
+       (1, 'Fewer phone calls to the service desk', now()),
+       (2, 'Members manage their membership and events themselves', now());
+
+insert into deal_scope (deal_id, description, inScope, createdAt)
+values (1, 'Book appointments online', 1, now()),
+       (1, 'Follow the status of an application', 1, now()),
+       (1, 'Login with DigiD', 1, now()),
+       (1, 'Online payments', 0, now()),
+       (2, 'Member login', 1, now()),
+       (2, 'Event registration', 1, now()),
+       (2, 'Native mobile app', 0, now());

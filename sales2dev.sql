@@ -61,8 +61,6 @@ create table deal
     employee_id   int          not null,
     status_id     int          not null,
     title         varchar(255) not null,
-    goal          varchar(255) not null,
-    scope         text         not null,
     estimatedDate datetime     not null,
     createdAt     datetime     not null,
     updatedAt     datetime     null,
@@ -113,4 +111,29 @@ create table deal_client
             on delete cascade,
     constraint deal_client_client_id_fk
         foreign key (client_id) references client (id)
+);
+
+create table deal_goal
+(
+    id          int auto_increment
+        primary key,
+    deal_id     int          not null,
+    description varchar(255) not null,
+    createdAt   datetime     not null,
+    constraint deal_goal_deal_id_fk
+        foreign key (deal_id) references deal (id)
+            on delete cascade
+);
+
+create table deal_scope
+(
+    id          int auto_increment
+        primary key,
+    deal_id     int          not null,
+    description varchar(255) not null,
+    inScope     tinyint(1)   not null,
+    createdAt   datetime     not null,
+    constraint deal_scope_deal_id_fk
+        foreign key (deal_id) references deal (id)
+            on delete cascade
 );

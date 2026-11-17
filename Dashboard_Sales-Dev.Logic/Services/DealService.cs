@@ -33,8 +33,18 @@ public class DealService
         return _dealRepository.GetById(id);
     }
 
-    public async Task<int> CreateWithNewClientAsync(Client client, Deal deal)
+    public async Task<int> CreateWithNewClientAsync(Client client, Deal deal, List<string> goals, List<DealScopeItem> scopeItems)
     {
+        List<string> cleanGoals = goals.Select(goal => CleanDescription(goal, "goal")).ToList();
+        List<DealScopeItem> cleanScopeItems = scopeItems
+            .Select(item => new DealScopeItem { Description = CleanDescription(item.Description, "scope item"), InScope = item.InScope })
+            .ToList();
+
+        if (cleanGoals.Count == 0)
+        {
+            throw new ArgumentException("Add at least one goal for the project.");
+        }
+
         Employee? owner = _employeeRepository.GetById(deal.EmployeeId);
 
         if (owner == null || owner.RoleName != EmployeeService.SalesRole)
@@ -54,7 +64,61 @@ public class DealService
         deal.ClientId = clientId;
         deal.StatusId = newStatus.Id;
 
-        return await _dealRepository.AddDealAsync(deal);
+        return await _dealRepository.AddDealAsync(deal, cleanGoals, cleanScopeItems);
+    }
+
+    public const int MaxDescriptionLength = 255;
+
+    public List<DealGoal> GetGoals(int dealId)
+    {
+        return _dealRepository.GetGoals(dealId);
+    }
+
+    public Task AddGoalAsync(int dealId, string? description)
+    {
+        return _dealRepository.AddGoalAsync(dealId, CleanDescription(description, "goal"));
+    }
+
+    public Task RemoveGoalAsync(int dealId, int goalId)
+    {
+        return _dealRepository.RemoveGoalAsync(dealId, goalId);
+    }
+
+    public List<DealScopeItem> GetScopeItems(int dealId)
+    {
+        return _dealRepository.GetScopeItems(dealId);
+    }
+
+    public Task AddScopeItemAsync(int dealId, string? description, bool inScope)
+    {
+        return _dealRepository.AddScopeItemAsync(dealId, CleanDescription(description, "scope item"), inScope);
+    }
+
+    public Task SetScopeItemInScopeAsync(int dealId, int itemId, bool inScope)
+    {
+        return _dealRepository.UpdateScopeItemAsync(dealId, itemId, inScope);
+    }
+
+    public Task RemoveScopeItemAsync(int dealId, int itemId)
+    {
+        return _dealRepository.RemoveScopeItemAsync(dealId, itemId);
+    }
+
+    private static string CleanDescription(string? description, string kind)
+    {
+        string trimmed = (description ?? string.Empty).Trim();
+
+        if (trimmed.Length == 0)
+        {
+            throw new ArgumentException($"Describe the {kind}.");
+        }
+
+        if (trimmed.Length > MaxDescriptionLength)
+        {
+            throw new ArgumentException($"Keep each {kind} under {MaxDescriptionLength} characters. This one has {trimmed.Length}: '{trimmed[..40]}...'");
+        }
+
+        return trimmed;
     }
 
     public async Task CreateContactAsync(int dealId, Client contact)

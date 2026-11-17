@@ -51,25 +51,37 @@ public class NewModel : PageModel
         {
             EmployeeId = Input.OwnerId,
             Title = Input.Title.Trim(),
-            Goal = Input.Goal.Trim(),
-            Scope = Input.Scope.Trim(),
             EstimatedDate = Input.EstimatedDate
         };
+
+        List<DealScopeItem> scopeItems = SplitLines(Input.InScope)
+            .Select(line => new DealScopeItem { Description = line, InScope = true })
+            .Concat(SplitLines(Input.OutOfScope).Select(line => new DealScopeItem { Description = line, InScope = false }))
+            .ToList();
 
         int dealId;
 
         try
         {
-            dealId = await _dealService.CreateWithNewClientAsync(client, deal);
+            dealId = await _dealService.CreateWithNewClientAsync(client, deal, SplitLines(Input.Goals), scopeItems);
         }
         catch (ArgumentException exception)
         {
-            ModelState.AddModelError("Input.OwnerId", exception.Message);
+            ModelState.AddModelError(string.Empty, exception.Message);
             LoadOwners();
             return Page();
         }
 
         return RedirectToPage("/Deals/Detail", new { id = dealId });
+    }
+
+    private static List<string> SplitLines(string? text)
+    {
+        return (text ?? string.Empty)
+            .Split('\n')
+            .Select(line => line.Trim())
+            .Where(line => line.Length > 0)
+            .ToList();
     }
 
     private void LoadOwners()
@@ -100,13 +112,12 @@ public class NewModel : PageModel
         [Required(ErrorMessage = "Enter a project name.")]
         public string Title { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Describe the goal of the project.")]
-        [StringLength(255, ErrorMessage = "Keep the goal under 255 characters.")]
-        public string Goal { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Add at least one goal for the project.")]
+        public string Goals { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Describe the scope of the project.")]
-        [StringLength(10000, ErrorMessage = "Keep the scope under 10,000 characters.")]
-        public string Scope { get; set; } = string.Empty;
+        public string? InScope { get; set; }
+
+        public string? OutOfScope { get; set; }
 
         [Required(ErrorMessage = "Choose an estimated date.")]
         public DateTime EstimatedDate { get; set; }
